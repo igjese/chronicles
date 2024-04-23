@@ -1,0 +1,129 @@
+[gd_scene load_steps=7 format=3 uid="uid://b50jttpqq77dc"]
+
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
+[ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
+[ext_resource type="Script" path="res://scripts/StateMachine.gd" id="3_uq4gl"]
+[ext_resource type="Script" path="res://scenes/main/states/IntroState.gd" id="3_wo1fp"]
+[ext_resource type="Script" path="res://scenes/main/states/PlayState.gd" id="4_0iviu"]
+[ext_resource type="Script" path="res://scenes/main/GuiSidebar.gd" id="6_adhy6"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_1e1r0")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("3_uq4gl")
+
+[node name="IntroState" type="Node" parent="StateMachine"]
+script = ExtResource("3_wo1fp")
+
+[node name="PlayState" type="Node" parent="StateMachine"]
+script = ExtResource("4_0iviu")
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("1_mtqld")
+expand_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="GuiPlay" type="Control" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+metadata/_edit_lock_ = true
+
+[node name="GuiSidebar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1320.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("6_adhy6")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="GuiSidebar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_lock_ = true
+
+[node name="Title" type="RichTextLabel" parent="GuiSidebar"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 567.0
+offset_bottom = 149.0
+theme_override_colors/default_color = Color(0.929, 0.941, 0.871, 1)
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 36
+theme_override_font_sizes/italics_font_size = 21
+bbcode_enabled = true
+text = "[b]Chronicles: Rise of Rome[/b]
+[i]Deck Building Solitaire Game[/i]"
+
+[node name="BtnExit" type="Button" parent="GuiSidebar"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -35.0
+offset_right = -20.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Exit Game"
+
+[node name="BtnRestart" type="Button" parent="GuiSidebar"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -70.0
+offset_right = -20.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Restart Level"
+
+[node name="GuiIntro" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="BackGround" type="ColorRect" parent="GuiIntro"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.164706, 0.164706, 0.164706, 1)
+metadata/_edit_lock_ = true
+
+[node name="MainText" type="RichTextLabel" parent="GuiIntro"]
+layout_mode = 0
+offset_left = 762.0
+offset_top = 462.0
+offset_right = 1200.0
+offset_bottom = 548.0
+text = "Lorem ipsum dolor sit amet"
+
+[connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
