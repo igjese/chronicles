@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Chronicles: Rise of Rome"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/board.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://visuals/icon.png"
+
+[autoload]
+
+InitMgr="*res://scripts/init.gd"
 
 [display]
 

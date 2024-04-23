@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b50jttpqq77dc"]
+
+[ext_resource type="Script" path="res://scenes/board.gd" id="1_7friu"]
+[ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="2_n3wqj"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_7friu")
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("2_n3wqj")
+expand_mode = 2
+metadata/_edit_lock_ = true
