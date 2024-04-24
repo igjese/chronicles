@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=6 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
 [ext_resource type="Script" path="res://scenes/main/StateLoop.gd" id="2_fbk6k"]
 [ext_resource type="PackedScene" uid="uid://dri1dx1dvk0q" path="res://scenes/slot/slot.tscn" id="5_rr31l"]
-[ext_resource type="PackedScene" uid="uid://b7lbqvxcahm4s" path="res://scenes/card/card.tscn" id="5_sne82"]
 [ext_resource type="Script" path="res://scenes/main/GuiSidebar.gd" id="6_adhy6"]
 
 [node name="Main" type="Node2D"]
@@ -136,39 +135,26 @@ offset_left = 193.0
 offset_top = 115.0
 offset_right = 491.0
 offset_bottom = 327.0
+theme_override_constants/h_separation = 1
+theme_override_constants/v_separation = 1
 columns = 2
 
 [node name="Army2" parent="Resources" instance=ExtResource("5_rr31l")]
 layout_mode = 2
 
-[node name="Card" parent="Resources/Army2" instance=ExtResource("5_sne82")]
-layout_mode = 2
-offset_left = -4.0
-offset_right = -4.0
-
 [node name="Money2" parent="Resources" instance=ExtResource("5_rr31l")]
 layout_mode = 2
-
-[node name="Card" parent="Resources/Money2" instance=ExtResource("5_sne82")]
-layout_mode = 2
-offset_left = -4.0
-offset_right = -4.0
 
 [node name="Army1" parent="Resources" instance=ExtResource("5_rr31l")]
 layout_mode = 2
 
-[node name="Card" parent="Resources/Army1" instance=ExtResource("5_sne82")]
-layout_mode = 2
-offset_left = -4.0
-offset_right = -4.0
-
 [node name="Money1" parent="Resources" instance=ExtResource("5_rr31l")]
 layout_mode = 2
 
-[node name="Card" parent="Resources/Money1" instance=ExtResource("5_sne82")]
-layout_mode = 2
-offset_left = -4.0
-offset_right = -4.0
+[node name="Offscreen" type="Node2D" parent="."]
+
+[node name="Top" type="Node2D" parent="Offscreen"]
+position = Vector2(902, -255)
 
 [connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
 [connection signal="pressed" from="GuiSidebar/BtnRestart" to="GuiSidebar" method="_on_btn_restart_pressed"]

@@ -26,3 +26,28 @@ func set_face(face):
     if face == FACE_DOWN:
         $Back.visible = true
     self.face = face
+
+func set_card_data(card):
+    card_type = card["type"]
+    card_name = card["name"]
+    cost_money = card["cost_money"]
+    effect_money = card["effect_money"]
+    effect_army = card["effect_army"]
+    discard = card["discard"]
+    trash = card["trash"]
+    extra_buys = card["extra_buys"]
+    draw_cards = card["draw"]
+    extra_actions = card["extra_actions"]
+    replace = card["replace"]
+    upgrade_2 = card["upgrade_2"]
+    double_action = card["double_action"]
+    take_4 = card["take_4"]
+    take_money2 = card["take_money2"]
+    take_5 = card["take_5"]
+    upgrade_money = card["upgrade_money"]
+    
+    
+func fly(start_node, end_node, duration, start_delay, callback):
+    var tween = create_tween()
+    tween.tween_interval(start_delay)
+    tween.tween_property(self, "global_position", end_node.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_IN_OUT)

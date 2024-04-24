@@ -5,6 +5,8 @@ extends Node
 @onready var intro_main = gui_intro.get_node("MainText")
 @onready var resources = get_node("/root/Main/Resources")
 
+var utils = Utils.new()
+
 enum {SETUP, INTRO_BUY_RESOURCES, DEAL_RESOURCES, PLAY}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
@@ -44,8 +46,26 @@ func intro_buy_resources_enter():
     
 
 func deal_resources_enter(): 
-    fade(resources,FADE_IN,1)
+    resources.visible = true
+    deal_resources()
     fade(intro_resources, FADE_IN, 3, PLAY)
+    
+    
+func deal_resources():
+    var card_scene = preload("res://scenes/card/card.tscn")
+    var start_node = get_node("/root/Main/Offscreen/Top")
+    var resources_node = get_node("/root/Main/Resources")
+    var duration = 0.3
+    var start_delay = 0
+    for card_type in ["Army1","Money1","Army2","Money2"]:
+        var card_data = utils.get_cards_by_type(card_type)[0]
+        for i in range(5):
+            var card = card_scene.instantiate()
+            start_node.add_child(card)
+            card.set_card_data(card_data) 
+            start_delay += 0.2
+            var target_node = resources_node.get_node(card_type)
+            card.fly(start_node, target_node, duration, start_delay, target_node.add_card.bind(card))
 
 
 func play_enter(): 
