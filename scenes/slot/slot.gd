@@ -3,6 +3,7 @@ extends ColorRect
 
 func _ready():
     $qty.visible = false
+    self.color.a = 0
 
 func add_card(node):
     node.reparent($cards)

@@ -1,8 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://b7lbqvxcahm4s"]
+[gd_scene load_steps=7 format=3 uid="uid://b7lbqvxcahm4s"]
 
 [ext_resource type="Texture2D" uid="uid://db5uhwffo2cmu" path="res://visuals/card_back.png" id="1_getn5"]
 [ext_resource type="Script" path="res://scenes/card/card.gd" id="1_yu8kv"]
+[ext_resource type="Texture2D" uid="uid://d1137l43ye6yw" path="res://visuals/cards/centuria.png" id="2_anp5s"]
 [ext_resource type="AudioStream" uid="uid://ccxjm61bfpntk" path="res://sounds/deal.tres" id="3_a5n11"]
+[ext_resource type="Texture2D" uid="uid://bgqethyrn3klh" path="res://visuals/card_frame.png" id="3_fov66"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cxay"]
+bg_color = Color(0.960784, 0.811765, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+corner_detail = 5
 
 [node name="Card" type="Control"]
 layout_mode = 3
@@ -11,10 +26,53 @@ offset_right = 150.0
 offset_bottom = 150.0
 script = ExtResource("1_yu8kv")
 
+[node name="MainVisual" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 44.0
+offset_right = 146.0
+offset_bottom = 146.0
+texture = ExtResource("2_anp5s")
+expand_mode = 1
+
+[node name="Frame" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 150.0
+texture = ExtResource("3_fov66")
+expand_mode = 3
+metadata/_edit_lock_ = true
+
+[node name="Title" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 8.0
+offset_right = 145.0
+offset_bottom = 35.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+bbcode_enabled = true
+text = "[center]Card Title[/center]"
+
+[node name="Cost" type="Label" parent="."]
+offset_left = 5.0
+offset_top = 120.0
+offset_right = 35.0
+offset_bottom = 150.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_8cxay")
+text = "9"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Back" type="Sprite2D" parent="."]
+visible = false
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_getn5")
 centered = false
+metadata/_edit_lock_ = true
 
 [node name="SoundDeal" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_a5n11")

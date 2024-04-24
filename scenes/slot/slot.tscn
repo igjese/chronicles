@@ -18,7 +18,7 @@ corner_detail = 5
 [node name="Slot" type="ColorRect"]
 offset_right = 150.0
 offset_bottom = 150.0
-color = Color(0.972549, 0.972549, 0.972549, 0)
+color = Color(0.929412, 0.941176, 0.870588, 1)
 script = ExtResource("1_swcbo")
 
 [node name="cards" type="Control" parent="."]

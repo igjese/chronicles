@@ -7,3 +7,5 @@ func get_cards_by_type(card_type: String) -> Array:
         if card["type"] == card_type:
             cards_of_type.append(card)
     return cards_of_type
+
+

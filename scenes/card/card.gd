@@ -46,11 +46,23 @@ func set_card_data(card):
     take_5 = card["take_5"]
     upgrade_money = card["upgrade_money"]
     
+    $Title.bbcode_text = "[center]%s[/center]" % card_name
+    
+    var normalized_name = card_name.replace(" ", "_").to_lower()
+    var image_path = "res://visuals/cards/" + normalized_name + ".png"
+    $MainVisual.texture = load(image_path)
+    
+    $Cost.text = str(cost_money)
+    if card_type in ["History","Victory1","Victory2","Victory3"]:
+        $Cost.visible = false
+        
+
+    
     
 func fly(start_node, end_node, duration, start_delay, callback):
     var tween = create_tween()
     tween.tween_interval(start_delay)
-    tween.tween_callback($SoundDeal.play)
     tween.tween_property(self, "global_position", end_node.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_IN_OUT)
+    tween.parallel().tween_callback($SoundDeal.play).set_delay(duration - 0.1)
     tween.tween_callback(callback)
 
