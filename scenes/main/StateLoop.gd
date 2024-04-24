@@ -1,6 +1,7 @@
 extends Node
 
 @onready var gui_intro = get_node("/root/Main/GuiIntro")
+@onready var resources = get_node("/root/Main/Resources")
 
 enum {SETUP, INTRO_BUY_RESOURCES, DEAL_RESOURCES, PLAY}
 var sm:= SM.new({
@@ -10,8 +11,12 @@ var sm:= SM.new({
     PLAY: {SM.ENTER: play_enter}
 })
 
+enum {CONTEXT_INTRO, CONTEXT_PLAY}
 
-func start_game_loop():
+var context = CONTEXT_PLAY
+
+func start_game_loop(requested_context = CONTEXT_PLAY):
+    context = requested_context
     sm.change_state(SETUP)
 
 
@@ -20,11 +25,14 @@ func _process(delta):
     
     
 func setup_enter():
-    gui_intro.visible = true
-    gui_intro.get_node("MainText").visible = false
-    gui_intro.get_node("Resources").visible = false
-    sm.change_state(INTRO_BUY_RESOURCES)
-
+    resources.visible = false
+    if context == CONTEXT_INTRO:
+        gui_intro.visible = true
+        gui_intro.get_node("MainText").visible = false
+        sm.change_state(INTRO_BUY_RESOURCES)
+    else:
+        gui_intro.visible = false
+        sm.change_state(DEAL_RESOURCES)
 
 func intro_buy_resources_enter(): 
     var intro_text = gui_intro.get_node("MainText")
@@ -32,12 +40,12 @@ func intro_buy_resources_enter():
     
 
 func deal_resources_enter(): 
-    var resource_text = gui_intro.get_node("Resources")
-    fade(resource_text, FADE_IN, 3, PLAY)
+    fade(resources, FADE_IN, 3, PLAY)
 
 
 func play_enter(): 
-    fade(gui_intro, FADE_OUT, 3)
+    if context == CONTEXT_INTRO:
+        fade(gui_intro, FADE_OUT, 3)
     
     
 enum {FADE_OUT, FADE_IN}
