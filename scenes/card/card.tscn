@@ -1,12 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7lbqvxcahm4s"]
+[gd_scene load_steps=3 format=3 uid="uid://b7lbqvxcahm4s"]
 
 [ext_resource type="Texture2D" uid="uid://db5uhwffo2cmu" path="res://visuals/card_back.png" id="1_getn5"]
+[ext_resource type="Script" path="res://scenes/card/card.gd" id="1_yu8kv"]
 
 [node name="Card" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 150.0
 offset_bottom = 150.0
+script = ExtResource("1_yu8kv")
 
 [node name="Back" type="Sprite2D" parent="."]
 scale = Vector2(0.25, 0.25)
