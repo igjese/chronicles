@@ -55,7 +55,7 @@ func deal_resources():
     var card_scene = preload("res://scenes/card/card.tscn")
     var start_node = get_node("/root/Main/Offscreen/Top")
     var resources_node = get_node("/root/Main/Resources")
-    var duration = 0.3
+    var duration = 0.35
     var start_delay = 0
     for card_type in ["Army1","Money1","Army2","Money2"]:
         var card_data = utils.get_cards_by_type(card_type)[0]
@@ -63,7 +63,7 @@ func deal_resources():
             var card = card_scene.instantiate()
             start_node.add_child(card)
             card.set_card_data(card_data) 
-            start_delay += 0.2
+            start_delay += 0.3
             var target_node = resources_node.get_node(card_type)
             card.fly(start_node, target_node, duration, start_delay, target_node.add_card.bind(card))
 
