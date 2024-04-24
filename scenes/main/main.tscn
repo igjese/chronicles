@@ -1,23 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=5 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
-[ext_resource type="Script" path="res://scripts/StateMachine.gd" id="3_uq4gl"]
-[ext_resource type="Script" path="res://scenes/main/states/IntroState.gd" id="3_wo1fp"]
-[ext_resource type="Script" path="res://scenes/main/states/PlayState.gd" id="4_0iviu"]
+[ext_resource type="Script" path="res://scenes/main/StateLoop.gd" id="2_fbk6k"]
 [ext_resource type="Script" path="res://scenes/main/GuiSidebar.gd" id="6_adhy6"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_1e1r0")
 
-[node name="StateMachine" type="Node" parent="."]
-script = ExtResource("3_uq4gl")
-
-[node name="IntroState" type="Node" parent="StateMachine"]
-script = ExtResource("3_wo1fp")
-
-[node name="PlayState" type="Node" parent="StateMachine"]
-script = ExtResource("4_0iviu")
+[node name="StateLoop" type="Node" parent="."]
+script = ExtResource("2_fbk6k")
 
 [node name="Background" type="TextureRect" parent="."]
 offset_right = 1920.0
@@ -58,7 +50,7 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 567.0
 offset_bottom = 149.0
-theme_override_colors/default_color = Color(0.929, 0.941, 0.871, 1)
+theme_override_colors/default_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/normal_font_size = 20
 theme_override_font_sizes/bold_font_size = 36
 theme_override_font_sizes/italics_font_size = 21
@@ -95,7 +87,6 @@ grow_vertical = 0
 text = "Restart Level"
 
 [node name="GuiIntro" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -120,10 +111,22 @@ metadata/_edit_lock_ = true
 
 [node name="MainText" type="RichTextLabel" parent="GuiIntro"]
 layout_mode = 0
-offset_left = 762.0
-offset_top = 462.0
-offset_right = 1200.0
-offset_bottom = 548.0
-text = "Lorem ipsum dolor sit amet"
+offset_left = 637.0
+offset_top = 445.0
+offset_right = 1417.0
+offset_bottom = 650.0
+theme_override_colors/default_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/normal_font_size = 90
+text = "Buy Resources"
+
+[node name="Resources" type="RichTextLabel" parent="GuiIntro"]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 160.0
+offset_right = 608.0
+offset_bottom = 260.0
+theme_override_colors/default_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/normal_font_size = 45
+text = "RESOURCES"
 
 [connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
