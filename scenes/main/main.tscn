@@ -130,26 +130,38 @@ theme_override_colors/default_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/normal_font_size = 90
 text = "Buy Resources"
 
-[node name="Resources" type="GridContainer" parent="."]
+[node name="Resources" type="Control" parent="."]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 3
+anchors_preset = 0
 offset_left = 193.0
 offset_top = 115.0
-offset_right = 491.0
-offset_bottom = 327.0
-theme_override_constants/h_separation = 1
-theme_override_constants/v_separation = 1
-columns = 2
+offset_right = 547.0
+offset_bottom = 442.0
 
 [node name="Army2" parent="Resources" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
 
 [node name="Money2" parent="Resources" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
+offset_left = 151.0
+offset_right = 301.0
 
 [node name="Army1" parent="Resources" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
+offset_top = 151.0
+offset_bottom = 301.0
 
 [node name="Money1" parent="Resources" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
+offset_left = 151.0
+offset_top = 151.0
+offset_right = 301.0
+offset_bottom = 301.0
 
 [node name="Offscreen" type="Node2D" parent="."]
 

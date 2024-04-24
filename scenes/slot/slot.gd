@@ -1,5 +1,5 @@
 class_name SlotScene
-extends Control
+extends ColorRect
 
 func add_card(node):
     node.reparent(self)
