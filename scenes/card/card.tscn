@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7lbqvxcahm4s"]
+
+[ext_resource type="Texture2D" uid="uid://db5uhwffo2cmu" path="res://visuals/card_back.png" id="1_getn5"]
+
+[node name="Card" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 150.0
+offset_bottom = 150.0
+
+[node name="Back" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_getn5")
+centered = false

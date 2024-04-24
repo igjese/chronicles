@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dri1dx1dvk0q"]
+
+[node name="Slot" type="Control"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 3
+anchors_preset = 0

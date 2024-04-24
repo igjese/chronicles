@@ -1,6 +1,8 @@
 extends Node
 
 @onready var gui_intro = get_node("/root/Main/GuiIntro")
+@onready var intro_resources = gui_intro.get_node("Resources")
+@onready var intro_main = gui_intro.get_node("MainText")
 @onready var resources = get_node("/root/Main/Resources")
 
 enum {SETUP, INTRO_BUY_RESOURCES, DEAL_RESOURCES, PLAY}
@@ -28,11 +30,13 @@ func setup_enter():
     resources.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        gui_intro.get_node("MainText").visible = false
+        intro_main.visible = false
+        intro_resources.visible = false
         sm.change_state(INTRO_BUY_RESOURCES)
-    else:
+    elif context == CONTEXT_PLAY:
         gui_intro.visible = false
         sm.change_state(DEAL_RESOURCES)
+
 
 func intro_buy_resources_enter(): 
     var intro_text = gui_intro.get_node("MainText")
@@ -40,7 +44,8 @@ func intro_buy_resources_enter():
     
 
 func deal_resources_enter(): 
-    fade(resources, FADE_IN, 3, PLAY)
+    fade(resources,FADE_IN,1)
+    fade(intro_resources, FADE_IN, 3, PLAY)
 
 
 func play_enter(): 
