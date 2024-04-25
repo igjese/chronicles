@@ -48,9 +48,12 @@ func set_card_data(card):
     
     $Title.bbcode_text = "[center]%s[/center]" % card_name
     
+    '''
     var normalized_name = card_name.replace(" ", "_").to_lower()
     var image_path = "res://visuals/cards/" + normalized_name + ".png"
     $MainVisual.texture = load(image_path)
+    '''
+    $MainVisual.texture = card["visual"]
     
     $Cost.text = str(cost_money)
     if card_type in ["History","Victory1","Victory2","Victory3"]:

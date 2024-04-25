@@ -57,6 +57,11 @@ func load_card_definitions_from_csv():
             "take_5": int(card_data[15]),
             "upgrade_money": int(card_data[16])
         }
+        
+        var normalized_name = card["name"].replace(" ", "_").to_lower()
+        var image_path = "res://visuals/cards/" + normalized_name + ".png"
+        card["visual"] = load(image_path)
+        
         Game.cards_by_name[card["name"]] = card
 
     file.close()
