@@ -48,11 +48,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        intro_main.visible = false
-        intro_resources.visible = false
-        intro_actions.visible = false
-        intro_challenge.visible = false
-        intro_hand.visible = false
+        hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -78,10 +74,7 @@ func deal_resources():
     for card_type in ["Army1","Money1","Army2","Money2"]:
         var card_data = utils.get_cards_by_type(card_type)[0]
         for i in range(5):
-            var card = card_scene.instantiate()
-            offscreen_top.add_child(card)
-            card.set_card_data(card_data) 
-            card.set_face(card.FACE_UP)
+            var card = spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = resource_slots.get_node(card_type)
             card.fly(offscreen_top, target_node, duration, start_delay, target_node.add_card.bind(card))
@@ -101,21 +94,13 @@ func intro_actions_enter():
     
     
 func deal_actions_enter():
-    var all_actions = utils.get_cards_by_type("Action")
-    var selected_actions = []
-    while selected_actions.size() < 10:
-        var choice = randi() % all_actions.size()
-        selected_actions.append(all_actions.pop_at(choice))
-    selected_actions.sort_custom(sort_cards_by_cost)
+    var selected_actions = choose_action_set()
     
     var duration = 0.35
     var start_delay = 0
     for i in range(10):
         for j in range(5):
-            var card = card_scene.instantiate()
-            offscreen_top.add_child(card)
-            card.set_card_data(selected_actions[i]) 
-            card.set_face(card.FACE_UP)
+            var card = spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = action_slots.get_node("Action" + str(i+1))
             card.fly(offscreen_top, target_node, duration, start_delay, target_node.add_card.bind(card))
@@ -191,3 +176,26 @@ func intro(text, duration, request_state = null):
             
 func sort_cards_by_cost(a, b):
     return a["cost_money"] < b["cost_money"]  # Ascending order 
+
+
+func hide(nodes):
+    for node in nodes:
+        node.visible = false
+
+
+func spawn_card(card_data, parent_node, face):
+    var card = card_scene.instantiate()
+    parent_node.add_child(card)
+    card.set_card_data(card_data) 
+    card.set_face(face)
+    return card
+
+
+func choose_action_set():
+    var all_actions = utils.get_cards_by_type("Action")
+    var selected_actions = []
+    while selected_actions.size() < 10:
+        var choice = randi() % all_actions.size()
+        selected_actions.append(all_actions.pop_at(choice))
+    selected_actions.sort_custom(sort_cards_by_cost)
+    return selected_actions
