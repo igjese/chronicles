@@ -11,13 +11,14 @@ extends Node
 @onready var challenge_slot = get_node("/root/Main/Challenge")
 @onready var hand_slots = get_node("/root/Main/Hand")
 @onready var discarded_slot = get_node("/root/Main/Hand")
-@onready var deck_slot = get_node("/root/Main/Hand")
+@onready var deck_slot = get_node("/root/Main/Deck")
 @onready var offscreen_top = get_node("/root/Main/Offscreen/Top")
+@onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
 
 var card_scene = preload("res://scenes/card/card.tscn")
 var utils = Utils.new()
 
-enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, PLAY}
+enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, PLAY}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -25,7 +26,8 @@ var sm:= SM.new({
     INTRO_ACTIONS: {SM.ENTER: intro_actions_enter},
     DEAL_ACTIONS: {SM.ENTER: deal_actions_enter, SM.PROCESS: deal_actions_process, SM.EXIT: deal_actions_exit},
     INTRO_DECK: {SM.ENTER: intro_deck_enter},
-    DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.EXIT: deal_hand_exit},
+    PREPARE_DECK: {SM.ENTER: prepare_deck_enter, SM.PROCESS: prepare_deck_process, SM.EXIT: prepare_deck_exit},
+    DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.PROCESS: deal_hand_process, SM.EXIT: deal_hand_exit},
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
     DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.EXIT: deal_challenges_exit},
     PLAY: {SM.ENTER: play_enter}
@@ -120,11 +122,40 @@ func deal_actions_exit():
     
     
 func intro_deck_enter():
-    intro("Improve your deck.", 3, DEAL_HAND)
+    intro("Improve your deck.", 3, PREPARE_DECK)
+    
+    
+func prepare_deck_enter():
+    var money1 = utils.get_cards_by_type("Money1")[0]
+    var army1 = utils.get_cards_by_type("Army1")[0]
+    var players_deck = []
+    for i in range(7):
+        players_deck.append(money1)
+    for i in range(3):
+        players_deck.append(army1)
+    players_deck.shuffle()
+    var start_delay = 0
+    var duration = 0.3
+    for card_data in players_deck:
+        var card = spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
+        card.fly(offscreen_left, deck_slot, duration, start_delay, deck_slot.add_card.bind(card))
+        start_delay += 0.2
+    
+func prepare_deck_process(delta):
+    if deck_slot.get_node("cards").get_child_count() == 10:
+        sm.change_state(DEAL_HAND)
+    
+    
+func prepare_deck_exit():
+    pass
     
     
 func deal_hand_enter():
     sm.change_state(INTRO_CHALLENGE)
+    
+    
+func deal_hand_process(delta):
+    pass
     
     
 func deal_hand_exit():
@@ -145,7 +176,7 @@ func deal_challenges_exit():
 
 func play_enter(): 
     if context == CONTEXT_INTRO:
-        fade(gui_intro, FADE_OUT, 3)
+        fade(gui_intro, FADE_OUT, 2)
     
     
 enum {FADE_OUT, FADE_IN}

@@ -239,7 +239,7 @@ offset_right = 336.0
 offset_bottom = 244.0
 theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/font_size = 30
-text = "Resource Cards"
+text = "Your hand"
 horizontal_alignment = 1
 
 [node name="Border" type="Panel" parent="GuiIntro/Hand"]
@@ -497,7 +497,7 @@ offset_bottom = 304.0
 position = Vector2(588, -255)
 
 [node name="Left" type="Node2D" parent="Offscreen"]
-position = Vector2(-273, 494)
+position = Vector2(-191, 505)
 
 [node name="Bottom" type="Node2D" parent="Offscreen"]
 position = Vector2(621, 1175)
