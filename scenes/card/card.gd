@@ -62,7 +62,7 @@ func set_card_data(card):
 func fly(start_node, end_node, duration, start_delay, callback):
     var tween = create_tween()
     tween.tween_interval(start_delay)
-    tween.tween_property(self, "global_position", end_node.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_IN_OUT)
+    tween.tween_property(self, "global_position", end_node.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_OUT)
     tween.parallel().tween_callback($SoundDeal.play).set_delay(duration - 0.1)
     tween.tween_callback(callback)
 

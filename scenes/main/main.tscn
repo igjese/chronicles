@@ -39,6 +39,13 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 metadata/_edit_lock_ = true
 
+[node name="Discarded" parent="." instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = 1280.0
+offset_top = 798.0
+offset_right = 1430.0
+offset_bottom = 948.0
+
 [node name="GuiSidebar" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -99,7 +106,13 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Restart Level"
 
+[node name="GuiStatus" type="Panel" parent="."]
+offset_top = 1040.0
+offset_right = 1320.0
+offset_bottom = 1080.0
+
 [node name="GuiIntro" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -124,21 +137,21 @@ metadata/_edit_lock_ = true
 
 [node name="MainText" type="RichTextLabel" parent="GuiIntro"]
 layout_mode = 0
-offset_left = 361.0
-offset_top = 512.0
-offset_right = 1320.0
-offset_bottom = 656.0
+offset_left = 352.0
+offset_top = 452.0
+offset_right = 1376.0
+offset_bottom = 705.0
 theme_override_colors/default_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/normal_font_size = 90
 bbcode_enabled = true
-text = "[center]Buy Resources."
+text = "[center]Overcome historical challenges."
 
 [node name="Resources" type="Control" parent="GuiIntro"]
 anchors_preset = 0
-offset_left = 33.0
-offset_top = 67.0
-offset_right = 436.0
-offset_bottom = 484.0
+offset_left = 31.0
+offset_top = 12.0
+offset_right = 434.0
+offset_bottom = 429.0
 
 [node name="Hint" type="Label" parent="GuiIntro/Resources"]
 layout_mode = 0
@@ -161,10 +174,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
 
 [node name="Actions" type="Control" parent="GuiIntro"]
 anchors_preset = 0
-offset_left = 463.0
-offset_top = 68.0
-offset_right = 866.0
-offset_bottom = 485.0
+offset_left = 461.0
+offset_top = 12.0
+offset_right = 1309.0
+offset_bottom = 429.0
 
 [node name="Hint" type="Label" parent="GuiIntro/Actions"]
 layout_mode = 0
@@ -185,14 +198,66 @@ offset_right = 850.0
 offset_bottom = 400.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
 
+[node name="Challenges" type="Control" parent="GuiIntro"]
+anchors_preset = 0
+offset_left = 101.0
+offset_top = 440.0
+offset_right = 356.0
+offset_bottom = 700.0
+
+[node name="Hint" type="Label" parent="GuiIntro/Challenges"]
+layout_mode = 0
+offset_left = -21.0
+offset_top = 177.0
+offset_right = 276.0
+offset_bottom = 222.0
+theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/font_size = 30
+text = "Challenges"
+horizontal_alignment = 1
+
+[node name="Border" type="Panel" parent="GuiIntro/Challenges"]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 4.0
+offset_right = 252.0
+offset_bottom = 236.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
+
+[node name="Hand" type="Control" parent="GuiIntro"]
+anchors_preset = 0
+offset_left = 124.0
+offset_top = 684.0
+offset_right = 527.0
+offset_bottom = 1101.0
+
+[node name="Hint" type="Label" parent="GuiIntro/Hand"]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 199.0
+offset_right = 336.0
+offset_bottom = 244.0
+theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/font_size = 30
+text = "Resource Cards"
+horizontal_alignment = 1
+
+[node name="Border" type="Panel" parent="GuiIntro/Hand"]
+layout_mode = 0
+offset_left = -3.0
+offset_top = 24.0
+offset_right = 371.0
+offset_bottom = 249.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
+
 [node name="Resources" type="Control" parent="."]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 76.0
-offset_top = 130.0
-offset_right = 430.0
-offset_bottom = 457.0
+offset_left = 74.0
+offset_top = 70.0
+offset_right = 428.0
+offset_bottom = 397.0
 
 [node name="Army2" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
@@ -222,10 +287,10 @@ offset_bottom = 301.0
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 502.0
-offset_top = 129.0
-offset_right = 1268.0
-offset_bottom = 456.0
+offset_left = 500.0
+offset_top = 69.0
+offset_right = 1266.0
+offset_bottom = 396.0
 
 [node name="Action6" parent="Actions" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
@@ -293,10 +358,149 @@ offset_top = 154.0
 offset_right = 766.0
 offset_bottom = 304.0
 
+[node name="Challenge" parent="." instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = 151.0
+offset_top = 471.0
+offset_right = 301.0
+offset_bottom = 621.0
+
+[node name="Deck" parent="." instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -47.0
+offset_top = 790.0
+offset_right = 103.0
+offset_bottom = 940.0
+
+[node name="Hand" type="Control" parent="."]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 3
+anchors_preset = 0
+offset_left = 153.0
+offset_top = 734.0
+offset_right = 1227.0
+offset_bottom = 1061.0
+
+[node name="Hand1" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = -1.0
+offset_top = 2.0
+offset_right = 149.0
+offset_bottom = 152.0
+
+[node name="Hand2" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 153.0
+offset_top = 2.0
+offset_right = 303.0
+offset_bottom = 152.0
+
+[node name="Hand3" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 307.0
+offset_top = 2.0
+offset_right = 457.0
+offset_bottom = 152.0
+
+[node name="Hand4" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 461.0
+offset_top = 2.0
+offset_right = 611.0
+offset_bottom = 152.0
+
+[node name="Hand5" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 615.0
+offset_top = 2.0
+offset_right = 765.0
+offset_bottom = 152.0
+
+[node name="Hand6" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 769.0
+offset_top = 2.0
+offset_right = 919.0
+offset_bottom = 152.0
+
+[node name="Hand7" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 923.0
+offset_top = 2.0
+offset_right = 1073.0
+offset_bottom = 152.0
+
+[node name="Hand8" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_top = 154.0
+offset_bottom = 304.0
+
+[node name="Hand9" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 154.0
+offset_top = 154.0
+offset_right = 304.0
+offset_bottom = 304.0
+
+[node name="Hand10" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 308.0
+offset_top = 154.0
+offset_right = 458.0
+offset_bottom = 304.0
+
+[node name="Hand11" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 462.0
+offset_top = 154.0
+offset_right = 612.0
+offset_bottom = 304.0
+
+[node name="Hand12" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 616.0
+offset_top = 154.0
+offset_right = 766.0
+offset_bottom = 304.0
+
+[node name="Hand13" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 770.0
+offset_top = 154.0
+offset_right = 920.0
+offset_bottom = 304.0
+
+[node name="Hand14" parent="Hand" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 924.0
+offset_top = 154.0
+offset_right = 1074.0
+offset_bottom = 304.0
+
 [node name="Offscreen" type="Node2D" parent="."]
 
 [node name="Top" type="Node2D" parent="Offscreen"]
-position = Vector2(902, -255)
+position = Vector2(588, -255)
+
+[node name="Left" type="Node2D" parent="Offscreen"]
+position = Vector2(-273, 494)
+
+[node name="Bottom" type="Node2D" parent="Offscreen"]
+position = Vector2(621, 1175)
 
 [connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
 [connection signal="pressed" from="GuiSidebar/BtnRestart" to="GuiSidebar" method="_on_btn_restart_pressed"]

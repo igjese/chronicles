@@ -3,21 +3,31 @@ extends Node
 @onready var gui_intro = get_node("/root/Main/GuiIntro")
 @onready var intro_resources = gui_intro.get_node("Resources")
 @onready var intro_actions = gui_intro.get_node("Actions")
+@onready var intro_hand = gui_intro.get_node("Hand")
+@onready var intro_challenge = gui_intro.get_node("Challenges")
 @onready var intro_main = gui_intro.get_node("MainText")
-@onready var resources = get_node("/root/Main/Resources")
-@onready var actions = get_node("/root/Main/Actions")
+@onready var resource_slots = get_node("/root/Main/Resources")
+@onready var action_slots = get_node("/root/Main/Actions")
+@onready var challenge_slot = get_node("/root/Main/Challenge")
+@onready var hand_slots = get_node("/root/Main/Hand")
+@onready var discarded_slot = get_node("/root/Main/Hand")
+@onready var deck_slot = get_node("/root/Main/Hand")
 @onready var offscreen_top = get_node("/root/Main/Offscreen/Top")
 
 var card_scene = preload("res://scenes/card/card.tscn")
 var utils = Utils.new()
 
-enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, PLAY}
+enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, PLAY}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
     DEAL_RESOURCES: {SM.ENTER: deal_resources_enter, SM.PROCESS: deal_resources_process, SM.EXIT: deal_resources_exit},
     INTRO_ACTIONS: {SM.ENTER: intro_actions_enter},
     DEAL_ACTIONS: {SM.ENTER: deal_actions_enter, SM.PROCESS: deal_actions_process, SM.EXIT: deal_actions_exit},
+    INTRO_DECK: {SM.ENTER: intro_deck_enter},
+    DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.EXIT: deal_hand_exit},
+    INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
+    DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.EXIT: deal_challenges_exit},
     PLAY: {SM.ENTER: play_enter}
 })
 
@@ -35,12 +45,14 @@ func _process(delta):
     
     
 func setup_enter():
-    resources.visible = false
+    resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
         intro_main.visible = false
         intro_resources.visible = false
         intro_actions.visible = false
+        intro_challenge.visible = false
+        intro_hand.visible = false
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -52,8 +64,9 @@ func intro_resources_enter():
     
 
 func deal_resources_enter(): 
-    resources.visible = true
+    resource_slots.visible = true
     deal_resources()
+    
     
 func deal_resources_exit():
     fade(intro_resources, FADE_IN, 3)
@@ -70,19 +83,22 @@ func deal_resources():
             card.set_card_data(card_data) 
             card.set_face(card.FACE_UP)
             start_delay += 0.3
-            var target_node = resources.get_node(card_type)
+            var target_node = resource_slots.get_node(card_type)
             card.fly(offscreen_top, target_node, duration, start_delay, target_node.add_card.bind(card))
         start_delay += 0.15
         
+        
 func deal_resources_process(delta):
     var card_count = 0
-    for slot in resources.get_children():
+    for slot in resource_slots.get_children():
         card_count += slot.get_node("cards").get_child_count()
     if card_count == 20:
         sm.change_state(INTRO_ACTIONS)
         
+        
 func intro_actions_enter():
     intro("Buy action cards.", 5, DEAL_ACTIONS)
+    
     
 func deal_actions_enter():
     var all_actions = utils.get_cards_by_type("Action")
@@ -90,7 +106,6 @@ func deal_actions_enter():
     while selected_actions.size() < 10:
         var choice = randi() % all_actions.size()
         selected_actions.append(all_actions.pop_at(choice))
-    
     selected_actions.sort_custom(sort_cards_by_cost)
     
     var duration = 0.35
@@ -102,23 +117,46 @@ func deal_actions_enter():
             card.set_card_data(selected_actions[i]) 
             card.set_face(card.FACE_UP)
             start_delay += 0.3
-            var target_node = actions.get_node("Action" + str(i+1))
+            var target_node = action_slots.get_node("Action" + str(i+1))
             card.fly(offscreen_top, target_node, duration, start_delay, target_node.add_card.bind(card))
         start_delay += 0.15
         
         
 func deal_actions_process(delta):
     var card_count = 0
-    for slot in actions.get_children():
+    for slot in action_slots.get_children():
         card_count += slot.get_node("cards").get_child_count()
     if card_count == 50:
-        sm.change_state(PLAY)
-        
-func sort_cards_by_cost(a, b):
-    return a["cost_money"] < b["cost_money"]  # Ascending order 
+        sm.change_state(INTRO_DECK)
+    
     
 func deal_actions_exit():
     fade(intro_actions, FADE_IN, 3)
+    
+    
+func intro_deck_enter():
+    intro("Improve your deck.", 3, DEAL_HAND)
+    
+    
+func deal_hand_enter():
+    sm.change_state(INTRO_CHALLENGE)
+    
+    
+func deal_hand_exit():
+    fade(intro_hand, FADE_IN, 3)
+    
+    
+func intro_challenge_enter():
+    intro("Overcome historical challenges.", 3, DEAL_CHALLENGES)
+    
+    
+func deal_challenges_enter():
+    sm.change_state(PLAY)
+    
+    
+func deal_challenges_exit():
+    fade(intro_challenge, FADE_IN, 3)
+
 
 func play_enter(): 
     if context == CONTEXT_INTRO:
@@ -126,6 +164,7 @@ func play_enter():
     
     
 enum {FADE_OUT, FADE_IN}
+    
     
 func fade(node, fade_mode, duration, request_state = null):
     var tween = create_tween()
@@ -137,6 +176,7 @@ func fade(node, fade_mode, duration, request_state = null):
     if request_state:
         tween.tween_callback(sm.change_state.bind(request_state))
         
+        
 func intro(text, duration, request_state = null):
     var tween = create_tween()
     intro_main.bbcode_text = "[center]%s[/center]" % text
@@ -144,6 +184,10 @@ func intro(text, duration, request_state = null):
     intro_main.visible = true
     intro_main.pivot_offset = intro_main.size / 2
     tween.tween_property(intro_main, "modulate:a", 1, duration).set_ease(Tween.EASE_IN)
-    tween.parallel().tween_property(intro_main, "scale", Vector2(1,1), duration).from(Vector2(0,0)).set_ease(Tween.EASE_OUT)
+    tween.parallel().tween_property(intro_main, "scale", Vector2(1,1), duration).from(Vector2(0,0)).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
     if request_state:
             tween.tween_callback(sm.change_state.bind(request_state))
+            
+            
+func sort_cards_by_cost(a, b):
+    return a["cost_money"] < b["cost_money"]  # Ascending order 
