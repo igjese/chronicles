@@ -153,14 +153,11 @@ func prepare_deck_exit():
 func deal_hand_enter():
     var deck = deck_slot.get_node("cards").get_children()
     deck.reverse()
-    var start_delay = 0
-    var duration = 0.4
     for i in range(5):
         var card = deck[i]
-        card.fly_and_flip(deck_slot, hand_slots, duration, start_delay, hand_slots.get_node("Hand1").add_card.bind(card))
-        start_delay += 0.5
-            
-    
+        var target_slot = find_slot_for_card(card, hand_slots)
+        card.fly_and_flip(deck_slot, target_slot, 0.4, 0, target_slot.add_card.bind(card))
+        await get_tree().create_timer(0.5).timeout
     sm.change_state(INTRO_CHALLENGE)
     
     
@@ -187,7 +184,9 @@ func deal_challenges_exit():
 func play_enter(): 
     if context == CONTEXT_INTRO:
         fade(gui_intro, FADE_OUT, 2)
-    
+        
+
+# FUNCTIONS #########################
     
 enum {FADE_OUT, FADE_IN}
     
@@ -240,3 +239,15 @@ func choose_action_set():
         selected_actions.append(all_actions.pop_at(choice))
     selected_actions.sort_custom(sort_cards_by_cost)
     return selected_actions
+
+
+func find_slot_for_card(card: CardScene, slot_group: Control) -> SlotScene:
+    var found : Control = null
+    var free_slots = []
+    for slot: SlotScene in slot_group.get_children():
+        if slot.get_node("cards").get_child_count() > 0:
+            if card.card_name == slot.get_node("cards").get_children()[0].card_name:
+                return slot
+        else:
+            free_slots.append(slot)
+    return free_slots[0]

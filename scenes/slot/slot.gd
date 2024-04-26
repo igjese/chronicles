@@ -13,8 +13,6 @@ func add_card(card_node):
             old_parent.update_qty() 
 
 
-    
-
 func update_qty():
     var qty = $cards.get_child_count()
     if qty > 1:
