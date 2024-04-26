@@ -26,7 +26,7 @@ var sm:= SM.new({
     INTRO_ACTIONS: {SM.ENTER: intro_actions_enter},
     DEAL_ACTIONS: {SM.ENTER: deal_actions_enter, SM.PROCESS: deal_actions_process, SM.EXIT: deal_actions_exit},
     INTRO_DECK: {SM.ENTER: intro_deck_enter},
-    PREPARE_DECK: {SM.ENTER: prepare_deck_enter, SM.PROCESS: prepare_deck_process, SM.EXIT: prepare_deck_exit},
+    PREPARE_DECK: {SM.ENTER: prepare_deck_enter, SM.PROCESS: prepare_deck_process},
     DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.PROCESS: deal_hand_process, SM.EXIT: deal_hand_exit},
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
     DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.EXIT: deal_challenges_exit},
@@ -84,12 +84,9 @@ func deal_resources():
         
         
 func deal_resources_process(delta):
-    var card_count = 0
-    for slot in resource_slots.get_children():
-        card_count += slot.get_node("cards").get_child_count()
-    if card_count == 20:
+    if card_count(resource_slots) == 20:
         sm.change_state(INTRO_ACTIONS)
-        
+                
         
 func intro_actions_enter():
     intro("Buy action cards.", 5, DEAL_ACTIONS)
@@ -97,23 +94,18 @@ func intro_actions_enter():
     
 func deal_actions_enter():
     var selected_actions = choose_action_set()
-    
-    var duration = 0.35
     var start_delay = 0
     for i in range(10):
         for j in range(5):
             var card = spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = action_slots.get_node("Action" + str(i+1))
-            card.fly(offscreen_top, target_node, duration, start_delay, target_node.add_card.bind(card))
+            card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card))
         start_delay += 0.15
         
         
 func deal_actions_process(delta):
-    var card_count = 0
-    for slot in action_slots.get_children():
-        card_count += slot.get_node("cards").get_child_count()
-    if card_count == 50:
+    if card_count(action_slots) == 50:
         sm.change_state(INTRO_DECK)
     
     
@@ -129,25 +121,18 @@ func prepare_deck_enter():
     var money1 = utils.get_cards_by_type("Money1")[0]
     var army1 = utils.get_cards_by_type("Army1")[0]
     var players_deck = []
-    for i in range(7):
-        players_deck.append(money1)
-    for i in range(3):
-        players_deck.append(army1)
+    for i in range(7): players_deck.append(money1)
+    for i in range(3): players_deck.append(army1)
     players_deck.shuffle()
     var start_delay = 0
-    var duration = 0.3
     for card_data in players_deck:
         var card = spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
-        card.fly(offscreen_left, deck_slot, duration, start_delay, deck_slot.add_card.bind(card))
+        card.fly(offscreen_left, deck_slot, 0.3, start_delay, deck_slot.add_card.bind(card))
         start_delay += 0.2
     
 func prepare_deck_process(delta):
     if deck_slot.get_node("cards").get_child_count() == 10:
         sm.change_state(DEAL_HAND)
-    
-    
-func prepare_deck_exit():
-    pass
     
     
 func deal_hand_enter():
@@ -158,11 +143,12 @@ func deal_hand_enter():
         var target_slot = find_slot_for_card(card, hand_slots)
         card.fly_and_flip(deck_slot, target_slot, 0.4, 0, target_slot.add_card.bind(card))
         await get_tree().create_timer(0.5).timeout
-    sm.change_state(INTRO_CHALLENGE)
+
     
     
 func deal_hand_process(delta):
-    pass
+    if card_count(hand_slots) == 5:
+        sm.change_state(INTRO_CHALLENGE)
     
     
 func deal_hand_exit():
@@ -251,3 +237,10 @@ func find_slot_for_card(card: CardScene, slot_group: Control) -> SlotScene:
         else:
             free_slots.append(slot)
     return free_slots[0]
+
+
+func card_count(slot_group):
+    var card_count = 0
+    for slot in slot_group.get_children():
+        card_count += slot.get_node("cards").get_child_count()
+    return card_count
