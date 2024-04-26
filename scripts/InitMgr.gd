@@ -1,28 +1,51 @@
 extends Node
 
 func init():
+    print("*** Main scene tree ***")
     print_scene_tree(get_tree().get_root())
+    print_slot_and_card_trees() 
     load_card_definitions_from_csv()
 
 
-func print_scene_tree(node: Node, indent: int = 0):
+func print_scene_tree(node: Node, indent: int = 0, dive_in_card=false, dive_in_slot=false):
+    var sample_card = null
+    var sample_slot = null
     var indents = "    ".repeat(indent)
     var node_info = "%s- %s (%s)" % [indents, node.name, node.get_class()]
+    var dive_in = true
 
-    if not (node is CardScene or node is SlotScene):
+    if node is CardScene:
+        sample_card = node
+        node_info += " [Card Scene]"
+        dive_in = dive_in_card
+    elif node is SlotScene:
+        sample_slot = node
+        node_info += " [Slot Scene]"
+        dive_in = dive_in_slot
+        
+    if dive_in:
         if node.script:
             node_info += " <-- %s" % node.script.resource_path
-    if node is CardScene:
-        node_info += " [Card Scene]"
-        print(node_info)
-        return
-    elif node is SlotScene:
-        node_info += " [Slot Scene]"
         
     print(node_info)
-    for child in node.get_children():
-        print_scene_tree(child, indent + 1)
+    
+    if dive_in:
+        for child in node.get_children():
+            print_scene_tree(child, indent + 1)    
+            
+    
+func print_slot_and_card_trees():
+    var dummy_card = preload("res://scenes/card/card.tscn").instantiate()
+    print("*** CardScene tree ***")
+    print_scene_tree(dummy_card, 0, true) 
+    dummy_card.free()
+    
+    var dummy_slot = preload("res://scenes/slot/slot.tscn").instantiate()    
+    print("*** SlotScene tree ***")
+    print_scene_tree(dummy_slot, 0, false, true) 
+    dummy_slot.free()
 
+    
 
 func load_card_definitions_from_csv():
     var path = "res://data/cards-csv.txt"
