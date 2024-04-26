@@ -291,6 +291,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_c0n5k")
 
 [node name="Resources" type="Control" parent="."]
@@ -555,3 +556,4 @@ stream = ExtResource("6_cqido")
 
 [connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
 [connection signal="pressed" from="GuiSidebar/BtnRestart" to="GuiSidebar" method="_on_btn_restart_pressed"]
+[connection signal="pressed" from="GuiIntro/BtnStartGame" to="StateLoop" method="_on_btn_start_game_pressed"]

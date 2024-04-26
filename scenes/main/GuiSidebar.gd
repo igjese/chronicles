@@ -7,3 +7,4 @@ func _on_btn_exit_pressed():
 
 func _on_btn_restart_pressed():
     get_node("/root/Main/StateLoop").start_game_loop()
+

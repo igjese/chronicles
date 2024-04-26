@@ -191,7 +191,7 @@ func intro_startgame_enter():
     
 func intro_startgame_process(delta):
     var glow = intro_startgame.get_node("Glow")
-    glow.get("theme_override_styles/panel").shadow_size = 15 + 10 * sin(Engine.get_frames_drawn() * 0.2)
+    glow.get("theme_override_styles/panel").shadow_size = 15 + 10 * sin(Engine.get_frames_drawn() * 0.15)
     glow.modulate.a = 0.6 + sin(Engine.get_frames_drawn() * 0.05) * 0.3
 
     
@@ -285,3 +285,7 @@ func prepare_challenges():
     challenges.append(utils.get_cards_by_type("Victory3")[0])
     challenges.reverse()
     return challenges
+
+
+func _on_btn_start_game_pressed():
+    sm.change_state(PLAY)
