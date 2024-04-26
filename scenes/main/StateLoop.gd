@@ -21,7 +21,7 @@ extends Node
 var card_scene = preload("res://scenes/card/card.tscn")
 var utils = Utils.new()
 
-enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, INTRO_STARTGAME, PLAY}
+enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, PLAY}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -32,7 +32,8 @@ var sm:= SM.new({
     PREPARE_DECK: {SM.ENTER: prepare_deck_enter, SM.PROCESS: prepare_deck_process},
     DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.PROCESS: deal_hand_process, SM.EXIT: deal_hand_exit},
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
-    DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process, SM.EXIT: deal_challenges_exit},
+    DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process},
+    FLIP_CHALLENGE: {SM.ENTER: flip_challenge_enter, SM.EXIT: flip_challenge_exit},
     INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.PROCESS: intro_startgame_process, SM.EXIT: intro_startgame_exit},
     PLAY: {SM.ENTER: play_enter}
 })
@@ -131,7 +132,7 @@ func prepare_deck_enter():
     for card_data in players_deck:
         var card = spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
         card.fly(offscreen_left, deck_slot, 0.35, start_delay, deck_slot.add_card.bind(card))
-        start_delay += 0.25
+        start_delay += 0.25 + randf_range(-0.05, 0.05)
     
     
 func prepare_deck_process(delta):
@@ -167,17 +168,22 @@ func deal_challenges_enter():
     var challenges = prepare_challenges()
     var start_delay = 0
     for card_data in challenges:
-        var card = spawn_card(card_data, offscreen_left, CardScene.FACE_UP)
+        var card = spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
         card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card))
-        start_delay += 0.2
+        start_delay += 0.12
 
     
 func deal_challenges_process(delta):
     if challenge_slot.get_node("cards").get_child_count() == 22:
-        sm.change_state(INTRO_STARTGAME)
+        sm.change_state(FLIP_CHALLENGE)
+        
+        
+func flip_challenge_enter():
+    challenge_slot.top_card().flip_card(0.6, 0.2)
+    sm.change_state(INTRO_STARTGAME)
     
     
-func deal_challenges_exit():
+func flip_challenge_exit():
     intro_main.visible = false
     fade(intro_challenge, FADE_IN, 3)
     fade(intro_rightclick, FADE_IN, 3)

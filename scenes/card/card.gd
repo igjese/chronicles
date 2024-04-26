@@ -1,5 +1,5 @@
 class_name CardScene
-extends Control
+extends Panel
 
 var card_type: String = ""
 var card_name: String = ""
@@ -71,3 +71,15 @@ func fly_and_flip(start_node, end_node, duration, start_delay, callback):
     tween.tween_property(self, "scale", Vector2(0,1.3), duration/2)
     tween.tween_callback(self.set_face.bind(FACE_UP))
     tween.tween_property(self, "scale", Vector2(1,1), duration/2)
+
+
+func flip_card(duration, start_delay):
+    var tween = create_tween()
+    tween.tween_interval(start_delay)
+    tween.tween_callback($SoundFlip.play)
+    tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration/4)
+    tween.tween_property(self, "scale", Vector2(0, 1.5), duration/4)
+    tween.tween_callback(self.set_face.bind(FACE_UP))
+    tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration/4)
+    tween.tween_property(self, "scale", Vector2(1, 1), duration/4)
+    

@@ -5,6 +5,7 @@ func _ready():
     $qty.visible = false
     self.color.a = 0
 
+
 func add_card(card_node):
     var old_parent = card_node.get_parent().get_parent() if card_node.get_parent() else null
     card_node.reparent($cards)
@@ -20,3 +21,7 @@ func update_qty():
         $qty.visible = true
     else:
         $qty.visible = false
+
+
+func top_card():
+    return self.get_node("cards").get_children()[-1]
