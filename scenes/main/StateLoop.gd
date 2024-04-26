@@ -127,8 +127,8 @@ func prepare_deck_enter():
     var start_delay = 0
     for card_data in players_deck:
         var card = spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
-        card.fly(offscreen_left, deck_slot, 0.4, start_delay, deck_slot.add_card.bind(card))
-        start_delay += 0.3
+        card.fly(offscreen_left, deck_slot, 0.35, start_delay, deck_slot.add_card.bind(card))
+        start_delay += 0.25
     
     
 func prepare_deck_process(delta):
@@ -137,12 +137,13 @@ func prepare_deck_process(delta):
     
     
 func deal_hand_enter():
+    await get_tree().create_timer(0.2).timeout
     var deck = deck_slot.get_node("cards").get_children()
     deck.reverse()
     for i in range(5):
         var card = deck[i]
         var target_slot = find_slot_for_card(card, hand_slots)
-        card.fly_and_flip(deck_slot, target_slot, 0.5, 0.1, target_slot.add_card.bind(card))
+        card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card))
         await get_tree().create_timer(0.6).timeout
     
     
