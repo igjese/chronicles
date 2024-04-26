@@ -7,6 +7,7 @@ extends Node
 @onready var intro_challenge = gui_intro.get_node("Challenges")
 @onready var intro_main = gui_intro.get_node("MainText")
 @onready var intro_rightclick = gui_intro.get_node("HintRightClick")
+@onready var intro_startgame = gui_intro.get_node("BtnStartGame")
 @onready var resource_slots = get_node("/root/Main/Resources")
 @onready var action_slots = get_node("/root/Main/Actions")
 @onready var challenge_slot = get_node("/root/Main/Challenge")
@@ -15,11 +16,12 @@ extends Node
 @onready var deck_slot = get_node("/root/Main/Deck")
 @onready var offscreen_top = get_node("/root/Main/Offscreen/Top")
 @onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
+@onready var sounds = get_node("/root/Main/Sounds")
 
 var card_scene = preload("res://scenes/card/card.tscn")
 var utils = Utils.new()
 
-enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, PLAY}
+enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, INTRO_STARTGAME, PLAY}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -31,6 +33,7 @@ var sm:= SM.new({
     DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.PROCESS: deal_hand_process, SM.EXIT: deal_hand_exit},
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
     DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process, SM.EXIT: deal_challenges_exit},
+    INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.PROCESS: intro_startgame_process, SM.EXIT: intro_startgame_exit},
     PLAY: {SM.ENTER: play_enter}
 })
 
@@ -51,7 +54,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick])
+        hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -161,32 +164,43 @@ func intro_challenge_enter():
     
     
 func deal_challenges_enter():
-    var challenges = utils.get_cards_by_type("History")
-    challenges.shuffle()
-    challenges.append(utils.get_cards_by_type("Victory1")[0])
-    challenges.append(utils.get_cards_by_type("Victory2")[0])
-    challenges.append(utils.get_cards_by_type("Victory3")[0])
-    challenges.reverse()
-    
+    var challenges = prepare_challenges()
     var start_delay = 0
     for card_data in challenges:
         var card = spawn_card(card_data, offscreen_left, CardScene.FACE_UP)
-        card.fly(offscreen_left, challenge_slot, 0.3, start_delay, challenge_slot.add_card.bind(card))
-        start_delay += 0.15
+        card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card))
+        start_delay += 0.2
 
     
 func deal_challenges_process(delta):
     if challenge_slot.get_node("cards").get_child_count() == 22:
-        sm.change_state(PLAY)
+        sm.change_state(INTRO_STARTGAME)
     
     
 func deal_challenges_exit():
+    intro_main.visible = false
     fade(intro_challenge, FADE_IN, 3)
     fade(intro_rightclick, FADE_IN, 3)
+    
+    
+func intro_startgame_enter():
+    await get_tree().create_timer(4).timeout
+    sounds.get_node("Clang").play()
+    intro_startgame.visible = true
+    
+    
+func intro_startgame_process(delta):
+    var glow = intro_startgame.get_node("Glow")
+    glow.get("theme_override_styles/panel").shadow_size = 15 + 10 * sin(Engine.get_frames_drawn() * 0.2)
+    glow.modulate.a = 0.6 + sin(Engine.get_frames_drawn() * 0.05) * 0.3
+
+    
+func intro_startgame_exit():
+    fade(gui_intro, FADE_OUT, 2)
+
 
 func play_enter(): 
-    if context == CONTEXT_INTRO:
-        fade(gui_intro, FADE_OUT, 2)
+    pass     
         
 
 # FUNCTIONS #########################
@@ -261,3 +275,13 @@ func card_count(slot_group):
     for slot in slot_group.get_children():
         card_count += slot.get_node("cards").get_child_count()
     return card_count
+
+
+func prepare_challenges():
+    var challenges = utils.get_cards_by_type("History")
+    challenges.shuffle()
+    challenges.append(utils.get_cards_by_type("Victory1")[0])
+    challenges.append(utils.get_cards_by_type("Victory2")[0])
+    challenges.append(utils.get_cards_by_type("Victory3")[0])
+    challenges.reverse()
+    return challenges

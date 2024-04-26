@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=10 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
 [ext_resource type="Script" path="res://scenes/main/StateLoop.gd" id="2_fbk6k"]
 [ext_resource type="PackedScene" uid="uid://dri1dx1dvk0q" path="res://scenes/slot/slot.tscn" id="5_rr31l"]
 [ext_resource type="Script" path="res://scenes/main/GuiSidebar.gd" id="6_adhy6"]
+[ext_resource type="AudioStream" uid="uid://d2w8rabxrmf0x" path="res://sounds/clang.wav" id="6_cqido"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3sbs"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -17,6 +18,19 @@ corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c0n5k"]
+bg_color = Color(0.0196078, 1, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 1, 0, 0.6)
+shadow_size = 25
+
+[sub_resource type="Environment" id="Environment_uxlgd"]
+background_mode = 3
+glow_enabled = true
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_1e1r0")
@@ -112,7 +126,6 @@ offset_right = 1320.0
 offset_bottom = 1080.0
 
 [node name="GuiIntro" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -260,6 +273,25 @@ theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/font_size = 30
 text = "... Right-click any card to see it's effects."
 horizontal_alignment = 1
+
+[node name="BtnStartGame" type="Button" parent="GuiIntro"]
+layout_mode = 0
+offset_left = 965.0
+offset_top = 476.0
+offset_right = 1433.0
+offset_bottom = 575.0
+theme_override_font_sizes/font_size = 55
+text = "Start Game"
+
+[node name="Glow" type="Panel" parent="GuiIntro/BtnStartGame"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_c0n5k")
 
 [node name="Resources" type="Control" parent="."]
 custom_minimum_size = Vector2(150, 150)
@@ -512,6 +544,14 @@ position = Vector2(-191, 505)
 
 [node name="Bottom" type="Node2D" parent="Offscreen"]
 position = Vector2(621, 1175)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_uxlgd")
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="Clang" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("6_cqido")
 
 [connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
 [connection signal="pressed" from="GuiSidebar/BtnRestart" to="GuiSidebar" method="_on_btn_restart_pressed"]
