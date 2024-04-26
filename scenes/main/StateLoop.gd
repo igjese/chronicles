@@ -89,7 +89,7 @@ func deal_resources_process(delta):
                 
         
 func intro_actions_enter():
-    intro("Buy action cards.", 5, DEAL_ACTIONS)
+    intro("Buy action cards.", 3, DEAL_ACTIONS)
     
     
 func deal_actions_enter():
@@ -127,8 +127,8 @@ func prepare_deck_enter():
     var start_delay = 0
     for card_data in players_deck:
         var card = spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
-        card.fly(offscreen_left, deck_slot, 0.3, start_delay, deck_slot.add_card.bind(card))
-        start_delay += 0.2
+        card.fly(offscreen_left, deck_slot, 0.4, start_delay, deck_slot.add_card.bind(card))
+        start_delay += 0.3
     
     
 func prepare_deck_process(delta):
@@ -142,8 +142,8 @@ func deal_hand_enter():
     for i in range(5):
         var card = deck[i]
         var target_slot = find_slot_for_card(card, hand_slots)
-        card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card))
-        await get_tree().create_timer(0.4).timeout
+        card.fly_and_flip(deck_slot, target_slot, 0.5, 0.1, target_slot.add_card.bind(card))
+        await get_tree().create_timer(0.6).timeout
     
     
 func deal_hand_process(delta):
