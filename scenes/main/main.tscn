@@ -112,7 +112,6 @@ offset_right = 1320.0
 offset_bottom = 1080.0
 
 [node name="GuiIntro" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -249,6 +248,17 @@ offset_top = 24.0
 offset_right = 371.0
 offset_bottom = 249.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
+
+[node name="HintRightClick" type="Label" parent="GuiIntro"]
+layout_mode = 0
+offset_left = 656.0
+offset_top = 779.0
+offset_right = 1227.0
+offset_bottom = 824.0
+theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/font_size = 30
+text = "... Right-click any card to see it's effects."
+horizontal_alignment = 1
 
 [node name="Resources" type="Control" parent="."]
 custom_minimum_size = Vector2(150, 150)

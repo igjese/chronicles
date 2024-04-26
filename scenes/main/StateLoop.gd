@@ -6,6 +6,7 @@ extends Node
 @onready var intro_hand = gui_intro.get_node("Hand")
 @onready var intro_challenge = gui_intro.get_node("Challenges")
 @onready var intro_main = gui_intro.get_node("MainText")
+@onready var intro_rightclick = gui_intro.get_node("HintRightClick")
 @onready var resource_slots = get_node("/root/Main/Resources")
 @onready var action_slots = get_node("/root/Main/Actions")
 @onready var challenge_slot = get_node("/root/Main/Challenge")
@@ -29,7 +30,7 @@ var sm:= SM.new({
     PREPARE_DECK: {SM.ENTER: prepare_deck_enter, SM.PROCESS: prepare_deck_process},
     DEAL_HAND: {SM.ENTER: deal_hand_enter, SM.PROCESS: deal_hand_process, SM.EXIT: deal_hand_exit},
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
-    DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.EXIT: deal_challenges_exit},
+    DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process, SM.EXIT: deal_challenges_exit},
     PLAY: {SM.ENTER: play_enter}
 })
 
@@ -50,7 +51,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand])
+        hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -71,7 +72,6 @@ func deal_resources_exit():
     
     
 func deal_resources():
-    var duration = 0.35
     var start_delay = 0
     for card_type in ["Army1","Money1","Army2","Money2"]:
         var card_data = utils.get_cards_by_type(card_type)[0]
@@ -79,7 +79,7 @@ func deal_resources():
             var card = spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = resource_slots.get_node(card_type)
-            card.fly(offscreen_top, target_node, duration, start_delay, target_node.add_card.bind(card))
+            card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card))
         start_delay += 0.15
         
         
@@ -130,6 +130,7 @@ func prepare_deck_enter():
         card.fly(offscreen_left, deck_slot, 0.3, start_delay, deck_slot.add_card.bind(card))
         start_delay += 0.2
     
+    
 func prepare_deck_process(delta):
     if deck_slot.get_node("cards").get_child_count() == 10:
         sm.change_state(DEAL_HAND)
@@ -141,9 +142,8 @@ func deal_hand_enter():
     for i in range(5):
         var card = deck[i]
         var target_slot = find_slot_for_card(card, hand_slots)
-        card.fly_and_flip(deck_slot, target_slot, 0.4, 0, target_slot.add_card.bind(card))
-        await get_tree().create_timer(0.5).timeout
-
+        card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card))
+        await get_tree().create_timer(0.4).timeout
     
     
 func deal_hand_process(delta):
@@ -160,12 +160,28 @@ func intro_challenge_enter():
     
     
 func deal_challenges_enter():
-    sm.change_state(PLAY)
+    var challenges = utils.get_cards_by_type("History")
+    challenges.shuffle()
+    challenges.append(utils.get_cards_by_type("Victory1")[0])
+    challenges.append(utils.get_cards_by_type("Victory2")[0])
+    challenges.append(utils.get_cards_by_type("Victory3")[0])
+    challenges.reverse()
+    
+    var start_delay = 0
+    for card_data in challenges:
+        var card = spawn_card(card_data, offscreen_left, CardScene.FACE_UP)
+        card.fly(offscreen_left, challenge_slot, 0.3, start_delay, challenge_slot.add_card.bind(card))
+        start_delay += 0.15
+
+    
+func deal_challenges_process(delta):
+    if challenge_slot.get_node("cards").get_child_count() == 22:
+        sm.change_state(PLAY)
     
     
 func deal_challenges_exit():
     fade(intro_challenge, FADE_IN, 3)
-
+    fade(intro_rightclick, FADE_IN, 3)
 
 func play_enter(): 
     if context == CONTEXT_INTRO:
