@@ -365,13 +365,6 @@ offset_top = 471.0
 offset_right = 301.0
 offset_bottom = 621.0
 
-[node name="Deck" parent="." instance=ExtResource("5_rr31l")]
-custom_minimum_size = Vector2(150, 150)
-offset_left = -47.0
-offset_top = 790.0
-offset_right = 103.0
-offset_bottom = 940.0
-
 [node name="Hand" type="Control" parent="."]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 3
@@ -490,6 +483,13 @@ offset_left = 924.0
 offset_top = 154.0
 offset_right = 1074.0
 offset_bottom = 304.0
+
+[node name="Deck" parent="." instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -47.0
+offset_top = 790.0
+offset_right = 103.0
+offset_bottom = 940.0
 
 [node name="Offscreen" type="Node2D" parent="."]
 

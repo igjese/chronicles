@@ -151,6 +151,16 @@ func prepare_deck_exit():
     
     
 func deal_hand_enter():
+    var deck = deck_slot.get_node("cards").get_children()
+    deck.reverse()
+    var start_delay = 0
+    var duration = 0.4
+    for i in range(5):
+        var card = deck[i]
+        card.fly_and_flip(deck_slot, hand_slots, duration, start_delay, hand_slots.get_node("Hand1").add_card.bind(card))
+        start_delay += 0.5
+            
+    
     sm.change_state(INTRO_CHALLENGE)
     
     

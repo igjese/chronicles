@@ -23,8 +23,7 @@ enum { FACE_UP, FACE_DOWN }
 var face = FACE_DOWN
 
 func set_face(face):
-    if face == FACE_DOWN:
-        $Back.visible = true
+    $Back.visible = true if face == FACE_DOWN else false        
     self.face = face
 
 func set_card_data(card):
@@ -52,9 +51,7 @@ func set_card_data(card):
     $Cost.text = str(cost_money)
     if card_type in ["History","Victory1","Victory2","Victory3"]:
         $Cost.visible = false
-        
 
-    
     
 func fly(start_node, end_node, duration, start_delay, callback):
     var tween = create_tween()
@@ -63,3 +60,11 @@ func fly(start_node, end_node, duration, start_delay, callback):
     tween.parallel().tween_callback($SoundDeal.play).set_delay(duration - 0.1)
     tween.tween_callback(callback)
 
+
+func fly_and_flip(start_node, end_node, duration, start_delay, callback):
+    fly(start_node, end_node, duration, start_delay, callback)
+    var tween = create_tween()
+    tween.tween_interval(start_delay)
+    tween.tween_property(self, "scale", Vector2(0,1.3), duration/2)
+    tween.tween_callback(self.set_face.bind(FACE_UP))
+    tween.tween_property(self, "scale", Vector2(1,1), duration/2)
