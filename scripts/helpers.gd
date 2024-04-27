@@ -95,5 +95,5 @@ func queue_effects(card):
     if card["upgrade_money"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_MONEY, "upgrade_money"))
     if card["discard"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DISCARD, "discard"))
+        Game.effect_stack.push_front(Effect.new(Effect.DISCARD, "discard", card["discard"]))
         

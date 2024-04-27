@@ -13,7 +13,7 @@ extends Node
 @onready var action_slots = get_node("/root/Main/Actions")
 @onready var challenge_slot = get_node("/root/Main/Challenge")
 @onready var hand_slots = get_node("/root/Main/Hand")
-@onready var discarded_slot = get_node("/root/Main/Hand")
+@onready var discarded_slot = get_node("/root/Main/Discarded")
 @onready var deck_slot = get_node("/root/Main/Deck")
 @onready var offscreen_top = get_node("/root/Main/Offscreen/Top")
 @onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
@@ -248,7 +248,7 @@ func apply_effect_enter():
     if effect:
         Game.cards_to_select = effect.cards_to_select
         Game.max_cost = effect.max_cost
-        match  effect.effect_name:
+        match  effect.effect_id:
             Effect.DISCARD: sm.change_state(DISCARD)
             _ : pass # TODO: other effects
     else:
@@ -260,6 +260,8 @@ func discard_enter():
     
 
 func discard_input(card):
+    var slot = card.slot()
+    var slots = hand_slots.get_children()
     if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
         card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card))
         await get_tree().create_timer(0.4).timeout
