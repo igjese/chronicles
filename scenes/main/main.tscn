@@ -126,7 +126,20 @@ offset_top = 1040.0
 offset_right = 1320.0
 offset_bottom = 1080.0
 
+[node name="Status" type="Label" parent="GuiStatus"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/font_size = 30
+text = "Turn 1 | Money 0 - Army 0 | Action 1 - Buys 1"
+horizontal_alignment = 1
+
 [node name="GuiIntro" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -222,9 +235,9 @@ offset_bottom = 700.0
 [node name="Hint" type="Label" parent="GuiIntro/Challenges"]
 layout_mode = 0
 offset_left = -21.0
-offset_top = 187.0
+offset_top = 189.0
 offset_right = 276.0
-offset_bottom = 232.0
+offset_bottom = 234.0
 theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/font_size = 30
 text = "Challenges"
@@ -232,9 +245,9 @@ horizontal_alignment = 1
 
 [node name="Border" type="Panel" parent="GuiIntro/Challenges"]
 layout_mode = 0
-offset_left = -4.0
+offset_left = -3.0
 offset_top = -1.0
-offset_right = 252.0
+offset_right = 253.0
 offset_bottom = 241.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
 
@@ -258,9 +271,8 @@ horizontal_alignment = 1
 
 [node name="Border" type="Panel" parent="GuiIntro/Hand"]
 layout_mode = 0
-offset_left = -3.0
 offset_top = 24.0
-offset_right = 371.0
+offset_right = 374.0
 offset_bottom = 249.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
 
