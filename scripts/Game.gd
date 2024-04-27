@@ -4,6 +4,9 @@ signal resources_updated()
 signal statuses_updated()
 
 var cards_by_name = {}
+var sm = null
+var gui_play = null
+var gui_intro = null
 
 var turn: 
     set(value): 
