@@ -186,6 +186,7 @@ func deal_challenges_process(delta):
         
 func flip_challenge_enter():
     challenge_slot.top_card().flip_card(0.6, 0.2)
+    challenge_slot.pulse_qty_for_flip(0.6,0.2)
     await get_tree().create_timer(0.6).timeout
     challenge_slot.top_card().start_glow(Color.RED)
     sm.change_state(INTRO_STARTGAME)
