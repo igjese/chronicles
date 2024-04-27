@@ -18,7 +18,6 @@ config/icon="res://visuals/icon.png"
 [autoload]
 
 Game="*res://scripts/Game.gd"
-InitMgr="*res://scripts/InitMgr.gd"
 
 [display]
 

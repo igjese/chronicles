@@ -1,6 +1,6 @@
 extends Control
 
-@onready var gui_status = get_node("/root/Main/GuiMain/Status")
+@onready var gui_status = get_node("/root/Main/GuiPlay/Status")
 
 
 func _ready():
