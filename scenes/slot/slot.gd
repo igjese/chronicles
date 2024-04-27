@@ -32,5 +32,6 @@ func pulse_qty_for_flip(duration, start_delay):
     var tween = create_tween()
     tween.tween_interval(start_delay)
     tween.tween_property($qty, "scale", Vector2(1.5, 1.5), duration/4)
-    tween.tween_interval(duration/2)
+    tween.tween_property($qty, "scale", Vector2(0, 1.5), duration/4)
+    tween.tween_property($qty, "scale", Vector2(1.5, 1.5), duration/4)
     tween.tween_property($qty, "scale", Vector2(1, 1), duration/4)
