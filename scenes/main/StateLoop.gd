@@ -34,7 +34,7 @@ var sm:= SM.new({
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
     DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process},
     FLIP_CHALLENGE: {SM.ENTER: flip_challenge_enter, SM.EXIT: flip_challenge_exit},
-    INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.PROCESS: intro_startgame_process, SM.EXIT: intro_startgame_exit},
+    INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.EXIT: intro_startgame_exit},
     PLAY: {SM.ENTER: play_enter}
 })
 
@@ -193,12 +193,6 @@ func intro_startgame_enter():
     await get_tree().create_timer(4).timeout
     sounds.get_node("Clang").play()
     intro_startgame.visible = true
-    
-    
-func intro_startgame_process(delta):
-    var glow = intro_startgame.get_node("Glow")
-    glow.get("theme_override_styles/panel").shadow_size = 15 + 10 * sin(Engine.get_frames_drawn() * 0.15)
-    glow.modulate.a = 0.6 + sin(Engine.get_frames_drawn() * 0.05) * 0.3
 
     
 func intro_startgame_exit():

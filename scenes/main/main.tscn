@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=11 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dri1dx1dvk0q" path="res://scenes/slot/slot.tscn" id="5_rr31l"]
 [ext_resource type="Script" path="res://scenes/main/GuiSidebar.gd" id="6_adhy6"]
 [ext_resource type="AudioStream" uid="uid://d2w8rabxrmf0x" path="res://sounds/clang.wav" id="6_cqido"]
+[ext_resource type="Script" path="res://scripts/Glow.gd" id="6_kh6bo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3sbs"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -293,6 +294,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_c0n5k")
+script = ExtResource("6_kh6bo")
 
 [node name="Resources" type="Control" parent="."]
 custom_minimum_size = Vector2(150, 150)
