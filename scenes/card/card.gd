@@ -91,14 +91,6 @@ func pulse(duration, callback):
     tween.tween_callback(callback)
     
     
-func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
-    get_node("Glow").start_glow(glow_color, bg_color)
-    
-    
-func stop_glow():
-    get_node("Glow").visible = false
-    
-    
 func slot():
     return get_parent().get_parent()
 
