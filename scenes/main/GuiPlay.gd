@@ -5,6 +5,7 @@ extends Control
 @onready var gui_army = get_node("/root/Main/GuiPlay/Army")
 @onready var sound_coin = get_node("/root/Main/Sounds/Coin")
 @onready var sound_punch = get_node("/root/Main/Sounds/Punch")
+@onready var sm = get_node("/root/Main/StateLoop").sm
 
 func _ready():
     Game.resources_updated.connect(refresh_statusbar)
@@ -40,4 +41,11 @@ func update_resource_display(resource_node, resource_name, delay):
         tween.tween_property(resource_node, "scale", Vector2(1, 1), delay/2).set_ease(Tween.EASE_OUT)
 
 
+func on_card_clicked(card):
+    print("card clicked: ", card.card_name)
+    sm.handle_input(card)
+    
+    
+func on_card_right_clicked(card):
+    print("card right-clicked: ", card.card_name)
             

@@ -101,3 +101,15 @@ func stop_glow():
     
 func slot():
     return get_parent().get_parent()
+
+
+func _on_gui_input(event):
+    var gui_play = get_tree().root.get_node("Main/GuiPlay")
+    if event is InputEventMouseButton:
+        if event.button_index == MOUSE_BUTTON_LEFT:
+            if event.pressed:
+                gui_play.on_card_clicked(self)
+        if event.button_index == MOUSE_BUTTON_RIGHT:
+            if event.pressed:
+                gui_play.on_card_right_clicked(self)
+

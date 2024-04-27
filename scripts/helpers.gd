@@ -77,23 +77,23 @@ func card_count(slot_group):
 
 func queue_effects(card):
     if card["draw_cards"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DRAW, card["draw_cards"]))
+        Game.effect_stack.push_front(Effect.new(Effect.DRAW, "draw_cards", card["draw_cards"]))
     if card["trash"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TRASH, card["trash"]))
+        Game.effect_stack.push_front(Effect.new(Effect.TRASH, "trash", card["trash"]))
     if card["take_money2"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TAKE_MONEY2))
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE_MONEY2, "take_money2"))
     if card["take_4"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TAKE, card["take_4"], 4))
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE, "take_4", card["take_4"], 4))
     if card["take_5"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TAKE, card["take_5"], 5))
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE, "take_5", card["take_5"], 5))
     if card["double_action"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION))
+        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION, "double_action"))
     if card["replace"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.REPLACE, card["replace"]))
+        Game.effect_stack.push_front(Effect.new(Effect.REPLACE, "replace", card["replace"]))
     if card["upgrade_2"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_2))
+        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_2, "upgrade_2"))
     if card["upgrade_money"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_MONEY))
+        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_MONEY, "upgrade_money"))
     if card["discard"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DISCARD))
+        Game.effect_stack.push_front(Effect.new(Effect.DISCARD, "discard"))
         
