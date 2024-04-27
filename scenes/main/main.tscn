@@ -623,9 +623,11 @@ stream = ExtResource("6_cqido")
 
 [node name="Coin" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("8_j162p")
+volume_db = 10.0
 
 [node name="Punch" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("9_k1prl")
+volume_db = 10.0
 
 [connection signal="pressed" from="GuiPlay/BtnExit" to="GuiPlay" method="_on_btn_exit_pressed"]
 [connection signal="pressed" from="GuiPlay/BtnRestart" to="GuiPlay" method="_on_btn_restart_pressed"]

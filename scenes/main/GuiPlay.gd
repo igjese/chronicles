@@ -24,24 +24,26 @@ func refresh_statusbar():
     
     var old_money = int(gui_money.text)
     var old_army = int(gui_army.text)
-    var tween = create_tween()
     var delay = 0.4
     if Game.money != old_money:
+        await get_tree().create_timer(0.2).timeout
         if Game.money > old_money:
             sound_coin.play()
         elif Game.money < old_money:
             sound_punch.play()
-        tween.tween_interval(0.25)
+        var tween = create_tween()
         tween.tween_property(gui_money, "scale", Vector2(1.5, 1.5), delay/2).set_ease(Tween.EASE_IN)
-        tween.tween_property(gui_money, "scale", Vector2(1, 1), delay/2).set_ease(Tween.EASE_OUT)
         tween.tween_callback(func(): gui_money.text = str(Game.money))
+        tween.tween_property(gui_money, "scale", Vector2(1, 1), delay/2).set_ease(Tween.EASE_OUT)
     if Game.army != old_army:
+        await get_tree().create_timer(0.2).timeout
         if Game.army > old_army:
             sound_coin.play()
         elif Game.army < old_army:
             sound_punch.play()
-        tween.tween_interval(0.25)
+        var tween = create_tween()
         tween.tween_property(gui_army, "scale", Vector2(1.5, 1.5), delay/2).set_ease(Tween.EASE_IN)
-        tween.tween_property(gui_army, "scale", Vector2(1, 1), delay/2).set_ease(Tween.EASE_OUT)
         tween.tween_callback(func(): gui_army.text = str(Game.army))
+        tween.tween_property(gui_army, "scale", Vector2(1, 1), delay/2).set_ease(Tween.EASE_OUT)
+
             

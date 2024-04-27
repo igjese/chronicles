@@ -84,6 +84,17 @@ func flip_card(duration, start_delay):
     tween.tween_property(self, "scale", Vector2(1, 1), duration/4)
     
     
+func pulse(duration, callback):
+    var tween = create_tween()
+    tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration * 3/5).set_ease(Tween.EASE_OUT)
+    tween.tween_callback($SoundHit.play)
+    tween.tween_property(self, "scale", Vector2(1, 1), duration * 2/5).set_ease(Tween.EASE_IN)
+    tween.tween_callback(callback)
+    
+    
 func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
     get_node("Glow").start_glow(glow_color, bg_color)
     
+    
+func stop_glow():
+    get_node("Glow").visible = false

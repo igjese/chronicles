@@ -8,6 +8,8 @@ var sm = null
 var gui_play = null
 var gui_intro = null
 
+var cards_to_play = []
+
 var turn: 
     set(value): 
         turn = value

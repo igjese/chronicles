@@ -21,7 +21,8 @@ extends Node
 
 var helpers = Helpers.new()
 
-enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, PLAY}
+enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
+     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, APPLY_CHALLENGE, APPLY_EFFECTS}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -35,7 +36,9 @@ var sm:= SM.new({
     DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process},
     FLIP_CHALLENGE: {SM.ENTER: flip_challenge_enter, SM.EXIT: flip_challenge_exit},
     INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.EXIT: intro_startgame_exit},
-    PLAY: {SM.ENTER: play_enter}
+    START_PLAY: {SM.ENTER: start_play_enter},
+    APPLY_CHALLENGE: {SM.ENTER: apply_challenge_enter},
+    APPLY_EFFECTS: {SM.ENTER: apply_effects_enter},
 })
 
 
@@ -206,14 +209,33 @@ func intro_startgame_enter():
 
     
 func intro_startgame_exit():
-    helpers.fade(gui_intro, helpers.FADE_OUT, 2)
+    helpers.fade(gui_intro, helpers.FADE_OUT, 1)
 
 
-func play_enter(): 
+func start_play_enter(): 
+    context = CONTEXT_PLAY
     Game.turn = 1  
-        
+    await get_tree().create_timer(2).timeout
+    sm.change_state(APPLY_CHALLENGE)
+    
+    
+func apply_challenge_enter():
+    var card = challenge_slot.top_card()
+    card.stop_glow()
+    challenge_slot.pulse_qty(0.3)
+    Game.cards_to_play.append(card)
+    card.pulse(0.3, sm.change_state.bind(APPLY_EFFECTS))
+    
+    
+func apply_effects_enter():
+    var card : CardScene = Game.cards_to_play[-1]
+    Game.money += card.effect_money
+    Game.army += card.effect_army
+    Game.actions += card.extra_actions
+    Game.buys += card.extra_buys
+    Game.cards_to_play.pop_back()
 
-# GAME FUNCTIONS #########################
+# GAME FUNCTIONS #########################    
 
 func choose_action_set():
     var all_actions = helpers.get_cards_by_type("Action")
@@ -238,4 +260,4 @@ func prepare_challenges():
 # SIGNAL HANDLING ##########################
 
 func _on_btn_start_game_pressed():
-    sm.change_state(PLAY)
+    sm.change_state(START_PLAY)
