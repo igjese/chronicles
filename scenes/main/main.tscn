@@ -400,12 +400,16 @@ offset_bottom = 397.0
 [node name="Army2" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
+offset_top = -1.0
+offset_bottom = 149.0
 
 [node name="Money2" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
-offset_left = 151.0
-offset_right = 301.0
+offset_left = 152.0
+offset_top = -1.0
+offset_right = 302.0
+offset_bottom = 149.0
 
 [node name="Army1" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
@@ -416,9 +420,9 @@ offset_bottom = 301.0
 [node name="Money1" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
-offset_left = 151.0
+offset_left = 152.0
 offset_top = 151.0
-offset_right = 301.0
+offset_right = 302.0
 offset_bottom = 301.0
 
 [node name="Actions" type="Control" parent="."]

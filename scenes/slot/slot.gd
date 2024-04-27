@@ -41,3 +41,11 @@ func pulse_qty(duration):
     var tween = create_tween()
     tween.tween_property($qty, "scale", Vector2(1.5, 1.5), duration * 3/5)
     tween.tween_property($qty, "scale", Vector2(1, 1), duration * 2/5)
+
+
+func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
+    get_node("Glow").start_glow(glow_color, bg_color)
+    
+    
+func stop_glow():
+    get_node("Glow").visible = false

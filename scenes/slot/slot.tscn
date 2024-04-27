@@ -1,6 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://dri1dx1dvk0q"]
+[gd_scene load_steps=5 format=3 uid="uid://dri1dx1dvk0q"]
 
 [ext_resource type="Script" path="res://scenes/slot/slot.gd" id="1_swcbo"]
+[ext_resource type="Script" path="res://scripts/Glow.gd" id="2_hcqm1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1jcj"]
+bg_color = Color(0.32549, 0.878431, 0.266667, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0.929412, 0, 0.678431)
+shadow_size = 25
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jt3pk"]
 bg_color = Color(0.831, 0.831, 0.831, 1)
@@ -20,6 +30,17 @@ offset_right = 150.0
 offset_bottom = 150.0
 color = Color(0.929412, 0.941176, 0.870588, 1)
 script = ExtResource("1_swcbo")
+
+[node name="Glow" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q1jcj")
+script = ExtResource("2_hcqm1")
 
 [node name="cards" type="Control" parent="."]
 anchors_preset = 0
