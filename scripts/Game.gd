@@ -8,7 +8,11 @@ var sm = null
 var gui_play = null
 var gui_intro = null
 
-var cards_to_play = []
+var card_stack = []
+var effect_stack = []
+
+var cards_to_select = 0
+var max_cost = 0
 
 var turn: 
     set(value): 

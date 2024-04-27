@@ -22,7 +22,7 @@ extends Node
 var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
-     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, APPLY_CHALLENGE, APPLY_EFFECTS}
+     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -37,8 +37,11 @@ var sm:= SM.new({
     FLIP_CHALLENGE: {SM.ENTER: flip_challenge_enter, SM.EXIT: flip_challenge_exit},
     INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.EXIT: intro_startgame_exit},
     START_PLAY: {SM.ENTER: start_play_enter},
-    APPLY_CHALLENGE: {SM.ENTER: apply_challenge_enter},
-    APPLY_EFFECTS: {SM.ENTER: apply_effects_enter},
+    ACTIVATE_CHALLENGE: {SM.ENTER: activate_challenge_enter},
+    ACTIVATE_CARD: {SM.ENTER: activate_card_enter},
+    APPLY_EFFECT: {SM.ENTER: apply_effect_enter},
+    DISCARD: {SM.ENTER: discard_enter, SM.PROCESS: discard_process, SM.INPUT: discard_input},
+    PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input}
 })
 
 
@@ -156,7 +159,7 @@ func deal_hand_enter():
     for i in range(5):
         var card = deck[i]
         var target_slot = helpers.find_slot_for_card(card, hand_slots)
-        card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card))
+        card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
         await get_tree().create_timer(0.6).timeout
     
     
@@ -216,24 +219,68 @@ func start_play_enter():
     context = CONTEXT_PLAY
     Game.turn = 1  
     await get_tree().create_timer(2).timeout
-    sm.change_state(APPLY_CHALLENGE)
+    sm.change_state(ACTIVATE_CHALLENGE)
     
     
-func apply_challenge_enter():
+func activate_challenge_enter():
     var card = challenge_slot.top_card()
     card.stop_glow()
     challenge_slot.pulse_qty(0.3)
-    Game.cards_to_play.append(card)
-    card.pulse(0.3, sm.change_state.bind(APPLY_EFFECTS))
+    Game.card_stack.push_front(card)
+    card.pulse(0.3, sm.change_state.bind(ACTIVATE_CARD))
     
     
-func apply_effects_enter():
-    var card : CardScene = Game.cards_to_play[-1]
-    Game.money += card.effect_money
-    Game.army += card.effect_army
-    Game.actions += card.extra_actions
-    Game.buys += card.extra_buys
-    Game.cards_to_play.pop_back()
+func activate_card_enter():
+    var card : CardScene = Game.card_stack.pop_front()
+    if card:
+        Game.money += card.effect_money
+        Game.army += card.effect_army
+        Game.actions += card.extra_actions
+        Game.buys += card.extra_buys
+        helpers.queue_effects(card)
+        sm.change_state(APPLY_EFFECT)
+    else:
+        sm.change_state(PLAY_ACTION)
+    
+
+func apply_effect_enter():
+    var effect = Game.effect_stack.pop_front()
+    if effect:
+        Game.cards_to_select = effect.cards_to_select
+        Game.max_cost = effect.max_cost
+        match  effect.effect_name:
+            Effect.DISCARD: sm.change_state(DISCARD)
+            _ : pass # TODO: other effects
+    else:
+        sm.change_state(ACTIVATE_CARD)
+    
+    
+func discard_enter():
+    pass # TODO: glow all occupied hand slots
+    
+
+func discard_input(card):
+    if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+        card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card))
+        await get_tree().create_timer(0.4).timeout
+        Game.cards_to_select -= 1
+        
+        
+func discard_process(delta):
+    if Game.cards_to_select <= 0:
+        sm.change_state(APPLY_EFFECT)
+
+    
+func play_action_enter():
+    if Game.actions > 0:
+        pass # TODO: glow valid actions
+    else:
+        pass # TODO: sm.change_state(PLAY_RESOURCES)
+    
+    
+func play_action_input(data):
+    pass # TODO: stop glow, fly card to table, cards.push_front, sm.activate_card
+        
 
 # GAME FUNCTIONS #########################    
 

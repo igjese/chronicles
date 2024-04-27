@@ -73,3 +73,27 @@ func card_count(slot_group):
     for slot in slot_group.get_children():
         card_count += slot.get_node("cards").get_child_count()
     return card_count
+
+
+func queue_effects(card):
+    if card["draw_cards"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.DRAW, card["draw_cards"]))
+    if card["trash"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.TRASH, card["trash"]))
+    if card["take_money2"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE_MONEY2))
+    if card["take_4"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE, card["take_4"], 4))
+    if card["take_5"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE, card["take_5"], 5))
+    if card["double_action"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION))
+    if card["replace"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.REPLACE, card["replace"]))
+    if card["upgrade_2"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_2))
+    if card["upgrade_money"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_MONEY))
+    if card["discard"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.DISCARD))
+        

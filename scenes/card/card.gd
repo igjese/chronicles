@@ -61,22 +61,24 @@ func fly(start_node, end_node, duration, start_delay, callback, sound=SOUND_DEAL
     tween.tween_callback(callback)
 
 
-func fly_and_flip(start_node, end_node, duration, start_delay, callback):
+func fly_and_flip(start_node, end_node, duration, start_delay, callback, sound=SOUND_DEAL):
+    var new_face = FACE_DOWN if face == FACE_UP else FACE_UP
     fly(start_node, end_node, duration, start_delay, callback, SOUND_DRAW)
     var tween = create_tween()
     tween.tween_interval(start_delay)
     tween.tween_property(self, "scale", Vector2(0,1.3), duration/2)
-    tween.tween_callback(self.set_face.bind(FACE_UP))
+    tween.tween_callback(self.set_face.bind(new_face))
     tween.tween_property(self, "scale", Vector2(1,1), duration/2)
 
 
 func flip_card(duration, start_delay):
+    var new_face = FACE_DOWN if face == FACE_UP else FACE_UP
     var tween = create_tween()
     tween.tween_interval(start_delay)
     tween.tween_callback($SoundFlip.play)
     tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration/4)
     tween.tween_property(self, "scale", Vector2(0, 1.5), duration/4)
-    tween.tween_callback(self.set_face.bind(FACE_UP))
+    tween.tween_callback(self.set_face.bind(new_face))
     tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration/4)
     tween.tween_property(self, "scale", Vector2(1, 1), duration/4)
     
@@ -95,3 +97,7 @@ func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
     
 func stop_glow():
     get_node("Glow").visible = false
+    
+    
+func slot():
+    return get_parent().get_parent()
