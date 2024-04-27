@@ -27,6 +27,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="qty" type="Label" parent="."]
+z_index = 1
 layout_mode = 0
 offset_left = 113.0
 offset_top = 120.0
