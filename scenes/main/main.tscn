@@ -46,14 +46,6 @@ texture = ExtResource("1_mtqld")
 expand_mode = 2
 metadata/_edit_lock_ = true
 
-[node name="GuiPlay" type="Control" parent="."]
-custom_minimum_size = Vector2(1920, 1080)
-layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
-metadata/_edit_lock_ = true
-
 [node name="Discarded" parent="." instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 offset_left = 1280.0
@@ -61,7 +53,7 @@ offset_top = 815.0
 offset_right = 1430.0
 offset_bottom = 965.0
 
-[node name="GuiSidebar" type="Control" parent="."]
+[node name="GuiMain" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 1320.0
@@ -70,7 +62,7 @@ offset_bottom = 1080.0
 script = ExtResource("6_adhy6")
 metadata/_edit_lock_ = true
 
-[node name="Panel" type="Panel" parent="GuiSidebar"]
+[node name="SidebarBkground" type="Panel" parent="GuiMain"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -79,7 +71,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[node name="Title" type="RichTextLabel" parent="GuiSidebar"]
+[node name="Title" type="RichTextLabel" parent="GuiMain"]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 20.0
@@ -93,7 +85,7 @@ bbcode_enabled = true
 text = "[b]Chronicles: Rise of Rome[/b]
 [i]Deck Building Solitaire Game[/i]"
 
-[node name="BtnExit" type="Button" parent="GuiSidebar"]
+[node name="BtnExit" type="Button" parent="GuiMain"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -107,7 +99,7 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Exit Game"
 
-[node name="BtnRestart" type="Button" parent="GuiSidebar"]
+[node name="BtnRestart" type="Button" parent="GuiMain"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -121,16 +113,20 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Restart Level"
 
-[node name="GuiStatus" type="Panel" parent="."]
+[node name="PanelBkground" type="Panel" parent="GuiMain"]
+offset_left = -1320.0
 offset_top = 1040.0
-offset_right = 1320.0
 offset_bottom = 1080.0
 
-[node name="Status" type="Label" parent="GuiStatus"]
+[node name="Status" type="Label" parent="GuiMain"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1320.0
+offset_top = 1039.0
+offset_right = -1271.0
+offset_bottom = 1039.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
@@ -568,6 +564,6 @@ environment = SubResource("Environment_uxlgd")
 [node name="Clang" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("6_cqido")
 
-[connection signal="pressed" from="GuiSidebar/BtnExit" to="GuiSidebar" method="_on_btn_exit_pressed"]
-[connection signal="pressed" from="GuiSidebar/BtnRestart" to="GuiSidebar" method="_on_btn_restart_pressed"]
+[connection signal="pressed" from="GuiMain/BtnExit" to="GuiMain" method="_on_btn_exit_pressed"]
+[connection signal="pressed" from="GuiMain/BtnRestart" to="GuiMain" method="_on_btn_restart_pressed"]
 [connection signal="pressed" from="GuiIntro/BtnStartGame" to="StateLoop" method="_on_btn_start_game_pressed"]

@@ -203,7 +203,7 @@ func intro_startgame_exit():
 
 
 func play_enter(): 
-    Game.turn = 77     
+    Game.turn = 1  
         
 
 # FUNCTIONS #########################
