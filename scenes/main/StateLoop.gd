@@ -19,7 +19,7 @@ extends Node
 @onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
 @onready var sounds = get_node("/root/Main/Sounds")
 
-var utils = Utils.new()
+var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, PLAY}
 var sm:= SM.new({
@@ -61,7 +61,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        utils.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame])
+        helpers.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -69,7 +69,7 @@ func setup_enter():
 
 
 func intro_resources_enter(): 
-    utils.intro("Buy resources.", 3, DEAL_RESOURCES)
+    helpers.intro("Buy resources.", 3, DEAL_RESOURCES)
     
 
 func deal_resources_enter(): 
@@ -78,15 +78,15 @@ func deal_resources_enter():
     
     
 func deal_resources_exit():
-    utils.fade(intro_resources, utils.FADE_IN, 3)
+    helpers.fade(intro_resources, helpers.FADE_IN, 3)
     
     
 func deal_resources():
     var start_delay = 0
     for card_type in ["Army1","Money1","Army2","Money2"]:
-        var card_data = utils.get_cards_by_type(card_type)[0]
+        var card_data = helpers.get_cards_by_type(card_type)[0]
         for i in range(5):
-            var card = utils.spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
+            var card = helpers.spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = resource_slots.get_node(card_type)
             card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card))
@@ -94,12 +94,12 @@ func deal_resources():
         
         
 func deal_resources_process(delta):
-    if utils.card_count(resource_slots) == 20:
+    if helpers.card_count(resource_slots) == 20:
         sm.change_state(INTRO_ACTIONS)
                 
         
 func intro_actions_enter():
-    utils.intro("Buy action cards.", 3, DEAL_ACTIONS)
+    helpers.intro("Buy action cards.", 3, DEAL_ACTIONS)
     
     
 func deal_actions_enter():
@@ -107,7 +107,7 @@ func deal_actions_enter():
     var start_delay = 0
     for i in range(10):
         for j in range(5):
-            var card = utils.spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
+            var card = helpers.spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = action_slots.get_node("Action" + str(i+1))
             card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card))
@@ -115,28 +115,28 @@ func deal_actions_enter():
         
         
 func deal_actions_process(delta):
-    if utils.card_count(action_slots) == 50:
+    if helpers.card_count(action_slots) == 50:
         sm.change_state(INTRO_DECK)
     
     
 func deal_actions_exit():
-    utils.fade(intro_actions, utils.FADE_IN, 3)
+    helpers.fade(intro_actions, helpers.FADE_IN, 3)
     
     
 func intro_deck_enter():
-    utils.intro("Improve your deck.", 3, PREPARE_DECK)
+    helpers.intro("Improve your deck.", 3, PREPARE_DECK)
     
     
 func prepare_deck_enter():
-    var money1 = utils.get_cards_by_type("Money1")[0]
-    var army1 = utils.get_cards_by_type("Army1")[0]
+    var money1 = helpers.get_cards_by_type("Money1")[0]
+    var army1 = helpers.get_cards_by_type("Army1")[0]
     var players_deck = []
     for i in range(7): players_deck.append(money1)
     for i in range(3): players_deck.append(army1)
     players_deck.shuffle()
     var start_delay = 0
     for card_data in players_deck:
-        var card = utils.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
+        var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
         card.fly(offscreen_left, deck_slot, 0.35, start_delay, deck_slot.add_card.bind(card))
         start_delay += 0.25 + randf_range(-0.05, 0.05)
     
@@ -152,29 +152,29 @@ func deal_hand_enter():
     deck.reverse()
     for i in range(5):
         var card = deck[i]
-        var target_slot = utils.find_slot_for_card(card, hand_slots)
+        var target_slot = helpers.find_slot_for_card(card, hand_slots)
         card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card))
         await get_tree().create_timer(0.6).timeout
     
     
 func deal_hand_process(delta):
-    if utils.card_count(hand_slots) == 5:
+    if helpers.card_count(hand_slots) == 5:
         sm.change_state(INTRO_CHALLENGE)
     
     
 func deal_hand_exit():
-    utils.fade(intro_hand, utils.FADE_IN, 3)
+    helpers.fade(intro_hand, helpers.FADE_IN, 3)
     
     
 func intro_challenge_enter():
-    utils.intro("Overcome historical challenges.", 3, DEAL_CHALLENGES)
+    helpers.intro("Overcome historical challenges.", 3, DEAL_CHALLENGES)
     
     
 func deal_challenges_enter():
     var challenges = prepare_challenges()
     var start_delay = 0
     for card_data in challenges:
-        var card = utils.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
+        var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
         card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card))
         start_delay += 0.12
 
@@ -193,8 +193,8 @@ func flip_challenge_enter():
     
 func flip_challenge_exit():
     intro_main.visible = false
-    utils.fade(intro_challenge, utils.FADE_IN, 3)
-    utils.fade(intro_rightclick, utils.FADE_IN, 3)
+    helpers.fade(intro_challenge, helpers.FADE_IN, 3)
+    helpers.fade(intro_rightclick, helpers.FADE_IN, 3)
     
     
 func intro_startgame_enter():
@@ -205,7 +205,7 @@ func intro_startgame_enter():
 
     
 func intro_startgame_exit():
-    utils.fade(gui_intro, utils.FADE_OUT, 2)
+    helpers.fade(gui_intro, helpers.FADE_OUT, 2)
 
 
 func play_enter(): 
@@ -216,21 +216,21 @@ func play_enter():
 
 
 func choose_action_set():
-    var all_actions = utils.get_cards_by_type("Action")
+    var all_actions = helpers.get_cards_by_type("Action")
     var selected_actions = []
     while selected_actions.size() < 10:
         var choice = randi() % all_actions.size()
         selected_actions.append(all_actions.pop_at(choice))
-    selected_actions.sort_custom(utils.sort_cards_by_cost)
+    selected_actions.sort_custom(helpers.sort_cards_by_cost)
     return selected_actions
 
 
 func prepare_challenges():
-    var challenges = utils.get_cards_by_type("History")
+    var challenges = helpers.get_cards_by_type("History")
     challenges.shuffle()
-    challenges.append(utils.get_cards_by_type("Victory1")[0])
-    challenges.append(utils.get_cards_by_type("Victory2")[0])
-    challenges.append(utils.get_cards_by_type("Victory3")[0])
+    challenges.append(helpers.get_cards_by_type("Victory1")[0])
+    challenges.append(helpers.get_cards_by_type("Victory2")[0])
+    challenges.append(helpers.get_cards_by_type("Victory3")[0])
     challenges.reverse()
     return challenges
 

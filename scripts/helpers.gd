@@ -1,4 +1,4 @@
-class_name Utils
+class_name Helpers
 extends Node
 
 var card_scene = preload("res://scenes/card/card.tscn")
