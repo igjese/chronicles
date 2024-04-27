@@ -1,12 +1,22 @@
-[gd_scene load_steps=9 format=3 uid="uid://b7lbqvxcahm4s"]
+[gd_scene load_steps=11 format=3 uid="uid://b7lbqvxcahm4s"]
 
 [ext_resource type="Texture2D" uid="uid://db5uhwffo2cmu" path="res://visuals/card_back.png" id="1_getn5"]
 [ext_resource type="Script" path="res://scenes/card/card.gd" id="1_yu8kv"]
 [ext_resource type="Texture2D" uid="uid://d1137l43ye6yw" path="res://visuals/cards/centuria.png" id="2_anp5s"]
+[ext_resource type="Script" path="res://scripts/Glow.gd" id="2_y8bo1"]
 [ext_resource type="AudioStream" uid="uid://ccxjm61bfpntk" path="res://sounds/deal.tres" id="3_a5n11"]
 [ext_resource type="Texture2D" uid="uid://bgqethyrn3klh" path="res://visuals/card_frame.png" id="3_fov66"]
 [ext_resource type="AudioStream" uid="uid://bjo1hm334rlt6" path="res://sounds/draw.wav" id="6_mox7c"]
 [ext_resource type="AudioStream" uid="uid://xkmbpmgf5gd0" path="res://sounds/flip.mp3" id="7_w2271"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iwwmc"]
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 1, 0, 0.6)
+shadow_size = 15
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cxay"]
 bg_color = Color(0.960784, 0.811765, 0, 1)
@@ -27,6 +37,17 @@ offset_right = 150.0
 offset_bottom = 150.0
 pivot_offset = Vector2(75, 75)
 script = ExtResource("1_yu8kv")
+
+[node name="Glow" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_iwwmc")
+script = ExtResource("2_y8bo1")
 
 [node name="MainVisual" type="TextureRect" parent="."]
 offset_left = 4.0

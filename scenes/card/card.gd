@@ -83,3 +83,7 @@ func flip_card(duration, start_delay):
     tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration/4)
     tween.tween_property(self, "scale", Vector2(1, 1), duration/4)
     
+    
+func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
+    get_node("Glow").start_glow(glow_color, bg_color)
+    

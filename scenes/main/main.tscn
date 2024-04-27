@@ -222,9 +222,9 @@ offset_bottom = 700.0
 [node name="Hint" type="Label" parent="GuiIntro/Challenges"]
 layout_mode = 0
 offset_left = -21.0
-offset_top = 177.0
+offset_top = 187.0
 offset_right = 276.0
-offset_bottom = 222.0
+offset_bottom = 232.0
 theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/font_size = 30
 text = "Challenges"
@@ -233,9 +233,9 @@ horizontal_alignment = 1
 [node name="Border" type="Panel" parent="GuiIntro/Challenges"]
 layout_mode = 0
 offset_left = -4.0
-offset_top = 4.0
+offset_top = -1.0
 offset_right = 252.0
-offset_bottom = 236.0
+offset_bottom = 241.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
 
 [node name="Hand" type="Control" parent="GuiIntro"]

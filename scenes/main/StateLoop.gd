@@ -180,6 +180,8 @@ func deal_challenges_process(delta):
         
 func flip_challenge_enter():
     challenge_slot.top_card().flip_card(0.6, 0.2)
+    await get_tree().create_timer(0.6).timeout
+    challenge_slot.top_card().start_glow(Color.RED)
     sm.change_state(INTRO_STARTGAME)
     
     
@@ -193,6 +195,7 @@ func intro_startgame_enter():
     await get_tree().create_timer(4).timeout
     sounds.get_node("Clang").play()
     intro_startgame.visible = true
+    intro_startgame.get_node("Glow").start_glow(Color.GREEN, Color.GREEN)
 
     
 func intro_startgame_exit():
