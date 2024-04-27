@@ -49,3 +49,8 @@ func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
     
 func stop_glow():
     get_node("Glow").visible = false
+
+
+func card_count():
+    return $cards.get_child_count()
+    

@@ -44,6 +44,7 @@ func update_resource_display(resource_node, resource_name, delay):
         elif Game[resource_name] < old_value:
             sound_punch.play()
 
+
 func on_card_clicked(card):
     print("card clicked: ", card.card_name)
     sm.handle_input(card)

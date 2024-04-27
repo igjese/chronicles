@@ -256,13 +256,16 @@ func apply_effect_enter():
     
     
 func discard_enter():
-    pass # TODO: glow all occupied hand slots
+    for slot in hand_slots.get_children():
+        if slot.card_count() > 0:
+            slot.start_glow(Color.GREEN)
     
 
 func discard_input(card):
-    var slot = card.slot()
-    var slots = hand_slots.get_children()
     if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+        for slot in hand_slots.get_children():
+            if slot.card_count() > 0:
+                slot.stop_glow()
         card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card))
         await get_tree().create_timer(0.4).timeout
         Game.cards_to_select -= 1
