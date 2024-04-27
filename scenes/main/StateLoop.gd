@@ -214,7 +214,6 @@ func play_enter():
 
 # GAME FUNCTIONS #########################
 
-
 func choose_action_set():
     var all_actions = helpers.get_cards_by_type("Action")
     var selected_actions = []
@@ -234,6 +233,8 @@ func prepare_challenges():
     challenges.reverse()
     return challenges
 
+
+# SIGNAL HANDLING ##########################
 
 func _on_btn_start_game_pressed():
     sm.change_state(PLAY)
