@@ -6,6 +6,7 @@ extends Control
 @onready var sound_coin = get_node("/root/Main/Sounds/Coin")
 @onready var sound_punch = get_node("/root/Main/Sounds/Punch")
 @onready var sm = get_node("/root/Main/StateLoop").sm
+@onready var state_loop = get_node("/root/Main/StateLoop")
 
 var helpers = Helpers.new()
 
@@ -67,7 +68,6 @@ func _on_cheat_action_item_selected(index):
         
 func apply_cheat(index):
     var card_name = $CheatValue.get_popup().get_item_text(index)
-    var state_loop = get_node("/root/Main/StateLoop")
     match $CheatAction.get_item_index($CheatAction.get_selected_id()):
         0: # Put action card into Hand1
             helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Hand/Hand1/cards"),CardScene.FACE_UP)
@@ -77,3 +77,12 @@ func apply_cheat(index):
             Game.effect_stack.clear()
             sm.change_state(state_loop.ACTIVATE_CHALLENGE)
 
+
+func show_hint(state):
+    var msg = ""
+    match state:
+        state_loop.DISCARD: msg = "Discard %s card." % Game.cards_to_select
+    $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % msg
+    $Hint.visible = true
+    var tween = create_tween()
+    tween.tween_property($Hint, "global_position", $Hint.global_position, 0.4).from($Hint.global_position - Vector2(500,0))

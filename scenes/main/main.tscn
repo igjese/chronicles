@@ -180,9 +180,9 @@ horizontal_alignment = 1
 
 [node name="Money" type="Label" parent="GuiPlay"]
 layout_mode = 0
-offset_left = -1239.0
+offset_left = -1236.0
 offset_top = 490.0
-offset_right = -1189.0
+offset_right = -1186.0
 offset_bottom = 540.0
 pivot_offset = Vector2(25, 25)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -196,9 +196,9 @@ vertical_alignment = 1
 
 [node name="Army" type="Label" parent="GuiPlay"]
 layout_mode = 0
-offset_left = -1238.0
+offset_left = -1235.0
 offset_top = 554.0
-offset_right = -1188.0
+offset_right = -1185.0
 offset_bottom = 604.0
 pivot_offset = Vector2(25, 25)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -237,9 +237,9 @@ popup/item_1/id = 1
 
 [node name="Hint" type="Control" parent="GuiPlay"]
 anchors_preset = 0
-offset_left = -1212.0
+offset_left = -1193.0
 offset_top = 637.0
-offset_right = -882.0
+offset_right = -863.0
 offset_bottom = 727.0
 
 [node name="HintBkground" type="Panel" parent="GuiPlay/Hint"]
@@ -258,7 +258,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -102.0
+offset_left = -119.0
 offset_top = 6.0
 offset_right = -89.0
 offset_bottom = -6.0
@@ -384,9 +384,9 @@ offset_bottom = 700.0
 [node name="Hint" type="Label" parent="GuiIntro/Challenges"]
 layout_mode = 0
 offset_left = -21.0
-offset_top = 178.0
+offset_top = 186.0
 offset_right = 276.0
-offset_bottom = 223.0
+offset_bottom = 231.0
 theme_override_colors/font_color = Color(0.929412, 0.941176, 0.870588, 1)
 theme_override_font_sizes/font_size = 30
 text = "Challenges"
@@ -395,9 +395,9 @@ horizontal_alignment = 1
 [node name="Border" type="Panel" parent="GuiIntro/Challenges"]
 layout_mode = 0
 offset_left = -3.0
-offset_top = -1.0
+offset_top = 1.0
 offset_right = 253.0
-offset_bottom = 235.0
+offset_bottom = 237.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_h3sbs")
 
 [node name="Hand" type="Control" parent="GuiIntro"]
@@ -469,21 +469,25 @@ offset_bottom = 397.0
 [node name="Army2" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
-offset_top = -1.0
-offset_bottom = 149.0
+offset_left = -1.0
+offset_top = -2.0
+offset_right = 149.0
+offset_bottom = 148.0
 
 [node name="Money2" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
 offset_left = 152.0
-offset_top = -1.0
+offset_top = -2.0
 offset_right = 302.0
-offset_bottom = 149.0
+offset_bottom = 148.0
 
 [node name="Army1" parent="Resources" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
+offset_left = -1.0
 offset_top = 151.0
+offset_right = 149.0
 offset_bottom = 301.0
 
 [node name="Money1" parent="Resources" instance=ExtResource("5_rr31l")]

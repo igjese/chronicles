@@ -18,6 +18,8 @@ extends Node
 @onready var offscreen_top = get_node("/root/Main/Offscreen/Top")
 @onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
 @onready var sounds = get_node("/root/Main/Sounds")
+@onready var gui_hint = gui_play.get_node("Hint")
+
 
 var helpers = Helpers.new()
 
@@ -216,6 +218,7 @@ func intro_startgame_exit():
 
 
 func start_play_enter(): 
+    helpers.hide([gui_hint])
     context = CONTEXT_PLAY
     Game.turn = 1  
     await get_tree().create_timer(2).timeout
@@ -256,16 +259,13 @@ func apply_effect_enter():
     
     
 func discard_enter():
-    for slot in hand_slots.get_children():
-        if slot.card_count() > 0:
-            slot.start_glow(Color.GREEN)
-    
+    helpers.glow_slot_group(hand_slots, Color.GREEN)
+    gui_play.show_hint(DISCARD)
+
 
 func discard_input(card):
     if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-        for slot in hand_slots.get_children():
-            if slot.card_count() > 0:
-                slot.stop_glow()
+        helpers.stop_glow_slot_group(hand_slots)
         card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card))
         await get_tree().create_timer(0.4).timeout
         Game.cards_to_select -= 1
@@ -273,6 +273,7 @@ func discard_input(card):
         
 func discard_process(delta):
     if Game.cards_to_select <= 0:
+        gui_hint.visible = false
         sm.change_state(APPLY_EFFECT)
 
     
