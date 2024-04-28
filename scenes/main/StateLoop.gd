@@ -46,7 +46,7 @@ var sm:= SM.new({
     DISCARD: {SM.ENTER: discard_enter, SM.PROCESS: discard_process, SM.INPUT: discard_input},
     PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input},
     PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
-    BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input}
+    BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit}
 })
 
 
@@ -328,3 +328,8 @@ func buy_cards_input(data):
         if data == gui_play.HINT_BTN_PRESSED:
             print("done buying")
             pass # TODO: where to next?
+
+
+func buy_cards_exit():
+    helpers.stop_glow_slot_group(resource_slots)
+    helpers.stop_glow_slot_group(action_slots)

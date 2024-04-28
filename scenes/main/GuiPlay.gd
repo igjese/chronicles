@@ -66,7 +66,7 @@ func apply_cheat(index):
 func show_hint(state):
     var hints = {
         state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "cmd": "!", "disabled": true},
-        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Done", "disabled": false},
+        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play", "disabled": false},
         state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done", "disabled": false}
     }
     $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
