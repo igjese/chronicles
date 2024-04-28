@@ -298,7 +298,7 @@ func play_action_enter():
         helpers.glow_valid_actions()
         gui_play.show_hint() 
     else:
-        sm.change_state(BUY_CARDS)
+        sm.change_state(PLAY_RESOURCES)
     
     
 func play_action_input(data):
@@ -324,7 +324,8 @@ func play_action_exit():
     gui_play.hide_hint()
     
 func play_resources_enter():
-    # TODO: if no resources, proceed to buy
+    if helpers.get_hand_resource_cards().size() == 0:
+        sm.change_state(BUY_CARDS)
     gui_play.show_hint()
     
     

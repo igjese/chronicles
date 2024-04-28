@@ -12,46 +12,50 @@ var helpers = Helpers.new()
 
 var hint_position
 var hiding_hint_tween = false
+var money_being_refreshed = false
 
 enum {HINT_BTN_PRESSED, STARTGAME_BTN_PRESSED}
 
 func _ready():
-    Game.resources_updated.connect(refresh_statusbar)
-    Game.statuses_updated.connect(refresh_statusbar)
-    Game.to_select_updated.connect(refresh_statusbar)
+    Game.money_updated.connect(refresh_money)
+    Game.army_updated.connect(refresh_army)
+    Game.info_updated.connect(refresh_info)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
     hint_position = $Hint.global_position
-
-
-func refresh_statusbar():
-    gui_status.set_text("Turn %d | Money %d - Army %d | Actions %d - Buys %d" % [Game.turn, Game.money, Game.army, Game.actions, Game.buys])
     
+
+func refresh_money():
+    update_resource_badge(gui_money, "money", 0.4, 0.2) 
+    
+    
+func refresh_army():
     var delay = 0.2
-    if Game.money != int(gui_money.text):
-        update_resource_display(gui_money, "money", 0.4, delay) 
-        delay += 0.3
-    if Game.army != int(gui_army.text):
-        update_resource_display(gui_army, "army", 0.4, delay) 
-        
-    update_hint()
+    if money_being_refreshed: delay += 0.3
+    update_resource_badge(gui_army, "army", 0.4, delay) 
 
         
-func update_resource_display(resource_node, resource_name, duration, delay):
+func update_resource_badge(resource_node, resource_name, duration, delay):
+    if resource_name == "money": money_being_refreshed = true
     await get_tree().create_timer(delay).timeout
     var tween = create_tween()
-    #tween.tween_interval(delay)
     tween.tween_property(resource_node, "scale", Vector2(1.5, 1.5), duration/2).set_ease(Tween.EASE_IN)
     tween.tween_property(resource_node, "scale", Vector2(1, 1), duration/2).set_ease(Tween.EASE_OUT)
     
     await get_tree().create_timer(duration/2).timeout
-    resource_node.text = str(Game[resource_name])
     if Game[resource_name] > int(resource_node.text):
         sound_coin.play()
     else:
         sound_punch.play()
+    resource_node.text = str(Game[resource_name])
+    if resource_name == "money": money_being_refreshed = false
+    refresh_info()
+        
+        
+func refresh_info():
+    gui_status.set_text("Turn %d | Money %d - Army %d | Actions %d - Buys %d" % [Game.turn, Game.money, Game.army, Game.actions, Game.buys])        
+    update_hint()
     
-        
-        
+    
 func apply_cheat(index):
     var option_text = $CheatValue.get_popup().get_item_text(index)
     match $CheatAction.get_item_index($CheatAction.get_selected_id()):
