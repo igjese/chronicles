@@ -229,11 +229,13 @@ offset_left = 380.0
 offset_top = 970.0
 offset_right = 525.0
 offset_bottom = 1004.0
-item_count = 2
+item_count = 3
 popup/item_0/text = "Hand"
 popup/item_0/id = 0
 popup/item_1/text = "Challenge"
 popup/item_1/id = 1
+popup/item_2/text = "State"
+popup/item_2/id = 2
 
 [node name="Hint" type="Control" parent="GuiPlay"]
 anchors_preset = 0

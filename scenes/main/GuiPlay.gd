@@ -45,18 +45,23 @@ func update_resource_display(resource_node, resource_name, duration, delay):
         
         
 func apply_cheat(index):
-    var card_name = $CheatValue.get_popup().get_item_text(index)
+    var option_text = $CheatValue.get_popup().get_item_text(index)
     match $CheatAction.get_item_index($CheatAction.get_selected_id()):
         0: # Put action card into Hand1
-            helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Hand/Hand1/cards"),CardScene.FACE_UP)
+            helpers.spawn_card(Game.cards_by_name[option_text], get_node("/root/Main/Hand/Hand1/cards"),CardScene.FACE_UP)
         1: # Put history card on Challenge top and run it
-            helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Challenge/cards"),CardScene.FACE_UP)
+            helpers.spawn_card(Game.cards_by_name[option_text], get_node("/root/Main/Challenge/cards"),CardScene.FACE_UP)
             Game.card_stack.clear()
             Game.effect_stack.clear()
             sm.change_state(state_loop.ACTIVATE_CHALLENGE)
+        2: # Change to chosen state
+            match option_text:
+                "PLAY_ACTION": sm.change_state(state_loop.PLAY_ACTION)
+                "PLAY_RESOURCES": sm.change_state(state_loop.PLAY_RESOURCES)
 
 
 func show_hint(state):
+    print("show hint", $Hint.global_position)
     var msg = "Done"
     var cmd = $Hint.get_node("BtnHint").text
     match state:
@@ -66,15 +71,18 @@ func show_hint(state):
             cmd = "Play"
     $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % msg
     $Hint.get_node("BtnHint").text = cmd
-    $Hint.visible = true
     var tween = create_tween()
     tween.tween_property($Hint, "global_position", $Hint.global_position, 0.4).from($Hint.global_position - Vector2(500,0))
+    $Hint.visible = true
     
     
 func hide_hint():
+    var original_position = $Hint.global_position
     var tween = create_tween()
     tween.tween_property($Hint, "global_position", $Hint.global_position - Vector2(500,0), 0.4)
-    tween.tween_callback(func(): $Hint.visible = false)
+    await get_tree().create_timer(0.45).timeout
+    $Hint.visible = false
+    $Hint.global_position = original_position
 
 
 # SIGNALS AND INPUTS #################
@@ -97,14 +105,15 @@ func on_card_right_clicked(card):
             
 
 func _on_cheat_action_item_selected(index):
-    var cards = []
+    var options = []
     match index:
-        0: cards = helpers.get_cards_by_type("Action")
-        1: cards = helpers.get_cards_by_type("History")
+        0: options = helpers.get_cards_by_type("Action")
+        1: options = helpers.get_cards_by_type("History")
+        2: options = [{"name":"PLAY_ACTION"}, {"name": "PLAY_RESOURCES"}]
     var popup = $CheatValue.get_popup()
     popup.clear()
-    for card in cards:
-        popup.add_item(card["name"])
+    for option in options:
+        popup.add_item(option["name"])
 
 
 func _on_btn_hint_pressed():
