@@ -25,7 +25,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -46,7 +46,8 @@ var sm:= SM.new({
     DISCARD: {SM.ENTER: discard_enter, SM.PROCESS: discard_process, SM.INPUT: discard_input},
     PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input},
     PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
-    BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit}
+    BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit},
+    CLEANUP: {SM.ENTER: cleanup_enter}
 })
 
 
@@ -325,14 +326,20 @@ func buy_cards_input(data):
             print("card purchased: ", card.card_name)
             Game.money -= card.cost_money
             Game.buys -= 1
-            card.fly_and_flip(card, discarded_slot, 0.5, 0, discarded_slot.add_child.bind(card))
+            card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, discarded_slot.add_card.bind(card))
             helpers.glow_valid_buys()
     elif typeof(data) == TYPE_INT:
         if data == gui_play.HINT_BTN_PRESSED:
-            print("done buying")
-            pass # TODO: where to next?
+            sm.change_state(CLEANUP)
+    if Game.buys <= 0:
+        sm.change_state(CLEANUP)
 
 
 func buy_cards_exit():
+    gui_play.hide_hint()
     helpers.stop_glow_slot_group(resource_slots)
     helpers.stop_glow_slot_group(action_slots)
+
+
+func cleanup_enter():
+    pass
