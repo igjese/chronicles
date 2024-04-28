@@ -24,7 +24,8 @@ extends Node
 var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
-     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION}
+     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
+    PLAY_RESOURCES, APPLY_RESOURCES}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -37,13 +38,15 @@ var sm:= SM.new({
     INTRO_CHALLENGE: {SM.ENTER: intro_challenge_enter},
     DEAL_CHALLENGES: {SM.ENTER: deal_challenges_enter, SM.PROCESS: deal_challenges_process},
     FLIP_CHALLENGE: {SM.ENTER: flip_challenge_enter, SM.EXIT: flip_challenge_exit},
-    INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.EXIT: intro_startgame_exit},
+    INTRO_STARTGAME: {SM.ENTER: intro_startgame_enter, SM.EXIT: intro_startgame_exit, SM.INPUT: intro_startgame_input},
     START_PLAY: {SM.ENTER: start_play_enter},
     ACTIVATE_CHALLENGE: {SM.ENTER: activate_challenge_enter},
     ACTIVATE_CARD: {SM.ENTER: activate_card_enter},
     APPLY_EFFECT: {SM.ENTER: apply_effect_enter},
     DISCARD: {SM.ENTER: discard_enter, SM.PROCESS: discard_process, SM.INPUT: discard_input},
-    PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input}
+    PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input},
+    PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
+    APPLY_RESOURCES: {SM.ENTER: apply_resources_enter}
 })
 
 
@@ -51,6 +54,7 @@ func _ready():
     Game.sm = sm
     Game.gui_play = gui_play
     Game.gui_intro = gui_intro
+    Game.gui_main = get_node("/root/Main")
 
 enum {CONTEXT_INTRO, CONTEXT_PLAY}
 
@@ -101,8 +105,8 @@ func deal_resources():
         start_delay += 0.15
         
         
-func deal_resources_process(delta):
-    if helpers.card_count(resource_slots) == 20:
+func deal_resources_process(_delta):
+    if helpers.count_cards(resource_slots) == 20:
         sm.change_state(INTRO_ACTIONS)
                 
         
@@ -111,7 +115,7 @@ func intro_actions_enter():
     
     
 func deal_actions_enter():
-    var selected_actions = choose_action_set()
+    var selected_actions = helpers.choose_action_set()
     var start_delay = 0
     for i in range(10):
         for j in range(5):
@@ -122,8 +126,8 @@ func deal_actions_enter():
         start_delay += 0.15
         
         
-func deal_actions_process(delta):
-    if helpers.card_count(action_slots) == 50:
+func deal_actions_process(_delta):
+    if helpers.count_cards(action_slots) == 50:
         sm.change_state(INTRO_DECK)
     
     
@@ -149,7 +153,7 @@ func prepare_deck_enter():
         start_delay += 0.25 + randf_range(-0.05, 0.05)
     
     
-func prepare_deck_process(delta):
+func prepare_deck_process(_delta):
     if deck_slot.get_node("cards").get_child_count() == 10:
         sm.change_state(DEAL_HAND)
     
@@ -165,8 +169,8 @@ func deal_hand_enter():
         await get_tree().create_timer(0.6).timeout
     
     
-func deal_hand_process(delta):
-    if helpers.card_count(hand_slots) == 5:
+func deal_hand_process(_delta):
+    if helpers.count_cards(hand_slots) == 5:
         sm.change_state(INTRO_CHALLENGE)
     
     
@@ -179,7 +183,7 @@ func intro_challenge_enter():
     
     
 func deal_challenges_enter():
-    var challenges = prepare_challenges()
+    var challenges = helpers.prepare_challenges()
     var start_delay = 0
     for card_data in challenges:
         var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
@@ -187,7 +191,7 @@ func deal_challenges_enter():
         start_delay += 0.12
 
     
-func deal_challenges_process(delta):
+func deal_challenges_process(_delta):
     if challenge_slot.get_node("cards").get_child_count() == 22:
         sm.change_state(FLIP_CHALLENGE)
         
@@ -211,6 +215,11 @@ func intro_startgame_enter():
     sounds.get_node("Clang").play()
     intro_startgame.visible = true
     intro_startgame.get_node("Glow").start_glow(Color.GREEN, Color.GREEN)
+    
+    
+func intro_startgame_input(data):
+    if data == gui_play.STARTGAME_BTN_PRESSED:
+        sm.change_state(START_PLAY)
 
     
 func intro_startgame_exit():
@@ -228,9 +237,9 @@ func start_play_enter():
 func activate_challenge_enter():
     var card = challenge_slot.top_card()
     challenge_slot.stop_glow()
-    challenge_slot.pulse_qty(0.3)
+    #challenge_slot.pulse_qty(0.3)
     Game.card_stack.push_front(card)
-    card.pulse(0.3, sm.change_state.bind(ACTIVATE_CARD))
+    card.pulse(0.3, sm.change_state.bind(ACTIVATE_CARD), CardScene.SOUND_HIT)
     
     
 func activate_card_enter():
@@ -271,46 +280,41 @@ func discard_input(card):
         Game.cards_to_select -= 1
         
         
-func discard_process(delta):
+func discard_process(_delta):
     if Game.cards_to_select <= 0:
-        gui_hint.visible = false
+        gui_play.hide_hint()
         sm.change_state(APPLY_EFFECT)
 
     
 func play_action_enter():
-    if Game.actions > 0:
+    if Game.actions > 0 and helpers.has_actions():
         pass # TODO: glow valid actions
     else:
-        pass # TODO: sm.change_state(PLAY_RESOURCES)
+        sm.change_state(PLAY_RESOURCES)
     
     
 func play_action_input(data):
     pass # TODO: stop glow, fly card to table, cards.push_front, sm.activate_card
-        
-
-# GAME FUNCTIONS #########################    
-
-func choose_action_set():
-    var all_actions = helpers.get_cards_by_type("Action")
-    var selected_actions = []
-    while selected_actions.size() < 10:
-        var choice = randi() % all_actions.size()
-        selected_actions.append(all_actions.pop_at(choice))
-    selected_actions.sort_custom(helpers.sort_cards_by_cost)
-    return selected_actions
-
-
-func prepare_challenges():
-    var challenges = helpers.get_cards_by_type("History")
-    challenges.shuffle()
-    challenges.append(helpers.get_cards_by_type("Victory1")[0])
-    challenges.append(helpers.get_cards_by_type("Victory2")[0])
-    challenges.append(helpers.get_cards_by_type("Victory3")[0])
-    challenges.reverse()
-    return challenges
+    
+    
+func play_resources_enter():
+    # TODO: if no resources, proceed to buy
+    gui_play.show_hint(PLAY_RESOURCES)
+    
+    
+func play_resources_input(data):
+    if typeof(data) == TYPE_INT and data == gui_play.HINT_BTN_PRESSED:
+        gui_play.hide_hint()
+        for card :CardScene in helpers.get_hand_resource_cards():
+            Game.money += card.effect_money
+            Game.army += card.effect_army
+            card.pulse(0.4)
+            await get_tree().create_timer(0.4).timeout
+        pass
+    
+    
+func apply_resources_enter():
+    pass
 
 
-# SIGNAL HANDLING ##########################
 
-func _on_btn_start_game_pressed():
-    sm.change_state(START_PLAY)

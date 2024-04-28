@@ -19,7 +19,7 @@ var take_money2: int = 0
 var take_5: int = 0
 var upgrade_money: int = 0
 
-enum { FACE_UP, FACE_DOWN, SOUND_DEAL, SOUND_DRAW }
+enum { FACE_UP, FACE_DOWN, SOUND_DEAL, SOUND_DRAW, SOUND_HIT }
 var face = FACE_DOWN
 
 func set_face(face):
@@ -83,12 +83,12 @@ func flip_card(duration, start_delay):
     tween.tween_property(self, "scale", Vector2(1, 1), duration/4)
     
     
-func pulse(duration, callback):
+func pulse(duration, callback = null, sound=null):
     var tween = create_tween()
-    tween.tween_property(self, "scale", Vector2(1.5, 1.5), duration * 3/5).set_ease(Tween.EASE_OUT)
-    tween.tween_callback($SoundHit.play)
-    tween.tween_property(self, "scale", Vector2(1, 1), duration * 2/5).set_ease(Tween.EASE_IN)
-    tween.tween_callback(callback)
+    tween.tween_property(self.slot(), "scale", Vector2(1.5, 1.5), duration * 3/5).set_ease(Tween.EASE_OUT)
+    if sound == SOUND_HIT: tween.tween_callback($SoundHit.play)
+    tween.tween_property(self.slot(), "scale", Vector2(1, 1), duration * 2/5).set_ease(Tween.EASE_IN)
+    if callback: tween.tween_callback(callback)
     
     
 func slot():

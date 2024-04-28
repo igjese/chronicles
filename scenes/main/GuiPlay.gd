@@ -10,11 +10,74 @@ extends Control
 
 var helpers = Helpers.new()
 
+enum {HINT_BTN_PRESSED, STARTGAME_BTN_PRESSED}
+
 func _ready():
     Game.resources_updated.connect(refresh_statusbar)
     Game.statuses_updated.connect(refresh_statusbar)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
 
+
+func refresh_statusbar():
+    gui_status.set_text("Turn %d | Money %d - Army %d | Actions %d - Buys %d" % [Game.turn, Game.money, Game.army, Game.actions, Game.buys])
+    
+    var delay = 0.2
+    if Game.money != int(gui_money.text):
+        update_resource_display(gui_money, "money", 0.4, delay) 
+        delay += 0.3
+    if Game.army != int(gui_army.text):
+        update_resource_display(gui_army, "army", 0.4, delay) 
+
+        
+func update_resource_display(resource_node, resource_name, duration, delay):
+    await get_tree().create_timer(delay).timeout
+    var tween = create_tween()
+    #tween.tween_interval(delay)
+    tween.tween_property(resource_node, "scale", Vector2(1.5, 1.5), duration/2).set_ease(Tween.EASE_IN)
+    tween.tween_property(resource_node, "scale", Vector2(1, 1), duration/2).set_ease(Tween.EASE_OUT)
+    
+    await get_tree().create_timer(duration/2).timeout
+    resource_node.text = str(Game[resource_name])
+    if Game[resource_name] > int(resource_node.text):
+        sound_coin.play()
+    else:
+        sound_punch.play()
+        
+        
+func apply_cheat(index):
+    var card_name = $CheatValue.get_popup().get_item_text(index)
+    match $CheatAction.get_item_index($CheatAction.get_selected_id()):
+        0: # Put action card into Hand1
+            helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Hand/Hand1/cards"),CardScene.FACE_UP)
+        1: # Put history card on Challenge top and run it
+            helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Challenge/cards"),CardScene.FACE_UP)
+            Game.card_stack.clear()
+            Game.effect_stack.clear()
+            sm.change_state(state_loop.ACTIVATE_CHALLENGE)
+
+
+func show_hint(state):
+    var msg = "Done"
+    var cmd = $Hint.get_node("BtnHint").text
+    match state:
+        state_loop.DISCARD: msg = "Discard %s card." % Game.cards_to_select
+        state_loop.PLAY_RESOURCES: 
+            msg = "Play your resources."
+            cmd = "Play"
+    $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % msg
+    $Hint.get_node("BtnHint").text = cmd
+    $Hint.visible = true
+    var tween = create_tween()
+    tween.tween_property($Hint, "global_position", $Hint.global_position, 0.4).from($Hint.global_position - Vector2(500,0))
+    
+    
+func hide_hint():
+    var tween = create_tween()
+    tween.tween_property($Hint, "global_position", $Hint.global_position - Vector2(500,0), 0.4)
+    tween.tween_callback(func(): $Hint.visible = false)
+
+
+# SIGNALS AND INPUTS #################
 
 func _on_btn_exit_pressed():
     get_tree().quit()
@@ -22,29 +85,7 @@ func _on_btn_exit_pressed():
 
 func _on_btn_restart_pressed():
     get_node("/root/Main/StateLoop").start_game_loop()
-
-
-func refresh_statusbar():
-    gui_status.set_text("Turn %d | Money %d - Army %d | Actions %d - Buys %d" % [Game.turn, Game.money, Game.army, Game.actions, Game.buys])
     
-    update_resource_display(gui_money, "money", 0.4) 
-    update_resource_display(gui_army, "army", 0.4) 
-
-        
-func update_resource_display(resource_node, resource_name, delay):
-    var old_value = int(resource_node.text)
-    if Game[resource_name] != old_value:
-        await get_tree().create_timer(0.2).timeout
-        resource_node.text = str(Game[resource_name])
-        var tween = create_tween()
-        tween.tween_property(resource_node, "scale", Vector2(1.5, 1.5), delay/2).set_ease(Tween.EASE_IN)
-        tween.tween_property(resource_node, "scale", Vector2(1, 1), delay/2).set_ease(Tween.EASE_OUT)
-        await get_tree().create_timer(delay/2).timeout
-        if Game[resource_name] > old_value:
-            sound_coin.play()
-        elif Game[resource_name] < old_value:
-            sound_punch.play()
-
 
 func on_card_clicked(card):
     print("card clicked: ", card.card_name)
@@ -64,25 +105,11 @@ func _on_cheat_action_item_selected(index):
     popup.clear()
     for card in cards:
         popup.add_item(card["name"])
-        
-        
-func apply_cheat(index):
-    var card_name = $CheatValue.get_popup().get_item_text(index)
-    match $CheatAction.get_item_index($CheatAction.get_selected_id()):
-        0: # Put action card into Hand1
-            helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Hand/Hand1/cards"),CardScene.FACE_UP)
-        1: # Put history card on Challenge top and run it
-            helpers.spawn_card(Game.cards_by_name[card_name], get_node("/root/Main/Challenge/cards"),CardScene.FACE_UP)
-            Game.card_stack.clear()
-            Game.effect_stack.clear()
-            sm.change_state(state_loop.ACTIVATE_CHALLENGE)
 
 
-func show_hint(state):
-    var msg = ""
-    match state:
-        state_loop.DISCARD: msg = "Discard %s card." % Game.cards_to_select
-    $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % msg
-    $Hint.visible = true
-    var tween = create_tween()
-    tween.tween_property($Hint, "global_position", $Hint.global_position, 0.4).from($Hint.global_position - Vector2(500,0))
+func _on_btn_hint_pressed():
+    sm.handle_input(HINT_BTN_PRESSED)
+
+
+func _on_btn_start_game_pressed():
+    sm.handle_input(STARTGAME_BTN_PRESSED)

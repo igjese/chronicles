@@ -7,6 +7,7 @@ var cards_by_name = {}
 var sm = null
 var gui_play = null
 var gui_intro = null
+var gui_main = null
 
 var card_stack = []
 var effect_stack = []

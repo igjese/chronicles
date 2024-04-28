@@ -13,7 +13,6 @@ func get_cards_by_type(card_type: String) -> Array:
 
 
 func find_slot_for_card(card: CardScene, slot_group: Control) -> SlotScene:
-    var found : Control = null
     var free_slots = []
     for slot: SlotScene in slot_group.get_children():
         if slot.get_node("cards").get_child_count() > 0:
@@ -68,7 +67,7 @@ func sort_cards_by_cost(a, b):
     return a["cost_money"] < b["cost_money"]  # Ascending order 
     
     
-func card_count(slot_group):
+func count_cards(slot_group):
     var card_count = 0
     for slot in slot_group.get_children():
         card_count += slot.get_node("cards").get_child_count()
@@ -107,4 +106,40 @@ func glow_slot_group(slot_group, color):
 func stop_glow_slot_group(slot_group):
     for slot in slot_group.get_children():
         slot.stop_glow()
+    
+
+func choose_action_set():
+    var all_actions = get_cards_by_type("Action")
+    var selected_actions = []
+    while selected_actions.size() < 10:
+        var choice = randi() % all_actions.size()
+        selected_actions.append(all_actions.pop_at(choice))
+    selected_actions.sort_custom(sort_cards_by_cost)
+    return selected_actions
+
+
+func prepare_challenges():
+    var challenges = get_cards_by_type("History")
+    challenges.shuffle()
+    challenges.append(get_cards_by_type("Victory1")[0])
+    challenges.append(get_cards_by_type("Victory2")[0])
+    challenges.append(get_cards_by_type("Victory3")[0])
+    challenges.reverse()
+    return challenges
+
+
+func has_actions():
+    for slot : SlotScene in Game.gui_main.get_node("Hand").get_children():
+        if slot.card_count() > 0 and slot.top_card().card_type == "Action":
+            return true
+    return false
+
+
+func get_hand_resource_cards():
+    var resources = []
+    for slot in Game.gui_main.get_node("Hand").get_children():
+        for card in slot.get_node("cards").get_children():
+            if card.card_type in ["Money1", "Money2", "Army1", "Army2"]:
+                resources.append(card)
+    return resources
     

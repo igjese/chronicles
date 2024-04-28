@@ -34,7 +34,7 @@ func process(delta):
         current_state[PROCESS].call(delta)
         
 
-func handle_input(data):
+func handle_input(data=null):
     if current_state and current_state.has(INPUT):
         print_transition(current_state[INPUT])
         current_state[INPUT].call(data)

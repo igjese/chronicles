@@ -28,6 +28,7 @@ corner_detail = 5
 [node name="Slot" type="ColorRect"]
 offset_right = 150.0
 offset_bottom = 150.0
+pivot_offset = Vector2(75, 75)
 color = Color(0.929412, 0.941176, 0.870588, 1)
 script = ExtResource("1_swcbo")
 
