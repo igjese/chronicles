@@ -230,7 +230,7 @@ func start_play_enter():
     helpers.hide([gui_hint])
     context = CONTEXT_PLAY
     Game.turn = 1  
-    await get_tree().create_timer(2).timeout
+    await get_tree().create_timer(1).timeout
     sm.change_state(ACTIVATE_CHALLENGE)
     
     
@@ -269,7 +269,7 @@ func apply_effect_enter():
     
 func discard_enter():
     helpers.glow_slot_group(hand_slots, Color.GREEN)
-    gui_play.show_hint(DISCARD)
+    gui_play.show_hint()
 
 
 func discard_input(card):
@@ -299,7 +299,7 @@ func play_action_input(data):
     
 func play_resources_enter():
     # TODO: if no resources, proceed to buy
-    gui_play.show_hint(PLAY_RESOURCES)
+    gui_play.show_hint()
     
     
 func play_resources_input(data):
@@ -314,16 +314,19 @@ func play_resources_input(data):
     
     
 func buy_cards_enter():
-    helpers.glow_slot_group(resource_slots,Color.GREEN, Game.money)
-    helpers.glow_slot_group(action_slots,Color.GREEN, Game.money)
-    gui_play.show_hint(BUY_CARDS)
+    helpers.glow_valid_buys()
+    gui_play.show_hint()
 
 
 func buy_cards_input(data):
     if typeof(data) == typeof(CardScene):
-        if Game.buys > 0 and helpers.valid_buy(data):
-            print("card purchased: ", data.card_name)
-            pass # TODO: fly card to dicarded, decrease money and buy, stop_glow
+        var card : CardScene = data
+        if Game.buys > 0 and helpers.valid_buy(card):
+            print("card purchased: ", card.card_name)
+            Game.money -= card.cost_money
+            Game.buys -= 1
+            card.fly_and_flip(card, discarded_slot, 0.5, 0, discarded_slot.add_child.bind(card))
+            helpers.glow_valid_buys()
     elif typeof(data) == TYPE_INT:
         if data == gui_play.HINT_BTN_PRESSED:
             print("done buying")

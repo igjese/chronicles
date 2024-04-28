@@ -31,6 +31,8 @@ func refresh_statusbar():
         delay += 0.3
     if Game.army != int(gui_army.text):
         update_resource_display(gui_army, "army", 0.4, delay) 
+        
+    update_hint()
 
         
 func update_resource_display(resource_node, resource_name, duration, delay):
@@ -46,6 +48,7 @@ func update_resource_display(resource_node, resource_name, duration, delay):
         sound_coin.play()
     else:
         sound_punch.play()
+    
         
         
 func apply_cheat(index):
@@ -63,19 +66,25 @@ func apply_cheat(index):
                 "PLAY_ACTION": sm.change_state(state_loop.PLAY_ACTION)
                 "PLAY_RESOURCES": sm.change_state(state_loop.PLAY_RESOURCES)
                 
-func show_hint(state):
+func show_hint():
+    update_hint()
+    if hiding_hint_tween: hiding_hint_tween.kill()
+    var tween = create_tween()
+    tween.tween_property($Hint, "global_position", hint_position, 0.4).from(hint_position - Vector2(500,0))
+    $Hint.visible = true
+    
+    
+func update_hint():
+    var state = sm.current_state_id
     var hints = {
         state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "cmd": "!", "disabled": true},
         state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play", "disabled": false},
         state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done", "disabled": false}
     }
-    $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
-    $Hint.get_node("BtnHint").text = hints[state]["cmd"]
-    $Hint.get_node("BtnHint").disabled = hints[state]["disabled"]
-    if hiding_hint_tween: hiding_hint_tween.kill()
-    var tween = create_tween()
-    tween.tween_property($Hint, "global_position", hint_position, 0.4).from(hint_position - Vector2(500,0))
-    $Hint.visible = true
+    if hints.has(state):
+        $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
+        $Hint.get_node("BtnHint").text = hints[state]["cmd"]
+        $Hint.get_node("BtnHint").disabled = hints[state]["disabled"]
     
     
 func hide_hint():

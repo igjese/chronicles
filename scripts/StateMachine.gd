@@ -3,6 +3,7 @@ class_name SM
 enum {ENTER, EXIT, PROCESS, INPUT}
 var states
 var current_state
+var current_state_id
 var last_printed
 
 ''' Example how to initialize state machine:
@@ -14,9 +15,9 @@ func _init(states_dict):
     states = states_dict
 
 func change_state(new_state):
-    #print("change state: ", current_state, " --> ", states[new_state])
     var old_state = current_state
     current_state = states[new_state] if states.has(new_state) else null
+    current_state_id = new_state if states.has(new_state) else -1
     
     if current_state != old_state:
         if old_state and old_state.has(EXIT): 

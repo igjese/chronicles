@@ -96,12 +96,19 @@ func queue_effects(card):
     if card["discard"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.DISCARD, "discard", card["discard"]))
         
+        
+func glow_valid_buys():
+    glow_slot_group(Game.gui_main.get_node("Resources"),Color.GREEN, Game.money)
+    glow_slot_group(Game.gui_main.get_node("Actions"),Color.GREEN, Game.money)
+        
 
 func glow_slot_group(slot_group, color, money_treshold = 999):
     for slot in slot_group.get_children():
         if slot.card_count() > 0:
             if slot.top_card().cost_money <= money_treshold:
                 slot.start_glow(color)
+            else:
+                slot.stop_glow()
             
             
 func stop_glow_slot_group(slot_group):
