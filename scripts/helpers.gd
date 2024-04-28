@@ -144,3 +144,11 @@ func get_hand_resource_cards():
                 resources.append(card)
     return resources
     
+
+func valid_buy(card):
+    if card.cost_money <= Game.money:
+        if card.slot() in Game.gui_main.get_node("Resources").get_children():
+            return true
+        if card.slot() in Game.gui_main.get_node("Actions").get_children():
+            return true
+    return false

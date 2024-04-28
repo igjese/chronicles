@@ -320,6 +320,11 @@ func buy_cards_enter():
 
 
 func buy_cards_input(data):
-    # TODO: card clicked
-    pass
-
+    if typeof(data) == typeof(CardScene):
+        if Game.buys > 0 and helpers.valid_buy(data):
+            print("card purchased: ", data.card_name)
+            pass # TODO: fly card to dicarded, decrease money and buy, stop_glow
+    elif typeof(data) == TYPE_INT:
+        if data == gui_play.HINT_BTN_PRESSED:
+            print("done buying")
+            pass # TODO: where to next?

@@ -62,20 +62,16 @@ func apply_cheat(index):
             match option_text:
                 "PLAY_ACTION": sm.change_state(state_loop.PLAY_ACTION)
                 "PLAY_RESOURCES": sm.change_state(state_loop.PLAY_RESOURCES)
-
-
+                
 func show_hint(state):
-    print("show hint", $Hint.global_position)
-    var msg = "Done"
-    var cmd = $Hint.get_node("BtnHint").text
-    match state:
-        state_loop.DISCARD: msg = "Discard %d cards." % Game.cards_to_select
-        state_loop.PLAY_RESOURCES: 
-            msg = "Play your resources."
-            cmd = "Play"
-        state_loop.BUY_CARDS: msg = "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money]
-    $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % msg
-    $Hint.get_node("BtnHint").text = cmd
+    var hints = {
+        state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "cmd": "!", "disabled": true},
+        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Done", "disabled": false},
+        state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done", "disabled": false}
+    }
+    $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
+    $Hint.get_node("BtnHint").text = hints[state]["cmd"]
+    $Hint.get_node("BtnHint").disabled = hints[state]["disabled"]
     if hiding_hint_tween: hiding_hint_tween.kill()
     var tween = create_tween()
     tween.tween_property($Hint, "global_position", hint_position, 0.4).from(hint_position - Vector2(500,0))
