@@ -13,6 +13,12 @@ func add_card(card_node):
     update_qty()
     if old_parent and old_parent.has_method("update_qty"):
             old_parent.update_qty() 
+            old_parent.stop_glow_if_count()
+            
+            
+func stop_glow_if_count(count=0):
+    if get_node("cards").get_child_count() <= count:
+        stop_glow()
 
 
 func update_qty():

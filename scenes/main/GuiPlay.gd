@@ -18,6 +18,7 @@ enum {HINT_BTN_PRESSED, STARTGAME_BTN_PRESSED}
 func _ready():
     Game.resources_updated.connect(refresh_statusbar)
     Game.statuses_updated.connect(refresh_statusbar)
+    Game.to_select_updated.connect(refresh_statusbar)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
     hint_position = $Hint.global_position
 
@@ -78,13 +79,14 @@ func update_hint():
     var state = sm.current_state_id
     var hints = {
         state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "cmd": "!", "disabled": true},
-        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play", "disabled": false},
-        state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done", "disabled": false}
+        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play",},
+        state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done"},
+        state_loop.TRASH: {"msg": "Trash up to %d cards." % Game.cards_to_select, "cmd": "Done"},
     }
     if hints.has(state):
         $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
         $Hint.get_node("BtnHint").text = hints[state]["cmd"]
-        $Hint.get_node("BtnHint").disabled = hints[state]["disabled"]
+        if hints.has("disabled"): $Hint.get_node("BtnHint").disabled = hints[state]["disabled"]
     
     
 func hide_hint():

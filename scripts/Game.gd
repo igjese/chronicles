@@ -2,6 +2,7 @@ extends Node
 
 signal resources_updated()
 signal statuses_updated()
+signal to_select_updated()
 
 var cards_by_name = {}
 var sm = null
@@ -12,8 +13,12 @@ var gui_main = null
 var card_stack = []
 var effect_stack = []
 
-var cards_to_select = 0
 var max_cost = 0
+
+var cards_to_select:
+    set(value): 
+        cards_to_select = value
+        to_select_updated.emit()
 
 var turn: 
     set(value): 
@@ -46,3 +51,4 @@ func _ready():
     army = 0
     actions = 1
     buys = 1
+    cards_to_select = 0

@@ -14,6 +14,7 @@ extends Node
 @onready var challenge_slot = get_node("/root/Main/Challenge")
 @onready var hand_slots = get_node("/root/Main/Hand")
 @onready var discarded_slot = get_node("/root/Main/Discarded")
+@onready var trash_slot = get_node("/root/Main/Trash")
 @onready var deck_slot = get_node("/root/Main/Deck")
 @onready var offscreen_top = get_node("/root/Main/Offscreen/Top")
 @onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
@@ -25,7 +26,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -43,11 +44,12 @@ var sm:= SM.new({
     ACTIVATE_CHALLENGE: {SM.ENTER: activate_challenge_enter},
     ACTIVATE_CARD: {SM.ENTER: activate_card_enter},
     APPLY_EFFECT: {SM.ENTER: apply_effect_enter},
-    DISCARD: {SM.ENTER: discard_enter, SM.PROCESS: discard_process, SM.INPUT: discard_input},
+    DISCARD: {SM.ENTER: discard_enter, SM.INPUT: discard_input, SM.EXIT: discard_exit},
     PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input},
     PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
     BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit},
-    CLEANUP: {SM.ENTER: cleanup_enter}
+    CLEANUP: {SM.ENTER: cleanup_enter},
+    TRASH: {SM.ENTER: trash_enter, SM.INPUT: trash_input, SM.EXIT: trash_exit}
 })
 
 
@@ -265,6 +267,7 @@ func apply_effect_enter():
         Game.max_cost = effect.max_cost
         match  effect.effect_id:
             Effect.DISCARD: sm.change_state(DISCARD)
+            Effect.TRASH: sm.change_state(TRASH)
             _ : pass # TODO: other effects
     else:
         sm.change_state(ACTIVATE_CARD)
@@ -277,16 +280,15 @@ func discard_enter():
 
 func discard_input(card):
     if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-        helpers.stop_glow_slot_group(hand_slots)
         card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card))
-        await get_tree().create_timer(0.4).timeout
         Game.cards_to_select -= 1
-        
-        
-func discard_process(_delta):
     if Game.cards_to_select <= 0:
-        gui_play.hide_hint()
         sm.change_state(APPLY_EFFECT)
+        gui_play.hide_hint()
+        
+        
+func discard_exit():
+    helpers.stop_glow_slot_group(hand_slots)
 
     
 func play_action_enter():
@@ -345,3 +347,27 @@ func buy_cards_exit():
 
 func cleanup_enter():
     pass
+
+
+func trash_enter():
+    helpers.glow_slot_group(hand_slots, Color.GREEN)
+    gui_play.show_hint()
+
+
+func trash_input(data):
+    if typeof(data) == typeof(CardScene):
+        var card : CardScene = data
+        if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+            card.slot().stop_glow_if_count(1)
+            card.fly_and_flip(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card))
+            Game.cards_to_select -= 1
+    elif typeof(data) == TYPE_INT:
+        if data == gui_play.HINT_BTN_PRESSED:
+            sm.change_state(APPLY_EFFECT)
+    if Game.cards_to_select <= 0:
+        sm.change_state(APPLY_EFFECT)
+
+
+func trash_exit():
+    helpers.stop_glow_slot_group(hand_slots)
+    gui_play.hide_hint()

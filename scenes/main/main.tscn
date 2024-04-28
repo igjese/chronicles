@@ -709,6 +709,13 @@ offset_top = 735.0
 offset_right = 103.0
 offset_bottom = 885.0
 
+[node name="Trash" parent="." instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -57.0
+offset_top = 1143.0
+offset_right = 93.0
+offset_bottom = 1293.0
+
 [node name="Offscreen" type="Node2D" parent="."]
 
 [node name="Top" type="Node2D" parent="Offscreen"]
