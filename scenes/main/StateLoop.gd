@@ -11,6 +11,7 @@ extends Node
 @onready var intro_startgame = gui_intro.get_node("BtnStartGame")
 @onready var resource_slots = get_node("/root/Main/Resources")
 @onready var action_slots = get_node("/root/Main/Actions")
+@onready var table_slots = get_node("/root/Main/Table")
 @onready var challenge_slot = get_node("/root/Main/Challenge")
 @onready var hand_slots = get_node("/root/Main/Hand")
 @onready var discarded_slot = get_node("/root/Main/Discarded")
@@ -77,7 +78,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        helpers.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame])
+        helpers.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame, table_slots])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -233,6 +234,7 @@ func intro_startgame_exit():
 func start_play_enter(): 
     helpers.hide([gui_hint])
     context = CONTEXT_PLAY
+    table_slots.visible = true
     Game.turn = 1  
     await get_tree().create_timer(1).timeout
     gui_play.z_index = 2
@@ -293,14 +295,33 @@ func discard_exit():
     
 func play_action_enter():
     if Game.actions > 0 and helpers.has_actions():
-        pass # TODO: glow valid actions
+        helpers.glow_valid_actions()
+        gui_play.show_hint() 
     else:
-        sm.change_state(PLAY_RESOURCES)
+        sm.change_state(BUY_CARDS)
     
     
 func play_action_input(data):
-    pass # TODO: stop glow, fly card to table, cards.push_front, sm.activate_card
-    
+    if typeof(data) == typeof(CardScene):
+        var card : CardScene = data
+        if Game.actions > 0 and card.card_type == "Action":
+            Game.actions -= 1
+            var target_slot = helpers.find_slot_for_card(card, table_slots)
+            card.fly(card.slot(), target_slot, 0.4, 0, target_slot.add_card.bind(card))
+            card.slot().stop_glow_if_count(1)
+            Game.card_stack.push_front(card)
+            await get_tree().create_timer(0.4).timeout
+            sm.change_state(ACTIVATE_CARD)
+    elif typeof(data) == TYPE_INT:
+        if data == gui_play.HINT_BTN_PRESSED:
+            sm.change_state(PLAY_RESOURCES)
+    if Game.actions <= 0:
+        sm.change_state(PLAY_RESOURCES)
+        
+        
+func play_action_exit():
+    helpers.stop_glow_slot_group(hand_slots)
+    gui_play.hide_hint()
     
 func play_resources_enter():
     # TODO: if no resources, proceed to buy
@@ -327,7 +348,6 @@ func buy_cards_input(data):
     if typeof(data) == typeof(CardScene):
         var card : CardScene = data
         if Game.buys > 0 and helpers.valid_buy(card):
-            print("card purchased: ", card.card_name)
             Game.money -= card.cost_money
             Game.buys -= 1
             card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, discarded_slot.add_card.bind(card))

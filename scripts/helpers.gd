@@ -159,3 +159,11 @@ func valid_buy(card):
         if card.slot() in Game.gui_main.get_node("Actions").get_children():
             return true
     return false
+
+
+func glow_valid_actions():
+    for slot in Game.gui_main.get_node("Hand").get_children():
+        if slot.top_card() and slot.top_card().card_type == "Action":
+            slot.start_glow(Color.GREEN)
+        else:
+            slot.stop_glow()

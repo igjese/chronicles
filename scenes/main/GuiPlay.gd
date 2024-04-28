@@ -55,8 +55,8 @@ func update_resource_display(resource_node, resource_name, duration, delay):
 func apply_cheat(index):
     var option_text = $CheatValue.get_popup().get_item_text(index)
     match $CheatAction.get_item_index($CheatAction.get_selected_id()):
-        0: # Put action card into Hand1
-            helpers.spawn_card(Game.cards_by_name[option_text], get_node("/root/Main/Hand/Hand1/cards"),CardScene.FACE_UP)
+        0: # Put action card into Hand7
+            helpers.spawn_card(Game.cards_by_name[option_text], get_node("/root/Main/Hand/Hand8/cards"),CardScene.FACE_UP)
         1: # Put history card on Challenge top and run it
             helpers.spawn_card(Game.cards_by_name[option_text], get_node("/root/Main/Challenge/cards"),CardScene.FACE_UP)
             Game.card_stack.clear()
@@ -82,6 +82,7 @@ func update_hint():
         state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play",},
         state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done"},
         state_loop.TRASH: {"msg": "Trash up to %d cards." % Game.cards_to_select, "cmd": "Done"},
+        state_loop.PLAY_ACTION: {"msg": "Play your action cards.", "cmd": "Done"}
     }
     if hints.has(state):
         $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]

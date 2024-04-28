@@ -31,7 +31,9 @@ func update_qty():
 
 
 func top_card():
-    return self.get_node("cards").get_children()[-1]
+    if $cards.get_child_count() == 0:
+        return null
+    return $cards.get_children()[-1]
     
     
 func pulse_qty_for_flip(duration, start_delay):

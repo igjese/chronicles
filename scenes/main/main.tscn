@@ -576,6 +576,81 @@ offset_top = 154.0
 offset_right = 766.0
 offset_bottom = 304.0
 
+[node name="Table" type="Control" parent="."]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 3
+anchors_preset = 0
+offset_left = 498.0
+offset_top = 410.0
+offset_right = 1264.0
+offset_bottom = 737.0
+
+[node name="Table1" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+
+[node name="Table2" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 154.0
+offset_right = 304.0
+
+[node name="Table3" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 308.0
+offset_right = 458.0
+
+[node name="Table4" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 462.0
+offset_right = 612.0
+
+[node name="Table5" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 616.0
+offset_right = 766.0
+
+[node name="Table6" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_top = 154.0
+offset_bottom = 304.0
+
+[node name="Table7" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 154.0
+offset_top = 154.0
+offset_right = 304.0
+offset_bottom = 304.0
+
+[node name="Table8" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 308.0
+offset_top = 154.0
+offset_right = 458.0
+offset_bottom = 304.0
+
+[node name="Table9" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 462.0
+offset_top = 154.0
+offset_right = 612.0
+offset_bottom = 304.0
+
+[node name="Table10" parent="Table" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+offset_left = 616.0
+offset_top = 154.0
+offset_right = 766.0
+offset_bottom = 304.0
+
 [node name="Challenge" parent="." instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 offset_left = 151.0
