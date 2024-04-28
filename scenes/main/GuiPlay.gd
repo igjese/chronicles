@@ -10,12 +10,16 @@ extends Control
 
 var helpers = Helpers.new()
 
+var hint_position
+var hiding_hint = false
+
 enum {HINT_BTN_PRESSED, STARTGAME_BTN_PRESSED}
 
 func _ready():
     Game.resources_updated.connect(refresh_statusbar)
     Game.statuses_updated.connect(refresh_statusbar)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
+    hint_position = $Hint.global_position
 
 
 func refresh_statusbar():
@@ -65,24 +69,30 @@ func show_hint(state):
     var msg = "Done"
     var cmd = $Hint.get_node("BtnHint").text
     match state:
-        state_loop.DISCARD: msg = "Discard %s card." % Game.cards_to_select
+        state_loop.DISCARD: msg = "Discard %d cards." % Game.cards_to_select
         state_loop.PLAY_RESOURCES: 
             msg = "Play your resources."
             cmd = "Play"
+        state_loop.BUY_CARDS: msg = "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money]
     $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % msg
     $Hint.get_node("BtnHint").text = cmd
+    if hiding_hint: hiding_hint.kill()
     var tween = create_tween()
-    tween.tween_property($Hint, "global_position", $Hint.global_position, 0.4).from($Hint.global_position - Vector2(500,0))
+    tween.tween_property($Hint, "global_position", hint_position, 0.4).from(hint_position - Vector2(500,0))
     $Hint.visible = true
     
     
 func hide_hint():
-    var original_position = $Hint.global_position
     var tween = create_tween()
-    tween.tween_property($Hint, "global_position", $Hint.global_position - Vector2(500,0), 0.4)
-    await get_tree().create_timer(0.45).timeout
+    hiding_hint = tween
+    tween.tween_property($Hint, "global_position", hint_position - Vector2(500,0), 0.4)
+    tween.tween_callback(post_hide_hint)
+    
+
+func post_hide_hint():
     $Hint.visible = false
-    $Hint.global_position = original_position
+    hiding_hint = null
+    $Hint.global_position = hint_position
 
 
 # SIGNALS AND INPUTS #################

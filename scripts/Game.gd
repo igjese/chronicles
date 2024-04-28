@@ -41,8 +41,8 @@ var buys:
         statuses_updated.emit()
 
 func _ready():
-    turn = 0
+    turn = 1
     money = 0
     army = 0
-    actions = 0
-    buys = 0
+    actions = 1
+    buys = 1
