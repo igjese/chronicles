@@ -73,7 +73,7 @@ func fly_and_flip(start_node, end_node, duration, start_delay, callback, sound):
     fly(start_node, end_node, duration, start_delay, callback, sound)
     var tween = create_tween()
     tween.tween_interval(start_delay)
-    tween.tween_property(self, "scale", Vector2(0,1.3), duration/2)
+    tween.tween_property(self, "scale", Vector2(0.05,1), duration/2)
     tween.tween_callback(self.set_face.bind(new_face))
     tween.tween_property(self, "scale", Vector2(1,1), duration/2)
 
