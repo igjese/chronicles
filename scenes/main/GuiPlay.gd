@@ -24,17 +24,18 @@ func _ready():
     hint_position = $Hint.global_position
     
 
-func refresh_money():
-    update_resource_badge(gui_money, "money", 0.4, 0.2) 
+func refresh_money(increment):
+    update_resource_badge(gui_money, "money", 0.4, 0.2, increment) 
     
     
-func refresh_army():
+func refresh_army(increment):
     var delay = 0.2
     if money_being_refreshed: delay += 0.3
-    update_resource_badge(gui_army, "army", 0.4, delay) 
+    update_resource_badge(gui_army, "army", 0.4, delay, increment) 
 
         
-func update_resource_badge(resource_node, resource_name, duration, delay):
+func update_resource_badge(resource_node, resource_name, duration, delay, increment):
+    print(resource_name, " ", resource_node.text, "->", Game[resource_name])
     if resource_name == "money": money_being_refreshed = true
     await get_tree().create_timer(delay).timeout
     var tween = create_tween()
@@ -42,7 +43,8 @@ func update_resource_badge(resource_node, resource_name, duration, delay):
     tween.tween_property(resource_node, "scale", Vector2(1, 1), duration/2).set_ease(Tween.EASE_OUT)
     
     await get_tree().create_timer(duration/2).timeout
-    if Game[resource_name] > int(resource_node.text):
+    print("...", resource_name, " ", resource_node.text, "->", Game[resource_name])
+    if increment > 0:
         sound_coin.play()
     else:
         sound_punch.play()

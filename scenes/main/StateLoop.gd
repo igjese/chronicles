@@ -46,7 +46,7 @@ var sm:= SM.new({
     ACTIVATE_CARD: {SM.ENTER: activate_card_enter},
     APPLY_EFFECT: {SM.ENTER: apply_effect_enter},
     DISCARD: {SM.ENTER: discard_enter, SM.INPUT: discard_input, SM.EXIT: discard_exit},
-    PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input},
+    PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input, SM.EXIT: play_action_exit},
     PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
     BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit},
     CLEANUP: {SM.ENTER: cleanup_enter},
@@ -56,9 +56,9 @@ var sm:= SM.new({
 
 func _ready():
     Game.sm = sm
-    Game.gui_play = gui_play
-    Game.gui_intro = gui_intro
-    Game.gui_main = get_node("/root/Main")
+    Game.connect_gui(get_node("/root/Main"))
+    helpers.connect_gui(get_node("/root/Main"))
+
 
 enum {CONTEXT_INTRO, CONTEXT_PLAY}
 
@@ -312,9 +312,11 @@ func play_action_input(data):
             Game.card_stack.push_front(card)
             await get_tree().create_timer(0.4).timeout
             sm.change_state(ACTIVATE_CARD)
+            return
     elif typeof(data) == TYPE_INT:
         if data == gui_play.HINT_BTN_PRESSED:
             sm.change_state(PLAY_RESOURCES)
+            return
     if Game.actions <= 0:
         sm.change_state(PLAY_RESOURCES)
         
@@ -367,7 +369,9 @@ func buy_cards_exit():
 
 
 func cleanup_enter():
-    pass
+    await get_tree().create_timer(1).timeout
+    helpers.discard_slot_group(hand_slots)
+    helpers.discard_slot_group(table_slots)
 
 
 func trash_enter():

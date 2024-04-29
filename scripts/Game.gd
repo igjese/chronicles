@@ -1,7 +1,7 @@
 extends Node
 
-signal money_updated
-signal army_updated
+signal money_updated(increment)
+signal army_updated(increment)
 signal info_updated
 
 var cards_by_name = {}
@@ -25,17 +25,19 @@ var turn:
         turn = value
         info_updated.emit()
     
-var money:
+var money = 0:
     set(value): 
         if money == value: return
+        var old_value = money
         money = value
-        money_updated.emit()
+        money_updated.emit(value - old_value)
         
-var army:
+var army = 0:
     set(value):
         if army == value: return
+        var old_value = army
         army = value
-        army_updated.emit()
+        army_updated.emit(value - old_value)
         
 var actions:
     set(value):
@@ -54,3 +56,8 @@ func _ready():
     actions = 1
     buys = 1
     cards_to_select = 0
+    
+    
+func connect_gui(gui_main):
+    gui_play = gui_main.get_node("GuiPlay")
+    gui_intro = gui_main.get_node("GuiIntro")

@@ -3,6 +3,18 @@ extends Node
 
 var card_scene = preload("res://scenes/card/card.tscn")
 
+var resource_slots
+var action_slots
+var hand_slots
+var discarded_slot
+
+
+func connect_gui(gui_main):
+    resource_slots = gui_main.get_node("Resources")
+    action_slots = gui_main.get_node("Actions")
+    hand_slots = gui_main.get_node("Hand")
+    discarded_slot = gui_main.get_node("Discarded")
+
 
 func get_cards_by_type(card_type: String) -> Array:
     var cards_of_type = []
@@ -98,8 +110,8 @@ func queue_effects(card):
         
         
 func glow_valid_buys():
-    glow_slot_group(Game.gui_main.get_node("Resources"),Color.GREEN, Game.money)
-    glow_slot_group(Game.gui_main.get_node("Actions"),Color.GREEN, Game.money)
+    glow_slot_group(resource_slots, Color.GREEN, Game.money)
+    glow_slot_group(action_slots, Color.GREEN, Game.money)
         
 
 func glow_slot_group(slot_group, color, money_treshold = 999):
@@ -137,7 +149,7 @@ func prepare_challenges():
 
 
 func has_actions():
-    for slot : SlotScene in Game.gui_main.get_node("Hand").get_children():
+    for slot : SlotScene in hand_slots.get_children():
         if slot.card_count() > 0 and slot.top_card().card_type == "Action":
             return true
     return false
@@ -145,7 +157,7 @@ func has_actions():
 
 func get_hand_resource_cards():
     var resources = []
-    for slot in Game.gui_main.get_node("Hand").get_children():
+    for slot in hand_slots.get_children():
         for card in slot.get_node("cards").get_children():
             if card.card_type in ["Money1", "Money2", "Army1", "Army2"]:
                 resources.append(card)
@@ -154,16 +166,25 @@ func get_hand_resource_cards():
 
 func valid_buy(card):
     if card.cost_money <= Game.money:
-        if card.slot() in Game.gui_main.get_node("Resources").get_children():
+        if card.slot() in resource_slots.get_children():
             return true
-        if card.slot() in Game.gui_main.get_node("Actions").get_children():
+        if card.slot() in action_slots.get_children():
             return true
     return false
 
 
 func glow_valid_actions():
-    for slot in Game.gui_main.get_node("Hand").get_children():
+    for slot in hand_slots.get_children():
         if slot.top_card() and slot.top_card().card_type == "Action":
             slot.start_glow(Color.GREEN)
         else:
             slot.stop_glow()
+
+
+func discard_slot_group(slot_group):
+    for slot in slot_group.get_children():
+        var delay = 0
+        for card in slot.get_node("cards").get_children():
+            card.fly_and_flip(card.slot(), discarded_slot, 0.75, delay, discarded_slot.add_card.bind(card), CardScene.SOUND_SWOOP)
+            delay += 0.1713
+            
