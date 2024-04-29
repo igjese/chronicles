@@ -71,7 +71,6 @@ func apply_cheat(index):
                 "PLAY_RESOURCES": sm.change_state(state_loop.PLAY_RESOURCES)
                 
 func show_hint():
-    print("show hint - ", Game.sm.current_state)
     update_hint()
     if hiding_hint_tween: hiding_hint_tween.kill()
     var tween = create_tween()
@@ -95,7 +94,6 @@ func update_hint():
     
     
 func hide_hint():
-    print("hide hint - ", Game.sm.current_state)
     var tween = create_tween()
     hiding_hint_tween = tween
     tween.tween_property($Hint, "global_position", $HintHidden.global_position, 0.4)

@@ -798,11 +798,15 @@ offset_bottom = 1293.0
 [node name="Top" type="Node2D" parent="Offscreen"]
 position = Vector2(588, -255)
 
-[node name="Left" type="Node2D" parent="Offscreen"]
-position = Vector2(-191, 505)
-
 [node name="Bottom" type="Node2D" parent="Offscreen"]
 position = Vector2(621, 1175)
+
+[node name="Left" parent="Offscreen" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = -199.0
+offset_top = 475.0
+offset_right = -49.0
+offset_bottom = 625.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_uxlgd")

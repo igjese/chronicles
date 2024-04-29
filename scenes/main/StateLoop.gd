@@ -27,7 +27,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -50,7 +50,8 @@ var sm:= SM.new({
     PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
     BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit},
     CLEANUP: {SM.ENTER: cleanup_enter},
-    TRASH: {SM.ENTER: trash_enter, SM.INPUT: trash_input, SM.EXIT: trash_exit}
+    TRASH: {SM.ENTER: trash_enter, SM.INPUT: trash_input, SM.EXIT: trash_exit},
+    NEXT_TURN: {SM.ENTER: next_turn_enter}
 })
 
 
@@ -176,11 +177,15 @@ func deal_hand_enter():
     
 func deal_hand_process(_delta):
     if helpers.count_cards(hand_slots) == 5:
-        sm.change_state(INTRO_CHALLENGE)
+        if context == CONTEXT_INTRO:
+            sm.change_state(INTRO_CHALLENGE)
+        else:
+            sm.change_state(FLIP_CHALLENGE)
     
     
 func deal_hand_exit():
-    helpers.fade(intro_hand, helpers.FADE_IN, 3)
+    if context == CONTEXT_INTRO:
+        helpers.fade(intro_hand, helpers.FADE_IN, 3)
     
     
 func intro_challenge_enter():
@@ -206,13 +211,17 @@ func flip_challenge_enter():
     challenge_slot.pulse_qty_for_flip(0.6,0.2)
     await get_tree().create_timer(0.6).timeout
     challenge_slot.start_glow(Color.RED)
-    sm.change_state(INTRO_STARTGAME)
+    if context == CONTEXT_INTRO:
+        sm.change_state(INTRO_STARTGAME)
+    else:
+        sm.change_state(START_PLAY)
     
     
 func flip_challenge_exit():
-    intro_main.visible = false
-    helpers.fade(intro_challenge, helpers.FADE_IN, 3)
-    helpers.fade(intro_rightclick, helpers.FADE_IN, 3)
+    if context == CONTEXT_INTRO:
+        intro_main.visible = false
+        helpers.fade(intro_challenge, helpers.FADE_IN, 3)
+        helpers.fade(intro_rightclick, helpers.FADE_IN, 3)
     
     
 func intro_startgame_enter():
@@ -271,7 +280,7 @@ func apply_effect_enter():
             Effect.DISCARD: sm.change_state(DISCARD)
             Effect.TRASH: sm.change_state(TRASH)
             _ : 
-                print(effect)
+                print("APPLY EFFECT: ", effect)
                 sm.change_state(ACTIVATE_CARD)
     else:
         sm.change_state(ACTIVATE_CARD)
@@ -373,6 +382,9 @@ func cleanup_enter():
     await get_tree().create_timer(1).timeout
     helpers.discard_slot_group(hand_slots)
     helpers.discard_slot_group(table_slots)
+    var challenge_card = challenge_slot.top_card()
+    challenge_card.fly(challenge_slot, offscreen_left, 0.5, 0, offscreen_left.add_card.bind(challenge_card), CardScene.SOUND_SWOOP)
+    sm.change_state(NEXT_TURN)
 
 
 func trash_enter():
@@ -397,3 +409,16 @@ func trash_input(data):
 func trash_exit():
     helpers.stop_glow_slot_group(hand_slots)
     gui_play.hide_hint()
+
+
+func next_turn_enter():
+    await get_tree().create_timer(1).timeout
+    Game.turn += 1
+    Game.money = 0
+    Game.army = 0
+    Game.actions = 1
+    Game.buys = 1
+    Game.cards_to_select = 0
+    sm.change_state(DEAL_HAND)
+    
+    
