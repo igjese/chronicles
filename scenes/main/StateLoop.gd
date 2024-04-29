@@ -270,7 +270,9 @@ func apply_effect_enter():
         match  effect.effect_id:
             Effect.DISCARD: sm.change_state(DISCARD)
             Effect.TRASH: sm.change_state(TRASH)
-            _ : pass # TODO: other effects
+            _ : 
+                print(effect)
+                sm.change_state(ACTIVATE_CARD)
     else:
         sm.change_state(ACTIVATE_CARD)
     
@@ -285,9 +287,8 @@ func discard_input(card):
         card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
         Game.cards_to_select -= 1
     if Game.cards_to_select <= 0:
-        sm.change_state(APPLY_EFFECT)
         gui_play.hide_hint()
-        
+        sm.change_state(APPLY_EFFECT)
         
 func discard_exit():
     helpers.stop_glow_slot_group(hand_slots)

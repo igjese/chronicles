@@ -41,10 +41,8 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.960784, 0.968627, 0.0235294, 1)
-corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tswjk"]
 bg_color = Color(0.960784, 0.968627, 0.0235294, 1)
@@ -239,7 +237,7 @@ popup/item_2/id = 2
 
 [node name="Hint" type="Control" parent="GuiPlay"]
 anchors_preset = 0
-offset_left = -1193.0
+offset_left = -1329.0
 offset_top = 637.0
 offset_right = -863.0
 offset_bottom = 727.0
@@ -249,8 +247,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -135.0
-offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2gtei")
@@ -260,7 +256,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -119.0
+offset_left = 18.0
 offset_top = 6.0
 offset_right = -89.0
 offset_bottom = -6.0
@@ -278,10 +274,10 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 246.0
-offset_top = -86.0
-offset_right = -4.0
-offset_bottom = -2.0
+offset_left = 383.0
+offset_top = -85.0
+offset_right = -5.0
+offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -289,6 +285,12 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_tswjk")
 text = "Done"
+
+[node name="HintActive" type="Node2D" parent="GuiPlay"]
+position = Vector2(-1329, 637)
+
+[node name="HintHidden" type="Node2D" parent="GuiPlay"]
+position = Vector2(-1829, 637)
 
 [node name="GuiIntro" type="Control" parent="."]
 visible = false

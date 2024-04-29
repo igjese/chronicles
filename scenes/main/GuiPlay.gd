@@ -10,7 +10,6 @@ extends Control
 
 var helpers = Helpers.new()
 
-var hint_position
 var hiding_hint_tween = false
 var money_being_refreshed = false
 
@@ -21,7 +20,7 @@ func _ready():
     Game.army_updated.connect(refresh_army)
     Game.info_updated.connect(refresh_info)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
-    hint_position = $Hint.global_position
+    $Hint.global_position = $HintHidden.global_position
     
 
 func refresh_money(increment):
@@ -35,7 +34,6 @@ func refresh_army(increment):
 
         
 func update_resource_badge(resource_node, resource_name, duration, delay, increment):
-    print(resource_name, " ", resource_node.text, "->", Game[resource_name])
     if resource_name == "money": money_being_refreshed = true
     await get_tree().create_timer(delay).timeout
     var tween = create_tween()
@@ -43,7 +41,6 @@ func update_resource_badge(resource_node, resource_name, duration, delay, increm
     tween.tween_property(resource_node, "scale", Vector2(1, 1), duration/2).set_ease(Tween.EASE_OUT)
     
     await get_tree().create_timer(duration/2).timeout
-    print("...", resource_name, " ", resource_node.text, "->", Game[resource_name])
     if increment > 0:
         sound_coin.play()
     else:
@@ -74,10 +71,11 @@ func apply_cheat(index):
                 "PLAY_RESOURCES": sm.change_state(state_loop.PLAY_RESOURCES)
                 
 func show_hint():
+    print("show hint - ", Game.sm.current_state)
     update_hint()
     if hiding_hint_tween: hiding_hint_tween.kill()
     var tween = create_tween()
-    tween.tween_property($Hint, "global_position", hint_position, 0.4).from(hint_position - Vector2(500,0))
+    tween.tween_property($Hint, "global_position", $HintActive.global_position, 0.4)
     $Hint.visible = true
     
     
@@ -97,16 +95,11 @@ func update_hint():
     
     
 func hide_hint():
+    print("hide hint - ", Game.sm.current_state)
     var tween = create_tween()
     hiding_hint_tween = tween
-    tween.tween_property($Hint, "global_position", hint_position - Vector2(500,0), 0.4)
-    tween.tween_callback(post_hide_hint)
-    
-
-func post_hide_hint():
-    $Hint.visible = false
-    hiding_hint_tween = null
-    $Hint.global_position = hint_position
+    tween.tween_property($Hint, "global_position", $HintHidden.global_position, 0.4)
+    tween.tween_callback(func(): hiding_hint_tween = null)
 
 
 # SIGNALS AND INPUTS #################
