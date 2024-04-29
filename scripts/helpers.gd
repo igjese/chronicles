@@ -7,13 +7,18 @@ var resource_slots
 var action_slots
 var hand_slots
 var discarded_slot
+var offscreen_bottom
+var gui_main
 
 
-func connect_gui(gui_main):
+func connect_gui(main_scene):
+    gui_main = main_scene
     resource_slots = gui_main.get_node("Resources")
     action_slots = gui_main.get_node("Actions")
     hand_slots = gui_main.get_node("Hand")
     discarded_slot = gui_main.get_node("Discarded")
+    offscreen_bottom = gui_main.get_node("Offscreen/Bottom")
+
 
 
 func get_cards_by_type(card_type: String) -> Array:
@@ -189,3 +194,27 @@ func discard_slot_group(slot_group):
             card.fly_and_flip(card.slot(), discarded_slot, 0.75, delay, discarded_slot.add_card.bind(card), sounds[randi() % sounds.size()])
             delay += 0.1713
             
+
+func reshuffle_discarded_to_deck():
+    var cards = discarded_slot.get_node("cards").get_children()
+    cards.reverse()
+    var delay = 0
+    for card in cards:
+        card.fly(discarded_slot, offscreen_bottom, 0.4, delay, offscreen_bottom.add_card.bind(card), CardScene.SOUND_DEAL)
+        delay += 0.1713
+    while discarded_slot.card_count() > 0:
+        await gui_main.get_tree().create_timer(0.1).timeout
+        
+    gui_main.get_node("Sounds/Shuffle").play()
+    await gui_main.get_tree().create_timer(2).timeout
+    
+    cards = offscreen_bottom.get_node("cards").get_children()
+    cards.shuffle()
+    delay = 0
+    for card in cards:
+        card.fly(offscreen_bottom, gui_main.get_node("Deck"), 0.4, delay, gui_main.get_node("Deck").add_card.bind(card), CardScene.SOUND_DEAL)
+        delay += 0.1713
+    while offscreen_bottom.card_count() > 0:
+        await gui_main.get_tree().create_timer(0.1).timeout
+        
+        

@@ -166,13 +166,21 @@ func prepare_deck_process(_delta):
     
 func deal_hand_enter():
     await get_tree().create_timer(0.2).timeout
-    var deck = deck_slot.get_node("cards").get_children()
-    deck.reverse()
-    for i in range(5):
-        var card = deck[i]
-        var target_slot = helpers.find_slot_for_card(card, hand_slots)
-        card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
-        await get_tree().create_timer(0.6).timeout
+    var cards_dealt = 0
+    while cards_dealt < 5:
+        var deck_cards = deck_slot.get_node("cards").get_children()
+        if deck_cards.is_empty():
+            await helpers.reshuffle_discarded_to_deck()
+            if deck_slot.card_count() == 0:
+                print("No cards left to deal even after reshuffling.")
+                break  # Break the loop if still no cards after reshuffling
+            continue
+        else:
+            var card = deck_cards[-1]
+            var target_slot = helpers.find_slot_for_card(card, hand_slots)
+            card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
+            cards_dealt += 1
+            await get_tree().create_timer(0.6).timeout
     
     
 func deal_hand_process(_delta):
