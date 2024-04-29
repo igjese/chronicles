@@ -106,7 +106,7 @@ func deal_resources():
             var card = helpers.spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = resource_slots.get_node(card_type)
-            card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card))
+            card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card), CardScene.SOUND_DEAL)
         start_delay += 0.15
         
         
@@ -127,7 +127,7 @@ func deal_actions_enter():
             var card = helpers.spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = action_slots.get_node("Action" + str(i+1))
-            card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card))
+            card.fly(offscreen_top, target_node, 0.35, start_delay, target_node.add_card.bind(card), CardScene.SOUND_DEAL)
         start_delay += 0.15
         
         
@@ -154,7 +154,7 @@ func prepare_deck_enter():
     var start_delay = 0
     for card_data in players_deck:
         var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
-        card.fly(offscreen_left, deck_slot, 0.35, start_delay, deck_slot.add_card.bind(card))
+        card.fly(offscreen_left, deck_slot, 0.35, start_delay, deck_slot.add_card.bind(card), CardScene.SOUND_DEAL)
         start_delay += 0.25 + randf_range(-0.05, 0.05)
     
     
@@ -192,7 +192,7 @@ func deal_challenges_enter():
     var start_delay = 0
     for card_data in challenges:
         var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
-        card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card))
+        card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card), CardScene.SOUND_DEAL)
         start_delay += 0.12
 
     
@@ -282,7 +282,7 @@ func discard_enter():
 
 func discard_input(card):
     if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-        card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card))
+        card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
         Game.cards_to_select -= 1
     if Game.cards_to_select <= 0:
         sm.change_state(APPLY_EFFECT)
@@ -307,7 +307,7 @@ func play_action_input(data):
         if Game.actions > 0 and card.card_type == "Action":
             Game.actions -= 1
             var target_slot = helpers.find_slot_for_card(card, table_slots)
-            card.fly(card.slot(), target_slot, 0.4, 0, target_slot.add_card.bind(card))
+            card.fly(card.slot(), target_slot, 0.4, 0, target_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             card.slot().stop_glow_if_count(1)
             Game.card_stack.push_front(card)
             await get_tree().create_timer(0.4).timeout
@@ -351,7 +351,7 @@ func buy_cards_input(data):
         if Game.buys > 0 and helpers.valid_buy(card):
             Game.money -= card.cost_money
             Game.buys -= 1
-            card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, discarded_slot.add_card.bind(card))
+            card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             helpers.glow_valid_buys()
     elif typeof(data) == TYPE_INT:
         if data == gui_play.HINT_BTN_PRESSED:
@@ -380,7 +380,7 @@ func trash_input(data):
         var card : CardScene = data
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.slot().stop_glow_if_count(1)
-            card.fly_and_flip(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card))
+            card.fly(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card), CardScene.SOUND_SWOOP)
             Game.cards_to_select -= 1
     elif typeof(data) == TYPE_INT:
         if data == gui_play.HINT_BTN_PRESSED:

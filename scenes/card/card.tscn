@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b7lbqvxcahm4s"]
+[gd_scene load_steps=11 format=3 uid="uid://b7lbqvxcahm4s"]
 
 [ext_resource type="Texture2D" uid="uid://db5uhwffo2cmu" path="res://visuals/card_back.png" id="1_getn5"]
 [ext_resource type="Script" path="res://scenes/card/card.gd" id="1_yu8kv"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://bjo1hm334rlt6" path="res://sounds/draw.wav" id="6_mox7c"]
 [ext_resource type="AudioStream" uid="uid://xkmbpmgf5gd0" path="res://sounds/flip.mp3" id="7_w2271"]
 [ext_resource type="AudioStream" uid="uid://blmp8u2dqintl" path="res://sounds/hit.wav" id="9_5je3x"]
+[ext_resource type="AudioStream" uid="uid://rcxmmyadrb6i" path="res://sounds/swoop_cards.wav" id="9_uk0yx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cxay"]
 bg_color = Color(0.960784, 0.811765, 0, 1)
@@ -92,6 +93,10 @@ volume_db = 10.0
 
 [node name="SoundHit" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("9_5je3x")
+volume_db = 10.0
+
+[node name="SoundSwoop" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_uk0yx")
 volume_db = 10.0
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

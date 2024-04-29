@@ -19,8 +19,15 @@ var take_money2: int = 0
 var take_5: int = 0
 var upgrade_money: int = 0
 
-enum { FACE_UP, FACE_DOWN, SOUND_DEAL, SOUND_DRAW, SOUND_HIT }
+enum { FACE_UP, FACE_DOWN, SOUND_DEAL, SOUND_DRAW, SOUND_HIT, SOUND_SWOOP}
 var face = FACE_DOWN
+
+@onready var sounds = {
+    SOUND_DEAL: $SoundDeal,
+    SOUND_DRAW: $SoundDraw,
+    SOUND_HIT: $SoundHit,
+    SOUND_SWOOP: $SoundSwoop
+}
 
 func set_face(face):
     $Back.visible = true if face == FACE_DOWN else false        
@@ -53,17 +60,17 @@ func set_card_data(card):
         $Cost.visible = false
 
     
-func fly(start_node, end_node, duration, start_delay, callback, sound=SOUND_DEAL):
+func fly(start_node, end_node, duration, start_delay, callback, sound):
     var tween = create_tween()
     tween.tween_interval(start_delay)
     tween.tween_property(self, "global_position", end_node.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_OUT)
-    tween.tween_callback($SoundDeal.play if sound == SOUND_DEAL else $SoundDraw.play)
+    tween.tween_callback(sounds[sound].play)
     tween.tween_callback(callback)
 
 
-func fly_and_flip(start_node, end_node, duration, start_delay, callback, sound=SOUND_DEAL):
+func fly_and_flip(start_node, end_node, duration, start_delay, callback, sound):
     var new_face = FACE_DOWN if face == FACE_UP else FACE_UP
-    fly(start_node, end_node, duration, start_delay, callback, SOUND_DRAW)
+    fly(start_node, end_node, duration, start_delay, callback, sound)
     var tween = create_tween()
     tween.tween_interval(start_delay)
     tween.tween_property(self, "scale", Vector2(0,1.3), duration/2)
