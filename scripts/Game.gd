@@ -30,14 +30,14 @@ var money = 0:
         if money == value: return
         var old_value = money
         money = value
-        money_updated.emit(value - old_value)
+        money_updated.emit(value - old_value, sm.current_state_id)
         
 var army = 0:
     set(value):
         if army == value: return
         var old_value = army
         army = value
-        army_updated.emit(value - old_value)
+        army_updated.emit(value - old_value, sm.current_state_id)
         
 var actions:
     set(value):

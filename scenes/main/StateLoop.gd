@@ -299,13 +299,16 @@ func discard_enter():
     gui_play.show_hint()
 
 
-func discard_input(card):
-    if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-        card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
-        Game.cards_to_select -= 1
-    if Game.cards_to_select <= 0:
-        gui_play.hide_hint()
-        sm.change_state(APPLY_EFFECT)
+func discard_input(data):
+    if typeof(data) == typeof(CardScene):
+        var card = data
+        if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            Game.cards_to_select -= 1
+        if Game.cards_to_select <= 0:
+            gui_play.hide_hint()
+            sm.change_state(APPLY_EFFECT)
+        
         
 func discard_exit():
     helpers.stop_glow_slot_group(hand_slots)

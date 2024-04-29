@@ -23,17 +23,17 @@ func _ready():
     $Hint.global_position = $HintHidden.global_position
     
 
-func refresh_money(increment):
-    update_resource_badge(gui_money, "money", 0.4, 0.2, increment) 
+func refresh_money(increment, original_state):
+    update_resource_badge(gui_money, "money", 0.4, 0.2, increment, original_state) 
     
     
-func refresh_army(increment):
+func refresh_army(increment, original_state):
     var delay = 0.2
     if money_being_refreshed: delay += 0.3
-    update_resource_badge(gui_army, "army", 0.4, delay, increment) 
+    update_resource_badge(gui_army, "army", 0.4, delay, increment, original_state) 
 
         
-func update_resource_badge(resource_node, resource_name, duration, delay, increment):
+func update_resource_badge(resource_node, resource_name, duration, delay, increment, original_state):
     if resource_name == "money": money_being_refreshed = true
     await get_tree().create_timer(delay).timeout
     var tween = create_tween()
@@ -41,10 +41,11 @@ func update_resource_badge(resource_node, resource_name, duration, delay, increm
     tween.tween_property(resource_node, "scale", Vector2(1, 1), duration/2).set_ease(Tween.EASE_OUT)
     
     await get_tree().create_timer(duration/2).timeout
-    if increment > 0:
-        sound_coin.play()
-    else:
-        sound_punch.play()
+    if original_state != state_loop.NEXT_TURN:
+        if increment > 0:
+            sound_coin.play()
+        else:
+            sound_punch.play()
     resource_node.text = str(Game[resource_name])
     if resource_name == "money": money_being_refreshed = false
     refresh_info()
