@@ -300,7 +300,7 @@ func apply_effect_enter():
     
     
 func discard_enter():
-    helpers.glow_slot_group(hand_slots, Color.GREEN)
+    helpers.glow_slot_group(hand_slots, Color.BLUE)
     gui_play.show_hint()
 
 
@@ -404,7 +404,7 @@ func cleanup_enter():
 
 
 func trash_enter():
-    helpers.glow_slot_group(hand_slots, Color.GREEN)
+    helpers.glow_slot_group(hand_slots, Color.RED)
     gui_play.show_hint()
 
 

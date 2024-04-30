@@ -808,13 +808,13 @@ offset_bottom = 670.0
 
 [node name="Bottom" parent="Offscreen" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
-offset_left = 255.0
-offset_top = 1132.0
-offset_right = 405.0
-offset_bottom = 1282.0
+offset_left = 111.0
+offset_top = 1138.0
+offset_right = 261.0
+offset_bottom = 1288.0
 
 [node name="BottomRight" type="Node2D" parent="Offscreen"]
-position = Vector2(1118, 1135)
+position = Vector2(1205, 1132)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_uxlgd")
