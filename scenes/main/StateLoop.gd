@@ -27,7 +27,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -51,7 +51,8 @@ var sm:= SM.new({
     BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit},
     CLEANUP: {SM.ENTER: cleanup_enter},
     TRASH: {SM.ENTER: trash_enter, SM.INPUT: trash_input, SM.EXIT: trash_exit},
-    NEXT_TURN: {SM.ENTER: next_turn_enter}
+    NEXT_TURN: {SM.ENTER: next_turn_enter},
+    DRAW_CARD: {SM.ENTER: draw_card_enter}
 })
 
 
@@ -287,6 +288,7 @@ func apply_effect_enter():
         match  effect.effect_id:
             Effect.DISCARD: sm.change_state(DISCARD)
             Effect.TRASH: sm.change_state(TRASH)
+            Effect.DRAW: sm.change_state(DRAW_CARD)
             _ : 
                 print("APPLY EFFECT: ", effect)
                 sm.change_state(ACTIVATE_CARD)
@@ -432,4 +434,12 @@ func next_turn_enter():
     Game.cards_to_select = 0
     sm.change_state(DEAL_HAND)
     
-    
+
+func draw_card_enter():
+    if deck_slot.card_count() == 0:
+        await helpers.reshuffle_discarded_to_deck()
+    var card = deck_slot.top_card()
+    var target_slot = helpers.find_slot_for_card(card, hand_slots)
+    card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
+    await get_tree().create_timer(0.6).timeout
+    sm.change_state(APPLY_EFFECT)

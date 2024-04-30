@@ -196,9 +196,11 @@ func discard_slot_group(slot_group):
             
 
 func reshuffle_discarded_to_deck():
+    print("reshuffle ", discarded_slot.card_count())
     var cards = discarded_slot.get_node("cards").get_children()
     cards.reverse()
     await move_cards(cards, discarded_slot, offscreen_bottom)
+    print("offscreen bottom %d (%d)" % [offscreen_bottom.card_count(), discarded_slot.card_count()])
         
     gui_main.get_node("Sounds/Shuffle").play()
     await gui_main.get_tree().create_timer(2).timeout
