@@ -24,11 +24,11 @@ func _ready():
     
 
 func refresh_money(increment, original_state, new_value):
-    update_resource_badge(gui_money, "money", 0.4, 0.2, increment, original_state, new_value) 
+    update_resource_badge(gui_money, "money", 0.4, 0.1, increment, original_state, new_value) 
     
     
 func refresh_army(increment, original_state, new_value):
-    var delay = 0.2
+    var delay = 0.1
     if money_being_refreshed: delay += 0.3
     update_resource_badge(gui_army, "army", 0.4, delay, increment, original_state, new_value) 
 
