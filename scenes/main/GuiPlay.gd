@@ -41,7 +41,7 @@ func update_resource_badge(resource_node, resource_name, duration, delay, increm
     tween.tween_property(resource_node, "scale", Vector2(1, 1), duration/2).set_ease(Tween.EASE_OUT)
     
     await get_tree().create_timer(duration/2).timeout
-    if original_state != state_loop.NEXT_TURN:
+    if original_state not in [state_loop.NEXT_TURN, state_loop.BUY_CARDS]:
         if increment > 0:
             sound_coin.play()
         else:
