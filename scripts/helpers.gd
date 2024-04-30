@@ -99,9 +99,9 @@ func queue_effects(card):
     if card["take_money2"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.TAKE_MONEY2, "take_money2"))
     if card["take_4"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TAKE, "take_4", card["take_4"], 4))
+        Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_4", card["take_4"], 4))
     if card["take_5"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TAKE, "take_5", card["take_5"], 5))
+        Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_5", card["take_5"], 5))
     if card["double_action"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION, "double_action"))
     if card["replace"] > 0:
@@ -197,11 +197,12 @@ func discard_slot_group(slot_group):
 
 func reshuffle_discarded_to_deck():
     print("Reshuffle ", discarded_slot.card_count())
-    for i in range(2):
+    for i in range(3):
         var cards = discarded_slot.get_node("cards").get_children()
         cards.reverse()
         await move_cards(cards, discarded_slot, offscreen_bottom, 0.3, 0.11, gui_main.get_node("Offscreen/BottomRight"))
-
+        if i < 2: await gui_main.get_tree().create_timer(0.1).timeout
+    
     gui_main.get_node("Sounds/Shuffle").play()
     await gui_main.get_tree().create_timer(2).timeout
     
@@ -218,3 +219,21 @@ func move_cards(cards, start_slot, end_slot, duration, delay, end_position=null)
         card.fly(start_slot, end_position, duration, delay_next, end_slot.add_card.bind(card), CardScene.SOUND_DEAL)
         delay_next += delay
 
+
+func glow_valid_free_cards():
+    for slot in action_slots.get_children():
+        if slot.top_card() and slot.top_card().cost_money <= Game.max_cost:
+            slot.start_glow(Color.GREEN)
+        else:
+            slot.stop_glow()
+    for slot in resource_slots.get_children():
+        if slot.top_card() and slot.top_card().cost_money <= Game.max_cost:
+            slot.start_glow(Color.GREEN)
+        else:
+            slot.stop_glow()
+
+
+func valid_free_card(card):
+    if card.cost_money <= Game.max_cost: 
+        return true
+    return false

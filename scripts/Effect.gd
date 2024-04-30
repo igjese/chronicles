@@ -1,7 +1,7 @@
 class_name Effect
 extends RefCounted
 
-enum {DRAW, TRASH, TAKE_MONEY2, TAKE, DOUBLE_ACTION, REPLACE, UPGRADE_2, UPGRADE_MONEY, DISCARD}
+enum {DRAW, TRASH, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION, REPLACE, UPGRADE_2, UPGRADE_MONEY, DISCARD}
 
 var effect_id = null
 var effect_name = null
