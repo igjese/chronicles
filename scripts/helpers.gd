@@ -200,7 +200,7 @@ func reshuffle_discarded_to_deck():
     for i in range(2):
         var cards = discarded_slot.get_node("cards").get_children()
         cards.reverse()
-        await move_cards(cards, discarded_slot, offscreen_bottom, 0.3, 0.11)
+        await move_cards(cards, discarded_slot, offscreen_bottom, 0.3, 0.11, gui_main.get_node("Offscreen/BottomRight"))
 
     gui_main.get_node("Sounds/Shuffle").play()
     await gui_main.get_tree().create_timer(2).timeout
@@ -211,9 +211,10 @@ func reshuffle_discarded_to_deck():
     while offscreen_bottom.card_count() > 0:
         await gui_main.get_tree().create_timer(0.1).timeout
         
-func move_cards(cards, start_slot, end_slot, duration, delay):
+func move_cards(cards, start_slot, end_slot, duration, delay, end_position=null):
     var delay_next = 0
+    if not end_position: end_position = end_slot
     for card in cards:
-        card.fly(start_slot, end_slot, duration, delay_next, end_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+        card.fly(start_slot, end_position, duration, delay_next, end_slot.add_card.bind(card), CardScene.SOUND_DEAL)
         delay_next += delay
 
