@@ -27,7 +27,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -52,7 +52,8 @@ var sm:= SM.new({
     CLEANUP: {SM.ENTER: cleanup_enter},
     TRASH: {SM.ENTER: trash_enter, SM.INPUT: trash_input, SM.EXIT: trash_exit},
     NEXT_TURN: {SM.ENTER: next_turn_enter},
-    DRAW_CARD: {SM.ENTER: draw_card_enter}
+    DRAW_CARD: {SM.ENTER: draw_card_enter},
+    TAKE_MONEY2: {SM.ENTER: take_money2_enter}
 })
 
 
@@ -173,7 +174,7 @@ func deal_hand_enter():
         if deck_cards.is_empty():
             await helpers.reshuffle_discarded_to_deck()
             if deck_slot.card_count() == 0:
-                print("No cards left to deal even after reshuffling.")
+                print("deal_hand_enter EXITED: No cards left to deal even after reshuffling.")
                 break  # Break the loop if still no cards after reshuffling
             continue
         else:
@@ -182,6 +183,7 @@ func deal_hand_enter():
             card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
             cards_dealt += 1
             await get_tree().create_timer(0.6).timeout
+    print("deal_hand_enter EXITED.")
     
     
 func deal_hand_process(_delta):
@@ -289,6 +291,7 @@ func apply_effect_enter():
             Effect.DISCARD: sm.change_state(DISCARD)
             Effect.TRASH: sm.change_state(TRASH)
             Effect.DRAW: sm.change_state(DRAW_CARD)
+            Effect.TAKE_MONEY2: sm.change_state(TAKE_MONEY2)
             _ : 
                 print("APPLY EFFECT: ", effect)
                 sm.change_state(ACTIVATE_CARD)
@@ -443,3 +446,12 @@ func draw_card_enter():
     card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
     await get_tree().create_timer(0.6).timeout
     sm.change_state(APPLY_EFFECT)
+    
+    
+func take_money2_enter():
+    var slot = resource_slots.get_node("Money2")
+    if slot.card_count() > 0:
+        var card = slot.top_card()
+        card.fly_and_flip(slot, discarded_slot, 0.55, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+        await get_tree().create_timer(0.6).timeout
+        sm.change_state(APPLY_EFFECT)

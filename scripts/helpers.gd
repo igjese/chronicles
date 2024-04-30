@@ -208,7 +208,7 @@ func reshuffle_discarded_to_deck():
     cards = offscreen_bottom.get_node("cards").get_children()
     cards.shuffle()
     await move_cards(cards, offscreen_bottom, gui_main.get_node("Deck"))
-    
+    print("exit reshuffle %d (%d)" % [offscreen_bottom.card_count(), discarded_slot.card_count()])
         
 func move_cards(cards, start_slot, end_slot):
     var delay = 0

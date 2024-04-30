@@ -8,6 +8,7 @@ func _ready():
 
 func add_card(card_node):
     var old_parent = card_node.get_parent().get_parent() if card_node.get_parent() else null
+    print("Card moved: %s from %s to %s" % [card_node.card_name, old_parent.name, self.name])
     card_node.reparent($cards)
     card_node.position = Vector2(0,0)
     update_qty()
