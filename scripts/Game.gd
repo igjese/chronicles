@@ -1,7 +1,7 @@
 extends Node
 
-signal money_updated(increment)
-signal army_updated(increment)
+signal money_updated(increment, current_state_id, new_value)
+signal army_updated(increment, current_state_id, new_value)
 signal info_updated
 
 var cards_by_name = {}
@@ -30,14 +30,14 @@ var money = 0:
         if money == value: return
         var old_value = money
         money = value
-        money_updated.emit(value - old_value, sm.current_state_id)
+        money_updated.emit(value - old_value, sm.current_state_id, value)
         
 var army = 0:
     set(value):
         if army == value: return
         var old_value = army
         army = value
-        army_updated.emit(value - old_value, sm.current_state_id)
+        army_updated.emit(value - old_value, sm.current_state_id, value)
         
 var actions:
     set(value):
