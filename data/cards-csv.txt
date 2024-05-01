@@ -34,7 +34,7 @@ Action;Magistrates;3;0;0;0;0;0;1;2;0;0;0;0;0;0;0
 Action;Latin Language;2;0;0;0;0;0;0;1;3;0;0;0;0;0;0
 Action;Saturnalia;5;0;0;0;0;0;0;0;0;0;0;0;0;0;1
 Action;Private Schools;4;0;0;0;0;0;0;0;0;0;0;1;0;0;0
-Action;Military Outposts;4;0;0;0;0;0;0;0;0;0;1;0;0;0;0
+Action;Military Outposts;4;0;0;0;0;0;0;1;0;0;1;0;0;0;0
 Action;Roman Phalanx;6;0;2;0;0;0;1;1;0;0;0;0;0;0;0
 Action;Urban Prefect;2;0;0;0;1;0;0;0;0;0;0;0;0;0;0
 Action;Debt Bondage;3;0;0;0;3;0;0;0;0;0;0;0;0;0;0

@@ -27,7 +27,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION}
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
     INTRO_RESOURCES: {SM.ENTER: intro_resources_enter},
@@ -54,7 +54,8 @@ var sm:= SM.new({
     NEXT_TURN: {SM.ENTER: next_turn_enter},
     DRAW_CARD: {SM.ENTER: draw_card_enter},
     TAKE_MONEY2: {SM.ENTER: take_money2_enter},
-    FREE_CARD: {SM.ENTER: free_card_enter, SM.EXIT: free_card_exit, SM.INPUT: free_card_input}
+    FREE_CARD: {SM.ENTER: free_card_enter, SM.EXIT: free_card_exit, SM.INPUT: free_card_input},
+    DOUBLE_ACTION: {SM.ENTER: double_action_enter, SM.EXIT: double_action_exit, SM.INPUT: double_action_input}
 })
 
 
@@ -296,8 +297,9 @@ func apply_effect_enter():
             Effect.FREE_CARD: 
                 Game.max_cost = effect.max_cost
                 sm.change_state(FREE_CARD)
+            Effect.DOUBLE_ACTION: sm.change_state(DOUBLE_ACTION)
             _ : 
-                print("APPLY EFFECT: ", effect)
+                print("APPLY EFFECT: ", effect.effect_name)
                 sm.change_state(ACTIVATE_CARD)
     else:
         sm.change_state(ACTIVATE_CARD)
@@ -479,6 +481,39 @@ func free_card_input(data):
             card.slot().stop_glow_if_count(1)
             card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
+    elif typeof(data) == TYPE_INT:
+        if data == gui_play.HINT_BTN_PRESSED:
+            sm.change_state(APPLY_EFFECT)
+    if Game.cards_to_select <= 0:
+        sm.change_state(APPLY_EFFECT)
+
+
+func double_action_enter():
+    if Game.actions > 0 and helpers.has_actions():
+        helpers.glow_valid_actions()
+        gui_play.show_hint() 
+    else:
+        sm.change_state(APPLY_EFFECT)
+    
+    
+func double_action_exit():
+    helpers.stop_glow_slot_group(hand_slots)
+    
+    
+func double_action_input(data):
+    if typeof(data) == typeof(CardScene):
+        var card : CardScene = data
+        if Game.cards_to_select > 0 and card.card_type == "Action":
+            Game.actions -= 1
+            Game.cards_to_select -= 1
+            var target_slot = helpers.find_slot_for_card(card, table_slots)
+            card.fly(card.slot(), target_slot, 0.4, 0, target_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.slot().stop_glow_if_count(1)
+            Game.card_stack.push_front(card)
+            Game.card_stack.push_front(card)
+            await get_tree().create_timer(0.4).timeout
+            sm.change_state(ACTIVATE_CARD)
+            return
     elif typeof(data) == TYPE_INT:
         if data == gui_play.HINT_BTN_PRESSED:
             sm.change_state(APPLY_EFFECT)

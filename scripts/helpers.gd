@@ -103,7 +103,7 @@ func queue_effects(card):
     if card["take_5"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_5", card["take_5"], 5))
     if card["double_action"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION, "double_action"))
+        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION, "double_action", card["double_action"]))
     if card["replace"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.REPLACE, "replace", card["replace"]))
     if card["upgrade_2"] > 0:
