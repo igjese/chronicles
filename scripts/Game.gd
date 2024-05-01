@@ -3,6 +3,7 @@ extends Node
 signal money_updated(increment, current_state_id, new_value)
 signal army_updated(increment, current_state_id, new_value)
 signal info_updated
+signal showcase_updated(card)
 
 var cards_by_name = {}
 var sm = null
@@ -14,6 +15,11 @@ var card_stack = []
 var effect_stack = []
 
 var max_cost = 0
+
+var showcase_card = null:
+    set(card):
+        showcase_card = card
+        showcase_updated.emit(card)
 
 var cards_to_select:
     set(value): 
@@ -48,6 +54,7 @@ var buys:
     set(value):
         buys = value
         info_updated.emit()
+
 
 func _ready():
     turn = 1

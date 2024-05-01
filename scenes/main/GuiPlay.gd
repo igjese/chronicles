@@ -19,6 +19,7 @@ func _ready():
     Game.money_updated.connect(refresh_money)
     Game.army_updated.connect(refresh_army)
     Game.info_updated.connect(refresh_info)
+    Game.showcase_updated.connect(update_showcase)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
     $Hint.global_position = $HintHidden.global_position
     
@@ -88,7 +89,6 @@ func update_hint():
         state_loop.TRASH: {"msg": "Trash up to %d cards." % Game.cards_to_select, "cmd": "Done"},
         state_loop.PLAY_ACTION: {"msg": "Play your action cards.", "cmd": "Done"},
         state_loop.FREE_CARD: {"msg": "Take card that costs up to %d." % Game.max_cost, "cmd": "Done"}
-
     }
     if hints.has(state):
         $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
@@ -101,6 +101,12 @@ func hide_hint():
     hiding_hint_tween = tween
     tween.tween_property($Hint, "global_position", $HintHidden.global_position, 0.4)
     tween.tween_callback(func(): hiding_hint_tween = null)
+    
+    
+func update_showcase(card):
+    if card:
+        get_node("Showcase").bbcode_text = "[b]%s[/b]%s" % [card["card_name"], card["history_text"]]
+        get_node("ShowcaseImg").texture = card.get_node("MainVisual").texture
 
 
 # SIGNALS AND INPUTS #################

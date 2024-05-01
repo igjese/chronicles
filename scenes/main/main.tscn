@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=19 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scenes/main/GuiPlay.gd" id="6_adhy6"]
 [ext_resource type="AudioStream" uid="uid://d2w8rabxrmf0x" path="res://sounds/clang.wav" id="6_cqido"]
 [ext_resource type="Script" path="res://scripts/Glow.gd" id="6_kh6bo"]
+[ext_resource type="Texture2D" uid="uid://cadvbqa05b5l0" path="res://visuals/cards/centuriate.png" id="6_oacvw"]
 [ext_resource type="AudioStream" uid="uid://c25pj1y3y2cbu" path="res://sounds/coin.wav" id="8_j162p"]
 [ext_resource type="AudioStream" uid="uid://bksnbiiry58ec" path="res://sounds/punch.wav" id="9_k1prl"]
 [ext_resource type="AudioStream" uid="uid://cu6a4t1e23wdo" path="res://sounds/shuffle.wav" id="10_2qwnw"]
@@ -292,6 +293,28 @@ position = Vector2(-1329, 637)
 
 [node name="HintHidden" type="Node2D" parent="GuiPlay"]
 position = Vector2(-1829, 637)
+
+[node name="ShowcaseImg" type="TextureRect" parent="GuiPlay"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 110.0
+offset_right = 326.0
+offset_bottom = 328.0
+texture = ExtResource("6_oacvw")
+
+[node name="Showcase" type="RichTextLabel" parent="GuiPlay"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 339.0
+offset_right = 571.0
+offset_bottom = 1003.0
+theme_override_colors/default_color = Color(0.929412, 0.941176, 0.870588, 1)
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 24
+theme_override_font_sizes/italics_font_size = 20
+bbcode_enabled = true
+text = "[b]Chronicles: Rise of Rome[/b]
+[i]Deck Building Solitaire Game[/i]"
 
 [node name="GuiIntro" type="Control" parent="."]
 visible = false

@@ -5,6 +5,8 @@ func _ready():
     print_scene_tree(get_tree().get_root())
     print_slot_and_card_trees() 
     load_card_definitions_from_csv()
+    load_history_texts_from_md()
+    $Discarded/qty.position.x = 20
     $StateLoop.start_game_loop($StateLoop.CONTEXT_INTRO)
 
 
@@ -89,3 +91,24 @@ func load_card_definitions_from_csv():
         Game.cards_by_name[card["name"]] = card
 
     file.close()
+
+
+func load_history_texts_from_md():
+    var path = "res://data/history.md"
+    var file = FileAccess.open(path, FileAccess.READ)
+    if !file:
+        print("Failed to open file: ", path)
+        return
+
+    var content = file.get_as_text()
+    file.close()
+
+    var lines = content.split("\n")
+    var current_card_name = ""
+    for line in lines:
+        if line.begins_with("### "):  # New card heading
+            current_card_name = line.substr(3).strip_edges()  # Remove '### ' prefix and non-printable chars at both sides
+            Game.cards_by_name[current_card_name]["history_text"] = ""
+        elif current_card_name != "" and not line.begins_with("#"):
+            # Append paragraph text to the current card's history, add newline for paragraph separation
+            Game.cards_by_name[current_card_name]["history_text"] += line.strip_edges() + "\n"

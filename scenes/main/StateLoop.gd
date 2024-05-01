@@ -223,6 +223,7 @@ func flip_challenge_enter():
     challenge_slot.top_card().flip_card(0.6, 0.2)
     challenge_slot.pulse_qty_for_flip(0.6,0.2)
     await get_tree().create_timer(0.6).timeout
+    Game.showcase_card = challenge_slot.top_card()
     challenge_slot.start_glow(Color.RED)
     if context == CONTEXT_INTRO:
         sm.change_state(INTRO_STARTGAME)

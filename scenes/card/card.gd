@@ -18,6 +18,7 @@ var take_4: int = 0
 var take_money2: int = 0
 var take_5: int = 0
 var upgrade_money: int = 0
+var history_text: String = ""
 
 enum { FACE_UP, FACE_DOWN, SOUND_DEAL, SOUND_DRAW, SOUND_HIT, SOUND_SWOOP}
 var face = FACE_DOWN
@@ -51,6 +52,7 @@ func set_card_data(card):
     take_money2 = card["take_money2"]
     take_5 = card["take_5"]
     upgrade_money = card["upgrade_money"]
+    history_text = card["history_text"]
     
     $Title.bbcode_text = "[center]%s[/center]" % card_name
     $MainVisual.texture = card["visual"]
