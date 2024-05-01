@@ -82,17 +82,17 @@ func show_hint():
 func update_hint():
     var state = sm.current_state_id
     var hints = {
-        state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "btn": "!", "disabled": true},
-        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "btn": "Play",},
-        state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money]},
-        state_loop.TRASH: {"msg": "Trash up to %d cards." % Game.cards_to_select},
-        state_loop.PLAY_ACTION: {"msg": "Play your action cards."},
-        state_loop.FREE_CARD: {"msg": "Take card that costs up to %d." % Game.max_cost},
-        state_loop.DOUBLE_ACTION: {"msg": "Pick action to have double effect."}
+        state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "cmd": "!", "disabled": true},
+        state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play",},
+        state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done"},
+        state_loop.TRASH: {"msg": "Trash up to %d cards." % Game.cards_to_select, "cmd": "Done"},
+        state_loop.PLAY_ACTION: {"msg": "Play your action cards.", "cmd": "Done"},
+        state_loop.FREE_CARD: {"msg": "Take card that costs up to %d." % Game.max_cost, "cmd": "Done"}
+
     }
     if hints.has(state):
         $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]
-        $Hint.get_node("BtnHint").text = hints[state]["btn"] if hints.has("btn") else "Done"
+        $Hint.get_node("BtnHint").text = hints[state]["cmd"]
         if hints.has("disabled"): $Hint.get_node("BtnHint").disabled = hints[state]["disabled"]
 
     
