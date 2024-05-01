@@ -267,7 +267,6 @@ func start_play_enter():
 func activate_challenge_enter():
     var card = challenge_slot.top_card()
     challenge_slot.stop_glow()
-    #challenge_slot.pulse_qty(0.3)
     Game.card_stack.push_front(card)
     card.pulse(0.3, sm.change_state.bind(ACTIVATE_CARD), CardScene.SOUND_HIT)
     
@@ -314,6 +313,7 @@ func discard_enter():
 func discard_input(data):
     if typeof(data) == typeof(CardScene):
         var card = data
+        Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
@@ -337,6 +337,7 @@ func play_action_enter():
 func play_action_input(data):
     if typeof(data) == typeof(CardScene):
         var card : CardScene = data
+        Game.showcase_card = card
         if Game.actions > 0 and card.card_type == "Action":
             Game.actions -= 1
             var target_slot = helpers.find_slot_for_card(card, table_slots)
@@ -383,6 +384,7 @@ func buy_cards_enter():
 func buy_cards_input(data):
     if typeof(data) == typeof(CardScene):
         var card : CardScene = data
+        Game.showcase_card = card
         if Game.buys > 0 and helpers.valid_buy(card):
             Game.money -= card.cost_money
             Game.buys -= 1
@@ -418,6 +420,7 @@ func trash_enter():
 func trash_input(data):
     if typeof(data) == typeof(CardScene):
         var card : CardScene = data
+        Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.slot().stop_glow_if_count(1)
             card.fly(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card), CardScene.SOUND_SWOOP)
@@ -478,6 +481,7 @@ func free_card_exit():
 func free_card_input(data):
     if typeof(data) == typeof(CardScene):
         var card : CardScene = data
+        Game.showcase_card = card
         if Game.cards_to_select > 0 and helpers.valid_free_card(card):
             card.slot().stop_glow_if_count(1)
             card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
@@ -504,6 +508,7 @@ func double_action_exit():
 func double_action_input(data):
     if typeof(data) == typeof(CardScene):
         var card : CardScene = data
+        Game.showcase_card = card
         if Game.cards_to_select > 0 and card.card_type == "Action":
             Game.actions -= 1
             Game.cards_to_select -= 1
