@@ -112,3 +112,15 @@ func load_history_texts_from_md():
         elif current_card_name != "" and not line.begins_with("#"):
             # Append paragraph text to the current card's history, add newline for paragraph separation
             Game.cards_by_name[current_card_name]["history_text"] += line.strip_edges() + "\n"
+
+
+func toggle_cheats():
+    print("toggle cheats")
+    $GuiPlay/CheatAction.visible = not $GuiPlay/CheatAction.visible
+    $GuiPlay/CheatValue.visible = not $GuiPlay/CheatValue.visible
+
+
+func _input(event):
+    if Input.is_action_just_pressed("toggle_cheats"):
+        toggle_cheats()
+        
