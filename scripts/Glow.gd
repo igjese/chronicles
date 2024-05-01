@@ -9,8 +9,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-    self.get("theme_override_styles/panel").shadow_size = 15 + 10 * sin(Engine.get_frames_drawn() * 0.15)
-    self.modulate.a = 0.6 + sin(Engine.get_frames_drawn() * 0.05) * 0.3
+    var period = 3
+    var sine_wave = sin(2 * PI * float(Time.get_ticks_msec()) / 1000 / period)
+    self.get("theme_override_styles/panel").shadow_size = 15 + 10 * sine_wave
+    self.modulate.a = 0.6 + sine_wave * 0.3
 
 
 func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
