@@ -601,8 +601,24 @@ func upgrade_2_exit():
 
 
 func upgrade_money_enter():
-    pass
+    var money1 = null
+    var money2 = null
 
-
+    for slot in hand_slots.get_children():
+        if slot.top_card().card_type == "Money1":
+            money1 = slot.top_card()
+            break
+    
+    if resource_slots.get_node("Money2").card_count() > 0:
+        money2 = resource_slots.get_node("Money2").top_card()
+    
+    if money1 and money2:
+        money1.fly(money1.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(money1), CardScene.SOUND_DRAW)
+        await get_tree().create_timer(0.7).timeout
+        money2.fly_and_flip(money2.slot(), discarded_slot, 0.8, 0, discarded_slot.add_card.bind(money1), CardScene.SOUND_DEAL)
+        await get_tree().create_timer(0.95).timeout
+    
+    sm.change_state(APPLY_EFFECT)
+    
 
 

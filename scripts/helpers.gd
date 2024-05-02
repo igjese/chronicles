@@ -263,3 +263,8 @@ func get_effect_text(card):
         if card_data[effect] != 0:
             effect_text = "%s%s. " % [effect_text, effects[effect]]
     return effect_text
+
+
+
+    
+    
