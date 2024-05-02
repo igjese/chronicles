@@ -185,7 +185,7 @@ func reshuffle_discarded_to_deck():
     cards = offscreen_bottom.get_node("cards").get_children()
     cards.shuffle()
     move_cards(cards, offscreen_bottom, gui_main.get_node("Deck"), 0.4, 0.17)
-    await gui_main.get_tree().create_timer(cards.size() * 0.17 + 0.4 + 0.5).timeout
+    await gui_main.get_tree().create_timer(cards.size() * 0.17 + 0.4 + 0.2).timeout
     
         
 func move_cards(cards, start_slot, end_slot, duration, delay, end_position=null):
@@ -217,7 +217,8 @@ func valid_free_card(card):
     
 func queue_effects(card):
     if card["draw_cards"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DRAW, "draw_cards", card["draw_cards"]))
+        for i in range(card["draw_cards"]):
+            Game.effect_stack.push_front(Effect.new(Effect.DRAW, "draw_cards", card["draw_cards"]))
     if card["trash"] > 0:
         Game.effect_stack.push_front(Effect.new(Effect.TRASH, "trash", card["trash"]))
     if card["take_money2"] > 0:
