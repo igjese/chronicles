@@ -27,7 +27,7 @@ var helpers = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION}
+    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION, REPLACE_CARDS, UPGRADE_2, UPGRADE_MONEY}
     
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
@@ -56,7 +56,10 @@ var sm:= SM.new({
     DRAW_CARD: {SM.ENTER: draw_card_enter},
     TAKE_MONEY2: {SM.ENTER: take_money2_enter},
     FREE_CARD: {SM.ENTER: free_card_enter, SM.EXIT: free_card_exit, SM.INPUT: free_card_input},
-    DOUBLE_ACTION: {SM.ENTER: double_action_enter, SM.EXIT: double_action_exit, SM.INPUT: double_action_input}
+    DOUBLE_ACTION: {SM.ENTER: double_action_enter, SM.EXIT: double_action_exit, SM.INPUT: double_action_input},
+    REPLACE_CARDS: {SM.ENTER: replace_cards_enter, SM.EXIT: replace_cards_exit, SM.INPUT: replace_cards_input}, 
+    UPGRADE_2: {SM.ENTER: upgrade_2_enter}, 
+    UPGRADE_MONEY: {SM.ENTER: upgrade_money_enter}
 })
 
 
@@ -295,10 +298,13 @@ func apply_effect_enter():
             Effect.TRASH: sm.change_state(TRASH)
             Effect.DRAW: sm.change_state(DRAW_CARD)
             Effect.TAKE_MONEY2: sm.change_state(TAKE_MONEY2)
+            Effect.DOUBLE_ACTION: sm.change_state(DOUBLE_ACTION)
+            Effect.REPLACE: sm.change_state(REPLACE_CARDS)
+            Effect.UPGRADE_2: sm.change_state(UPGRADE_2)
+            Effect.UPGRADE_MONEY: sm.change_state(UPGRADE_MONEY)
             Effect.FREE_CARD: 
                 Game.max_cost = effect.max_cost
                 sm.change_state(FREE_CARD)
-            Effect.DOUBLE_ACTION: sm.change_state(DOUBLE_ACTION)
             _ : 
                 print("APPLY EFFECT: ", effect.effect_name)
                 sm.change_state(ACTIVATE_CARD)
@@ -526,3 +532,52 @@ func double_action_input(data):
             sm.change_state(APPLY_EFFECT)
     if Game.cards_to_select <= 0:
         sm.change_state(APPLY_EFFECT)
+
+
+func replace_cards_enter():
+    helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
+    gui_play.show_hint()
+    
+    
+func replace_cards_input(data):
+    if typeof(data) == typeof(CardScene):
+        var card = data
+        Game.showcase_card = card
+        print("clicked card %s in slot %s" % [card.card_name, card.slot().name])
+        if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.slot().stop_glow_if_count(1)
+            Game.cards_to_select -= 1
+            await get_tree().create_timer(0.5).timeout
+            if deck_slot.card_count() == 0:
+                await helpers.reshuffle_discarded_to_deck()
+            var new_card = deck_slot.top_card()
+            var target_slot = helpers.find_slot_for_card(new_card, hand_slots)
+            new_card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(new_card), CardScene.SOUND_DRAW)
+            await get_tree().create_timer(0.6).timeout
+            helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
+        if Game.cards_to_select <= 0:
+            gui_play.hide_hint()
+            sm.change_state(APPLY_EFFECT)
+            return
+    elif typeof(data) == TYPE_INT:
+        if data == gui_play.HINT_BTN_PRESSED:
+            sm.change_state(APPLY_EFFECT)
+    if Game.cards_to_select <= 0:
+        sm.change_state(APPLY_EFFECT)
+        
+    
+func replace_cards_exit():
+    helpers.stop_glow_slot_group(hand_slots)
+    
+    
+func upgrade_2_enter():
+    pass
+
+
+func upgrade_money_enter():
+    pass
+
+
+
+
