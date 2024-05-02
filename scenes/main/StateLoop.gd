@@ -25,7 +25,7 @@ extends Node
 
 var helpers = Helpers.new()
 
-enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE,
+enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, VICTORY,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
     PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION, REPLACE_CARDS, UPGRADE_2, UPGRADE_MONEY}
     
@@ -59,7 +59,8 @@ var sm:= SM.new({
     DOUBLE_ACTION: {SM.ENTER: double_action_enter, SM.EXIT: double_action_exit, SM.INPUT: double_action_input},
     REPLACE_CARDS: {SM.ENTER: replace_cards_enter, SM.EXIT: replace_cards_exit, SM.INPUT: replace_cards_input}, 
     UPGRADE_2: {SM.ENTER: upgrade_2_enter, SM.EXIT: upgrade_2_exit, SM.INPUT: upgrade_2_input}, 
-    UPGRADE_MONEY: {SM.ENTER: upgrade_money_enter}
+    UPGRADE_MONEY: {SM.ENTER: upgrade_money_enter},
+    VICTORY: {SM.ENTER: victory_enter, SM.EXIT: victory_exit}
 })
 
 
@@ -433,6 +434,9 @@ func cleanup_enter():
     var challenge_card = challenge_slot.top_card()
     if Game.challenge_overcome:
         challenge_card.fly(challenge_slot, offscreen_left, 0.5, 0, offscreen_left.add_card.bind(challenge_card), CardScene.SOUND_SWOOP)
+        if challenge_slot.card_count() == 1:
+            sm.change_state(VICTORY)
+            return
         Game.challenge_overcome = false
     else:
         get_node("/root/Main/Sounds/Fail").play()
@@ -636,7 +640,7 @@ func upgrade_money_enter():
     var money2 = null
 
     for slot in hand_slots.get_children():
-        if slot.top_card().card_type == "Money1":
+        if slot.top_card() and slot.top_card().card_type == "Money1":
             money1 = slot.top_card()
             break
     
@@ -652,4 +656,11 @@ func upgrade_money_enter():
     sm.change_state(APPLY_EFFECT)
     
 
+func victory_enter():
+    get_node("/root/Main/Sounds/Victory").play()
+    gui_play.get_node("Victory").visible = true
+    
+    
+func victory_exit():
+    gui_play.get_node("Victory").visible = false
 
