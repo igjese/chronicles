@@ -189,7 +189,6 @@ func deal_hand_enter():
             card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
             cards_dealt += 1
             await get_tree().create_timer(0.6).timeout
-    print("deal_hand_enter EXITED.")
     
     
 func deal_hand_process(_delta):
@@ -224,10 +223,12 @@ func deal_challenges_process(_delta):
         
         
 func flip_challenge_enter():
-    challenge_slot.top_card().flip_card(0.6, 0.2)
-    challenge_slot.pulse_qty_for_flip(0.6,0.2)
-    await get_tree().create_timer(0.6).timeout
+    if challenge_slot.top_card().get_node("Back").visible:
+        challenge_slot.top_card().flip_card(0.6, 0.2)
+        challenge_slot.pulse_qty_for_flip(0.6,0.2)
+        await get_tree().create_timer(0.6).timeout
     Game.showcase_card = challenge_slot.top_card()
+    Game.challenge_overcome = false
     challenge_slot.start_glow(Color.RED)
     if context == CONTEXT_INTRO:
         sm.change_state(INTRO_STARTGAME)
@@ -270,7 +271,6 @@ func start_play_enter():
     
 func activate_challenge_enter():
     var card = challenge_slot.top_card()
-    challenge_slot.stop_glow()
     Game.card_stack.push_front(card)
     card.pulse(0.3, sm.change_state.bind(ACTIVATE_CARD), CardScene.SOUND_HIT)
     
@@ -412,10 +412,16 @@ func buy_cards_exit():
 
 func cleanup_enter():
     await get_tree().create_timer(1).timeout
+    var challenge_card = challenge_slot.top_card()
+    if Game.challenge_overcome:
+        challenge_card.fly(challenge_slot, offscreen_left, 0.5, 0, offscreen_left.add_card.bind(challenge_card), CardScene.SOUND_SWOOP)
+        Game.challenge_overcome = false
+    else:
+        get_node("/root/Main/Sounds/Fail").play()
+        challenge_card.pulse(0.4)
+        await get_tree().create_timer(0.5).timeout
     helpers.discard_slot_group(hand_slots)
     helpers.discard_slot_group(table_slots)
-    var challenge_card = challenge_slot.top_card()
-    challenge_card.fly(challenge_slot, offscreen_left, 0.5, 0, offscreen_left.add_card.bind(challenge_card), CardScene.SOUND_SWOOP)
     sm.change_state(NEXT_TURN)
 
 
@@ -452,7 +458,6 @@ func next_turn_enter():
     Game.actions = 1
     Game.buys = 1
     Game.cards_to_select = 0
-    Game.challenge_overcome = false
     sm.change_state(DEAL_HAND)
     
 

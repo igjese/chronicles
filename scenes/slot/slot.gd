@@ -53,12 +53,15 @@ func pulse_qty(duration):
 
 
 func start_glow(glow_color : Color, bg_color : Color = Color.TRANSPARENT):
-    get_node("Glow").start_glow(glow_color, bg_color)
+    if self.name == "Challenge":
+        get_node("GlowChallenge").start_glow(glow_color, bg_color)
+    else:
+        get_node("Glow").start_glow(glow_color, bg_color)
     
     
 func stop_glow():
     get_node("Glow").visible = false
-
+    get_node("GlowChallenge").visible = false
 
 func card_count():
     return $cards.get_child_count()

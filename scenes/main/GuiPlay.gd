@@ -28,20 +28,23 @@ func _ready():
     
     
 func update_success(success):
-    var laurel = $Money/Laurel
-    if success:
-        laurel.visible = true
-        laurel.modulate.a = 1
-        var tween = create_tween()
-        tween.tween_property(laurel, "scale", laurel.scale * Vector2(1.5, 1.5), 0.2).set_ease(Tween.EASE_IN)
-        tween.tween_property(laurel, "scale", laurel.scale * Vector2(1, 1), 0.2).set_ease(Tween.EASE_OUT)
-        sound_success.play()
-    else:
-        var tween = create_tween()
-        tween.tween_property(laurel, "modulate:a", 0, 1)
-        await get_tree().create_timer(1).timeout
-        laurel.visible = false
-        
+    print("update success ", success)
+    if Game.sm.current_state_id != state_loop.NEXT_TURN:
+        var laurel = $Money/Laurel
+        if success:
+            get_node("/root/Main/Challenge").stop_glow()
+            laurel.visible = true
+            laurel.modulate.a = 1
+            var tween = create_tween()
+            tween.tween_property(laurel, "scale", laurel.scale * Vector2(1.5, 1.5), 0.2).set_ease(Tween.EASE_IN)
+            tween.tween_property(laurel, "scale", laurel.scale * Vector2(1, 1), 0.2).set_ease(Tween.EASE_OUT)
+            sound_success.play()
+        else:
+            var tween = create_tween()
+            tween.tween_property(laurel, "modulate:a", 0, 1)
+            await get_tree().create_timer(1).timeout
+            laurel.visible = false
+
         
 func check_success():
     if Game.money >= 0 and Game.army >= 0 and not Game.challenge_overcome:

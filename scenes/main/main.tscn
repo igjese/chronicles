@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=25 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://cdd465shar8un" path="res://visuals/big-frame.png" id="12_oiu2r"]
 [ext_resource type="AudioStream" uid="uid://nwogf8ngk203" path="res://sounds/success.wav" id="13_l6rp2"]
 [ext_resource type="Texture2D" uid="uid://cs8aqi3by1exk" path="res://visuals/cards/aes_rude.png" id="13_qbaga"]
+[ext_resource type="AudioStream" uid="uid://cufm01kkvs6da" path="res://sounds/break_glass.mp3" id="14_itedd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dx5wg"]
 bg_color = Color(0.960784, 0.811765, 0, 1)
@@ -887,6 +888,10 @@ volume_db = 10.0
 
 [node name="Success" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("13_l6rp2")
+volume_db = 10.0
+
+[node name="Fail" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("14_itedd")
 volume_db = 10.0
 
 [node name="GuiZoom" type="Control" parent="."]
