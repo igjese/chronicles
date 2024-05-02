@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=22 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
@@ -11,6 +11,8 @@
 [ext_resource type="AudioStream" uid="uid://c25pj1y3y2cbu" path="res://sounds/coin.wav" id="8_j162p"]
 [ext_resource type="AudioStream" uid="uid://bksnbiiry58ec" path="res://sounds/punch.wav" id="9_k1prl"]
 [ext_resource type="AudioStream" uid="uid://cu6a4t1e23wdo" path="res://sounds/shuffle.wav" id="10_2qwnw"]
+[ext_resource type="Texture2D" uid="uid://cdd465shar8un" path="res://visuals/big-frame.png" id="12_oiu2r"]
+[ext_resource type="Texture2D" uid="uid://cs8aqi3by1exk" path="res://visuals/cards/aes_rude.png" id="13_qbaga"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dx5wg"]
 bg_color = Color(0.960784, 0.811765, 0, 1)
@@ -75,6 +77,18 @@ shadow_size = 25
 [sub_resource type="Environment" id="Environment_uxlgd"]
 background_mode = 3
 glow_enabled = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f528d"]
+bg_color = Color(0.960784, 0.811765, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 23
+corner_radius_top_right = 23
+corner_radius_bottom_right = 23
+corner_radius_bottom_left = 23
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_1e1r0")
@@ -862,6 +876,78 @@ volume_db = 10.0
 [node name="Shuffle" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("10_2qwnw")
 volume_db = 10.0
+
+[node name="GuiZoom" type="Control" parent="."]
+z_index = 2
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1323.0
+offset_bottom = 1038.0
+
+[node name="Bkground" type="Panel" parent="GuiZoom"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -3.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Separator" type="Line2D" parent="GuiZoom"]
+position = Vector2(10, 0)
+points = PackedVector2Array(1309, 443, 1309, 798)
+width = 4.0
+default_color = Color(0.929412, 0.941176, 0.870588, 1)
+
+[node name="Card" type="TextureRect" parent="GuiZoom"]
+layout_mode = 0
+offset_left = 577.0
+offset_top = 249.0
+offset_right = 898.0
+offset_bottom = 774.0
+texture = ExtResource("12_oiu2r")
+
+[node name="Visual" type="TextureRect" parent="GuiZoom/Card"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 87.0
+offset_right = 310.0
+offset_bottom = 305.0
+texture = ExtResource("13_qbaga")
+
+[node name="Title" type="RichTextLabel" parent="GuiZoom/Card"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 15.0
+offset_right = 307.0
+offset_bottom = 63.0
+theme_override_font_sizes/normal_font_size = 28
+theme_override_font_sizes/bold_font_size = 28
+
+[node name="Effects" type="RichTextLabel" parent="GuiZoom/Card"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 320.0
+offset_right = 309.0
+offset_bottom = 467.0
+theme_override_font_sizes/normal_font_size = 28
+theme_override_font_sizes/bold_font_size = 28
+
+[node name="Cost" type="Label" parent="GuiZoom/Card"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 476.0
+offset_right = 68.0
+offset_bottom = 524.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_f528d")
+text = "9"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="GuiPlay/BtnExit" to="GuiPlay" method="_on_btn_exit_pressed"]
 [connection signal="pressed" from="GuiPlay/BtnRestart" to="GuiPlay" method="_on_btn_restart_pressed"]
