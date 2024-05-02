@@ -419,7 +419,14 @@ func cleanup_enter():
     else:
         get_node("/root/Main/Sounds/Fail").play()
         challenge_card.pulse(0.4)
-        await get_tree().create_timer(0.5).timeout
+        await get_tree().create_timer(0.6).timeout
+        var card = deck_slot.top_card()
+        if not card:
+            card = discarded_slot.top_card()
+        card.flip_card(0.6, 0)
+        await get_tree().create_timer(0.7).timeout
+        card.fly(card.slot(), trash_slot, 0.5, 0, trash_slot.add_card.bind(card), CardScene.SOUND_SWOOP)
+        await get_tree().create_timer(0.7).timeout
     helpers.discard_slot_group(hand_slots)
     helpers.discard_slot_group(table_slots)
     sm.change_state(NEXT_TURN)
