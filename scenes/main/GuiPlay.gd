@@ -84,10 +84,10 @@ func show_hint():
 func update_hint():
     var state = sm.current_state_id
     var hints = {
-        state_loop.DISCARD: {"msg": "Discard %d cards." % Game.cards_to_select, "cmd": "!", "disabled": true},
+        state_loop.DISCARD: {"msg": "Discard %d card%s." % [Game.cards_to_select, "s" if Game.cards_to_select > 1 else ""], "cmd": "!", "disabled": true},
         state_loop.PLAY_RESOURCES: {"msg": "Play your resources.", "cmd": "Play",},
-        state_loop.BUY_CARDS: {"msg": "Buy up to %d cards. Money available: %d." % [Game.buys, Game.money], "cmd": "Done"},
-        state_loop.TRASH: {"msg": "Trash up to %d cards." % Game.cards_to_select, "cmd": "Done"},
+        state_loop.BUY_CARDS: {"msg": "Buy up to %d card%s. Money available: %d." % [Game.buys, "s" if Game.buys > 1 else "", Game.money], "cmd": "Done"},
+        state_loop.TRASH: {"msg": "Trash up to %d card%s." % [Game.cards_to_select, "s" if Game.cards_to_select > 1 else ""], "cmd": "Done"},
         state_loop.PLAY_ACTION: {"msg": "Play your action cards.", "cmd": "Done"},
         state_loop.FREE_CARD: {"msg": "Take card that costs up to %d." % Game.max_cost, "cmd": "Done"}
     }
