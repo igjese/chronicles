@@ -91,6 +91,7 @@ func update_hint():
         state_loop.PLAY_ACTION: {"msg": "Play your action cards.", "cmd": "Done"},
         state_loop.FREE_CARD: {"msg": "Take card that costs up to %d." % Game.max_cost, "cmd": "Done"},
         state_loop.REPLACE_CARDS: {"msg": "Pick up to %d card%s to replace." % [Game.cards_to_select, "s" if Game.cards_to_select > 1 else ""], "cmd": "Done"},
+        state_loop.UPGRADE_2: {"msg": "Pick a card to upgrade.", "cmd": "Done"},
     }
     if hints.has(state):
         $Hint.get_node("Message").bbcode_text = "[center]%s[/center]" % hints[state]["msg"]

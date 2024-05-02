@@ -89,29 +89,6 @@ func count_cards(slot_group):
     for slot in slot_group.get_children():
         card_count += slot.get_node("cards").get_child_count()
     return card_count
-
-
-func queue_effects(card):
-    if card["draw_cards"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DRAW, "draw_cards", card["draw_cards"]))
-    if card["trash"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TRASH, "trash", card["trash"]))
-    if card["take_money2"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.TAKE_MONEY2, "take_money2"))
-    if card["take_4"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_4", card["take_4"], 4))
-    if card["take_5"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_5", card["take_5"], 5))
-    if card["double_action"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION, "double_action", card["double_action"]))
-    if card["replace"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.REPLACE, "replace", card["replace"]))
-    if card["upgrade_2"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_2, "upgrade_2"))
-    if card["upgrade_money"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_MONEY, "upgrade_money"))
-    if card["discard"] > 0:
-        Game.effect_stack.push_front(Effect.new(Effect.DISCARD, "discard", card["discard"]))
         
         
 func glow_valid_buys():
@@ -237,6 +214,29 @@ func valid_free_card(card):
     if card.cost_money <= Game.max_cost: 
         return true
     return false
+    
+    
+func queue_effects(card):
+    if card["draw_cards"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.DRAW, "draw_cards", card["draw_cards"]))
+    if card["trash"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.TRASH, "trash", card["trash"]))
+    if card["take_money2"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.TAKE_MONEY2, "take_money2"))
+    if card["take_4"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_card", card["take_4"], 4))
+    if card["take_5"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_card", card["take_5"], 5))
+    if card["double_action"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.DOUBLE_ACTION, "double_action", card["double_action"]))
+    if card["replace"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.REPLACE, "replace", card["replace"]))
+    if card["upgrade_2"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_2, "upgrade_2", card["upgrade_2"]))
+    if card["upgrade_money"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.UPGRADE_MONEY, "upgrade_money"))
+    if card["discard"] > 0:
+        Game.effect_stack.push_front(Effect.new(Effect.DISCARD, "discard", card["discard"]))
 
 
 func get_effect_text(card):
@@ -250,7 +250,7 @@ func get_effect_text(card):
             "draw": "Draw %d card%s" % [card_data["draw"], "s" if card_data["draw"] > 1 else ""],
             "extra_actions": "Extra %d action%s" % [card_data["extra_actions"], "s" if card_data["extra_actions"] > 1 else ""],
             "replace": "Replace up to %d card%s" % [card_data["replace"], "s" if card_data["replace"] > 1 else ""],
-            "upgrade_2": "Upgrade a card to max +2 more expensive one",
+            "upgrade_2": "Upgrade a card to +2 more costly one",
             "double_action": "Doubled effects for next action",
             "take_4": "Take a card costing max 4 money",
             "take_money2": "Take Aes Rude card",

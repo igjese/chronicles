@@ -58,7 +58,7 @@ var sm:= SM.new({
     FREE_CARD: {SM.ENTER: free_card_enter, SM.EXIT: free_card_exit, SM.INPUT: free_card_input},
     DOUBLE_ACTION: {SM.ENTER: double_action_enter, SM.EXIT: double_action_exit, SM.INPUT: double_action_input},
     REPLACE_CARDS: {SM.ENTER: replace_cards_enter, SM.EXIT: replace_cards_exit, SM.INPUT: replace_cards_input}, 
-    UPGRADE_2: {SM.ENTER: upgrade_2_enter}, 
+    UPGRADE_2: {SM.ENTER: upgrade_2_enter, SM.EXIT: upgrade_2_exit, SM.INPUT: upgrade_2_input}, 
     UPGRADE_MONEY: {SM.ENTER: upgrade_money_enter}
 })
 
@@ -543,7 +543,6 @@ func replace_cards_input(data):
     if typeof(data) == typeof(CardScene):
         var card = data
         Game.showcase_card = card
-        print("clicked card %s in slot %s" % [card.card_name, card.slot().name])
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             card.slot().stop_glow_if_count(1)
@@ -572,7 +571,33 @@ func replace_cards_exit():
     
     
 func upgrade_2_enter():
-    pass
+    helpers.glow_slot_group(hand_slots, Color.GREEN)
+    gui_play.show_hint()
+    
+    
+func upgrade_2_input(data):
+    if typeof(data) == typeof(CardScene):
+        var card = data
+        Game.showcase_card = card
+        if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+            card.fly_and_flip(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            helpers.stop_glow_slot_group(hand_slots)
+            Game.cards_to_select -= 1
+            Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_card", 1, card.cost_money + 2))
+            await get_tree().create_timer(0.5).timeout
+        if Game.cards_to_select <= 0:
+            gui_play.hide_hint()
+            sm.change_state(APPLY_EFFECT)
+            return
+    elif typeof(data) == TYPE_INT:
+        if data == gui_play.HINT_BTN_PRESSED:
+            sm.change_state(APPLY_EFFECT)
+    if Game.cards_to_select <= 0:
+        sm.change_state(APPLY_EFFECT)
+        
+        
+func upgrade_2_exit():
+    helpers.stop_glow_slot_group(hand_slots)
 
 
 func upgrade_money_enter():
