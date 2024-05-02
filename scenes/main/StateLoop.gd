@@ -307,7 +307,7 @@ func apply_effect_enter():
     
     
 func discard_enter():
-    helpers.glow_slot_group(hand_slots, Color.BLUE)
+    helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
     gui_play.show_hint()
 
 
