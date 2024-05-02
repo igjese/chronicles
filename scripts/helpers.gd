@@ -249,13 +249,13 @@ func get_effect_text(card):
             "extra_buys": "Extra %d buy%s" % [card_data["extra_buys"], "s" if card_data["extra_buys"] > 1 else ""],
             "draw": "Draw %d card%s" % [card_data["draw"], "s" if card_data["draw"] > 1 else ""],
             "extra_actions": "Extra %d action%s" % [card_data["extra_actions"], "s" if card_data["extra_actions"] > 1 else ""],
-            "replace": "Discard up to %d card%s and replace them from your deck" % [card_data["replace"], "s" if card_data["replace"] > 1 else ""],
-            "upgrade_2": "Trash a card and take another instead, costing max 2 money more",
-            "double_action": "For next card play an action for doubled effects",
+            "replace": "Replace up to %d card%s" % [card_data["replace"], "s" if card_data["replace"] > 1 else ""],
+            "upgrade_2": "Upgrade a card to max +2 more expensive one",
+            "double_action": "Doubled effects for next action",
             "take_4": "Take a card costing max 4 money",
             "take_money2": "Take Aes Rude card",
             "take_5": "Take a card costing max 5 money",
-            "upgrade_money": "Trash a money card and take bigger denomination money card instead",
+            "upgrade_money": "Upgrade money card to next denomination",
         }
         
     var effect_text = ""

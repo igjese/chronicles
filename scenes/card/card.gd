@@ -30,9 +30,17 @@ var face = FACE_DOWN
     SOUND_SWOOP: $SoundSwoop
 }
 
+var helpers = Helpers.new()
+
+
+func _ready():
+    $Effects.visible = false
+
+
 func set_face(face):
     $Back.visible = true if face == FACE_DOWN else false        
     self.face = face
+
 
 func set_card_data(card):
     card_type = card["type"]
@@ -61,6 +69,7 @@ func set_card_data(card):
     if card_type in ["History","Victory1","Victory2","Victory3"]:
         $Cost.visible = false
 
+    $Effects.text = helpers.get_effect_text(self)
     
 func fly(start_node, end_node, duration, start_delay, callback, sound):
     var tween = create_tween()
@@ -114,3 +123,12 @@ func _on_gui_input(event):
             if event.pressed:
                 gui_play.on_card_right_clicked(self)
 
+
+func _on_mouse_entered():
+    var state_loop = get_tree().root.get_node("/root/Main/StateLoop")
+    if not $Back.visible and state_loop.context == state_loop.CONTEXT_PLAY:
+        $Effects.visible = true
+
+
+func _on_mouse_exited():
+    $Effects.visible = false

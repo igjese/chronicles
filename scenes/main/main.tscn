@@ -878,6 +878,7 @@ stream = ExtResource("10_2qwnw")
 volume_db = 10.0
 
 [node name="GuiZoom" type="Control" parent="."]
+visible = false
 z_index = 2
 layout_mode = 3
 anchors_preset = 0
@@ -933,9 +934,9 @@ bbcode_enabled = true
 
 [node name="Effects" type="RichTextLabel" parent="GuiZoom/Card"]
 layout_mode = 0
-offset_left = 13.0
+offset_left = 17.0
 offset_top = 320.0
-offset_right = 309.0
+offset_right = 304.0
 offset_bottom = 509.0
 mouse_filter = 2
 theme_override_colors/default_color = Color(0, 0, 0, 1)
