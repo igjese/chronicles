@@ -74,6 +74,11 @@ enum {CONTEXT_INTRO, CONTEXT_PLAY}
 var context = CONTEXT_PLAY
 
 func start_game_loop(requested_context = CONTEXT_PLAY):
+    helpers.hide([gui_play.get_node("Money"), gui_play.get_node("Army")])
+    gui_play.get_node("Money").text = "0"
+    gui_play.get_node("Army").text = "0"
+    gui_play.hide_hint()
+    helpers.empty_all_decks()
     context = requested_context
     sm.change_state(SETUP)
 
@@ -104,7 +109,8 @@ func deal_resources_enter():
     
     
 func deal_resources_exit():
-    helpers.fade(intro_resources, helpers.FADE_IN, 3)
+    if context == CONTEXT_INTRO:
+        helpers.fade(intro_resources, helpers.FADE_IN, 3)
     
     
 func deal_resources():
@@ -121,7 +127,10 @@ func deal_resources():
         
 func deal_resources_process(_delta):
     if helpers.count_cards(resource_slots) == 20:
-        sm.change_state(INTRO_ACTIONS)
+        if context == CONTEXT_INTRO:
+            sm.change_state(INTRO_ACTIONS)
+        else:
+            sm.change_state(DEAL_ACTIONS)
                 
         
 func intro_actions_enter():
@@ -142,11 +151,15 @@ func deal_actions_enter():
         
 func deal_actions_process(_delta):
     if helpers.count_cards(action_slots) == 50:
-        sm.change_state(INTRO_DECK)
+        if context == CONTEXT_INTRO:
+            sm.change_state(INTRO_DECK)
+        else:
+            sm.change_state(PREPARE_DECK)
     
     
 func deal_actions_exit():
-    helpers.fade(intro_actions, helpers.FADE_IN, 3)
+    if context == CONTEXT_INTRO:
+        helpers.fade(intro_actions, helpers.FADE_IN, 3)
     
     
 func intro_deck_enter():
@@ -196,7 +209,7 @@ func deal_hand_process(_delta):
         if context == CONTEXT_INTRO:
             sm.change_state(INTRO_CHALLENGE)
         else:
-            sm.change_state(FLIP_CHALLENGE)
+            sm.change_state(DEAL_CHALLENGES)
     
     
 func deal_hand_exit():
@@ -209,12 +222,15 @@ func intro_challenge_enter():
     
     
 func deal_challenges_enter():
-    var challenges = helpers.prepare_challenges()
-    var start_delay = 0
-    for card_data in challenges:
-        var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
-        card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card), CardScene.SOUND_DEAL)
-        start_delay += 0.12
+    if challenge_slot.card_count() == 0:
+        var challenges = helpers.prepare_challenges()
+        var start_delay = 0
+        for card_data in challenges:
+            var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
+            card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            start_delay += 0.12
+    else:
+        sm.change_state(FLIP_CHALLENGE)
 
     
 func deal_challenges_process(_delta):
@@ -223,6 +239,8 @@ func deal_challenges_process(_delta):
         
         
 func flip_challenge_enter():
+    gui_play.get_node("Money").visible = true
+    gui_play.get_node("Army").visible = true
     if challenge_slot.top_card().get_node("Back").visible:
         challenge_slot.top_card().flip_card(0.6, 0.2)
         challenge_slot.pulse_qty_for_flip(0.6,0.2)

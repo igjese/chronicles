@@ -265,6 +265,18 @@ func get_effect_text(card):
     return effect_text
 
 
-
-    
-    
+func empty_all_decks():
+    for slot in resource_slots.get_children():
+        slot.empty_cards()
+    for slot in action_slots.get_children():
+        slot.empty_cards()
+    for slot in hand_slots.get_children():
+        slot.empty_cards()
+    for slot in gui_main.get_node("Table").get_children():
+        slot.empty_cards()
+    gui_main.get_node("Discarded").empty_cards()
+    gui_main.get_node("Challenge").empty_cards()
+    gui_main.get_node("Deck").empty_cards()
+    gui_main.get_node("Trash").empty_cards()
+    gui_main.get_node("Offscreen/Left").empty_cards()
+    gui_main.get_node("Offscreen/Bottom").empty_cards()

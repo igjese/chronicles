@@ -66,3 +66,9 @@ func stop_glow():
 func card_count():
     return $cards.get_child_count()
     
+
+func empty_cards():
+    $qty.visible = false
+    stop_glow()
+    for card in $cards.get_children():
+        card.queue_free()
