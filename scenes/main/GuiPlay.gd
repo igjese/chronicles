@@ -8,6 +8,7 @@ extends Control
 @onready var sm = get_node("/root/Main/StateLoop").sm
 @onready var state_loop = get_node("/root/Main/StateLoop")
 @onready var zoomed_card = get_node("/root/Main/GuiZoom/Card")
+@onready var sound_success= get_node("/root/Main/Sounds/Success")
 
 var helpers = Helpers.new()
 
@@ -21,18 +22,41 @@ func _ready():
     Game.army_updated.connect(refresh_army)
     Game.info_updated.connect(refresh_info)
     Game.showcase_updated.connect(update_showcase)
+    Game.success_updated.connect(update_success)
     $CheatValue.get_popup().index_pressed.connect(apply_cheat)
     $Hint.global_position = $HintHidden.global_position
+    
+    
+func update_success(success):
+    var laurel = $Money/Laurel
+    if success:
+        laurel.visible = true
+        laurel.modulate.a = 1
+        var tween = create_tween()
+        tween.tween_property(laurel, "scale", laurel.scale * Vector2(1.5, 1.5), 0.2).set_ease(Tween.EASE_IN)
+        tween.tween_property(laurel, "scale", laurel.scale * Vector2(1, 1), 0.2).set_ease(Tween.EASE_OUT)
+        sound_success.play()
+    else:
+        var tween = create_tween()
+        tween.tween_property(laurel, "modulate:a", 0, 1)
+        await get_tree().create_timer(1).timeout
+        laurel.visible = false
+        
+        
+func check_success():
+    if Game.money >= 0 and Game.army >= 0 and not Game.challenge_overcome:
+        Game.challenge_overcome = true        
     
 
 func refresh_money(increment, original_state, new_value):
     update_resource_badge(gui_money, "money", 0.4, 0.1, increment, original_state, new_value) 
-    
+    check_success()
     
 func refresh_army(increment, original_state, new_value):
     var delay = 0.1
     if money_being_refreshed: delay += 0.3
     update_resource_badge(gui_army, "army", 0.4, delay, increment, original_state, new_value) 
+    check_success()
 
         
 func update_resource_badge(resource_node, resource_name, duration, delay, increment, original_state, new_value):

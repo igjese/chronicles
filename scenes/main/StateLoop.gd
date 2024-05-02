@@ -21,7 +21,7 @@ extends Node
 @onready var offscreen_left = get_node("/root/Main/Offscreen/Left")
 @onready var sounds = get_node("/root/Main/Sounds")
 @onready var gui_hint = gui_play.get_node("Hint")
-
+@onready var laurel = gui_play.get_node("Money/Laurel")
 
 var helpers = Helpers.new()
 
@@ -87,7 +87,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        helpers.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame, table_slots])
+        helpers.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame, table_slots, laurel])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -452,6 +452,7 @@ func next_turn_enter():
     Game.actions = 1
     Game.buys = 1
     Game.cards_to_select = 0
+    Game.challenge_overcome = false
     sm.change_state(DEAL_HAND)
     
 

@@ -4,6 +4,7 @@ signal money_updated(increment, current_state_id, new_value)
 signal army_updated(increment, current_state_id, new_value)
 signal info_updated
 signal showcase_updated(card)
+signal success_updated(success)
 
 var cards_by_name = {}
 var sm = null
@@ -15,6 +16,11 @@ var card_stack = []
 var effect_stack = []
 
 var max_cost = 0
+
+var challenge_overcome = false:
+    set(success):
+        challenge_overcome = success
+        success_updated.emit(success)
 
 var showcase_card = null:
     set(card):

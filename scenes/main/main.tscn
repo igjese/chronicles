@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b50jttpqq77dc"]
+[gd_scene load_steps=24 format=3 uid="uid://b50jttpqq77dc"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1e1r0"]
 [ext_resource type="Texture2D" uid="uid://b2wowlvr6xjo2" path="res://visuals/background.png" id="1_mtqld"]
@@ -8,10 +8,12 @@
 [ext_resource type="AudioStream" uid="uid://d2w8rabxrmf0x" path="res://sounds/clang.wav" id="6_cqido"]
 [ext_resource type="Script" path="res://scripts/Glow.gd" id="6_kh6bo"]
 [ext_resource type="Texture2D" uid="uid://cadvbqa05b5l0" path="res://visuals/cards/centuriate.png" id="6_oacvw"]
+[ext_resource type="Texture2D" uid="uid://th8tpmhkrtfg" path="res://visuals/laurel.png" id="7_7cl6n"]
 [ext_resource type="AudioStream" uid="uid://c25pj1y3y2cbu" path="res://sounds/coin.wav" id="8_j162p"]
 [ext_resource type="AudioStream" uid="uid://bksnbiiry58ec" path="res://sounds/punch.wav" id="9_k1prl"]
 [ext_resource type="AudioStream" uid="uid://cu6a4t1e23wdo" path="res://sounds/shuffle.wav" id="10_2qwnw"]
 [ext_resource type="Texture2D" uid="uid://cdd465shar8un" path="res://visuals/big-frame.png" id="12_oiu2r"]
+[ext_resource type="AudioStream" uid="uid://nwogf8ngk203" path="res://sounds/success.wav" id="13_l6rp2"]
 [ext_resource type="Texture2D" uid="uid://cs8aqi3by1exk" path="res://visuals/cards/aes_rude.png" id="13_qbaga"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dx5wg"]
@@ -207,6 +209,12 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_dx5wg")
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Laurel" type="Sprite2D" parent="GuiPlay/Money"]
+z_index = 1
+position = Vector2(25, 24.9999)
+scale = Vector2(0.13, 0.13)
+texture = ExtResource("7_7cl6n")
 
 [node name="Army" type="Label" parent="GuiPlay"]
 layout_mode = 0
@@ -875,6 +883,10 @@ volume_db = 10.0
 
 [node name="Shuffle" type="AudioStreamPlayer" parent="Sounds"]
 stream = ExtResource("10_2qwnw")
+volume_db = 10.0
+
+[node name="Success" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("13_l6rp2")
 volume_db = 10.0
 
 [node name="GuiZoom" type="Control" parent="."]
