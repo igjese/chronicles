@@ -120,13 +120,12 @@ func _on_btn_restart_pressed():
     
 
 func on_card_clicked(card):
-    print("card clicked: ", card.card_name)
     sm.handle_input(card)
     
     
 func on_card_right_clicked(card):
-    print("card right-clicked: ", card.card_name)
-            
+    if state_loop.context == state_loop.CONTEXT_PLAY:
+        get_node("/root/Main/GuiZoom").visible = not get_node("/root/Main/GuiZoom").visible
 
 func _on_cheat_action_item_selected(index):
     var options = []
@@ -146,3 +145,12 @@ func _on_btn_hint_pressed():
 
 func _on_btn_start_game_pressed():
     sm.handle_input(STARTGAME_BTN_PRESSED)
+
+
+func _on_gui_zoom_gui_input(event):
+    print("zoom mouse event")
+    if event is InputEventMouseButton:
+        if event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
+            if event.pressed:
+                get_node("/root/Main/GuiZoom").visible = not get_node("/root/Main/GuiZoom").visible
+

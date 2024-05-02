@@ -7,6 +7,7 @@ func _ready():
     load_card_definitions_from_csv()
     load_history_texts_from_md()
     $Discarded/qty.position.x = 20
+    $GuiZoom.visible = false
     $StateLoop.start_game_loop($StateLoop.CONTEXT_INTRO)
 
 
