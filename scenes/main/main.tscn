@@ -907,6 +907,7 @@ offset_left = 577.0
 offset_top = 249.0
 offset_right = 898.0
 offset_bottom = 774.0
+mouse_filter = 2
 texture = ExtResource("12_oiu2r")
 
 [node name="Visual" type="TextureRect" parent="GuiZoom/Card"]
@@ -915,25 +916,32 @@ offset_left = 10.0
 offset_top = 87.0
 offset_right = 310.0
 offset_bottom = 305.0
+mouse_filter = 2
 texture = ExtResource("13_qbaga")
 
 [node name="Title" type="RichTextLabel" parent="GuiZoom/Card"]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 15.0
-offset_right = 307.0
+offset_left = 13.0
+offset_top = 20.0
+offset_right = 309.0
 offset_bottom = 63.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/normal_font_size = 28
 theme_override_font_sizes/bold_font_size = 28
+bbcode_enabled = true
 
 [node name="Effects" type="RichTextLabel" parent="GuiZoom/Card"]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 320.0
 offset_right = 309.0
-offset_bottom = 467.0
-theme_override_font_sizes/normal_font_size = 28
-theme_override_font_sizes/bold_font_size = 28
+offset_bottom = 509.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
+bbcode_enabled = true
 
 [node name="Cost" type="Label" parent="GuiZoom/Card"]
 layout_mode = 0

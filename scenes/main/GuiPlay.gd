@@ -7,6 +7,7 @@ extends Control
 @onready var sound_punch = get_node("/root/Main/Sounds/Punch")
 @onready var sm = get_node("/root/Main/StateLoop").sm
 @onready var state_loop = get_node("/root/Main/StateLoop")
+@onready var zoomed_card = get_node("/root/Main/GuiZoom/Card")
 
 var helpers = Helpers.new()
 
@@ -107,6 +108,13 @@ func update_showcase(card):
     if card:
         get_node("Showcase").bbcode_text = "[b]%s[/b]%s" % [card["card_name"], card["history_text"]]
         get_node("ShowcaseImg").texture = card.get_node("MainVisual").texture
+        
+        
+func update_zoom(card):
+    zoomed_card.get_node("Visual").texture = card.get_node("MainVisual").texture
+    zoomed_card.get_node("Title").bbcode_text = "[center]%s[/center]" % card["card_name"]
+    zoomed_card.get_node("Cost").text = str(card.cost_money)
+    zoomed_card.get_node("Effects").bbcode_text = helpers.get_effect_text(card)
 
 
 # SIGNALS AND INPUTS #################
@@ -125,7 +133,10 @@ func on_card_clicked(card):
     
 func on_card_right_clicked(card):
     if state_loop.context == state_loop.CONTEXT_PLAY:
+        Game.showcase_card = card
+        update_zoom(card)
         get_node("/root/Main/GuiZoom").visible = not get_node("/root/Main/GuiZoom").visible
+
 
 func _on_cheat_action_item_selected(index):
     var options = []
