@@ -358,7 +358,6 @@ func play_action_input(data):
             Game.actions -= 1
             var target_slot = hlp.find_slot_for_card(card, table_slots)
             card.fly(card.slot(), target_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            ##card.slot().stop_glow_if_count(1)
             Game.card_stack.push_front(card)
             await get_tree().create_timer(0.4).timeout
             sm.change_state(ACTIVATE_CARD)
@@ -447,7 +446,6 @@ func trash_input(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-            #card.slot().stop_glow_if_count(1)
             card.fly(card.slot(), trash_slot, 0.4, 0, CardScene.SOUND_SWOOP)
             Game.cards_to_select -= 1
     if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
@@ -505,7 +503,6 @@ func free_card_input(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and hlp.valid_free_card(card):
-            #card.slot().stop_glow_if_count(1)
             card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
     if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
@@ -533,7 +530,6 @@ func double_action_input(data):
             Game.cards_to_select -= 1
             var target_slot = hlp.find_slot_for_card(card, table_slots)
             card.fly(card.slot(), target_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            #card.slot().stop_glow_if_count(1)
             Game.card_stack.push_front(card)
             Game.card_stack.push_front(card)
             await get_tree().create_timer(0.4).timeout
@@ -554,7 +550,6 @@ func replace_cards_input(data):
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            #card.slot().stop_glow_if_count(1)
             Game.cards_to_select -= 1
             await get_tree().create_timer(0.5).timeout
             if deck_slot.card_count() == 0:
