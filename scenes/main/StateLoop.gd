@@ -195,7 +195,7 @@ func deal_hand_enter():
         else:
             var card = deck_cards[-1]
             var target_slot = helpers.find_slot_for_card(card, hand_slots)
-            card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
+            card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, CardScene.SOUND_DRAW)
             cards_dealt += 1
             await get_tree().create_timer(0.6).timeout
     
@@ -331,7 +331,7 @@ func discard_input(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
         if Game.cards_to_select <= 0:
             gui_play.hide_hint()
@@ -400,7 +400,7 @@ func buy_cards_input(data):
         if Game.buys > 0 and helpers.valid_buy(card):
             Game.money -= card.cost_money
             Game.buys -= 1
-            card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, CardScene.SOUND_DEAL)
             helpers.glow_valid_buys()
     if Game.buys <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(CLEANUP)
@@ -475,7 +475,7 @@ func draw_card_enter():
         await helpers.reshuffle_discarded_to_deck()
     var card = deck_slot.top_card()
     var target_slot = helpers.find_slot_for_card(card, hand_slots)
-    card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(card), CardScene.SOUND_DRAW)
+    card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, CardScene.SOUND_DRAW)
     await get_tree().create_timer(0.6).timeout
     sm.change_state(APPLY_EFFECT)
     
@@ -484,7 +484,7 @@ func take_money2_enter():
     var slot = resource_slots.get_node("Money2")
     if slot.card_count() > 0:
         var card = slot.top_card()
-        card.fly_and_flip(slot, discarded_slot, 0.55, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+        card.fly_and_flip(slot, discarded_slot, 0.55, 0, CardScene.SOUND_DEAL)
         await get_tree().create_timer(0.6).timeout
         sm.change_state(APPLY_EFFECT)
 
@@ -506,7 +506,7 @@ func free_card_input(data):
         Game.showcase_card = card
         if Game.cards_to_select > 0 and helpers.valid_free_card(card):
             card.slot().stop_glow_if_count(1)
-            card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
     if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
@@ -553,7 +553,7 @@ func replace_cards_input(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, CardScene.SOUND_DEAL)
             card.slot().stop_glow_if_count(1)
             Game.cards_to_select -= 1
             await get_tree().create_timer(0.5).timeout
@@ -561,7 +561,7 @@ func replace_cards_input(data):
                 await helpers.reshuffle_discarded_to_deck()
             var new_card = deck_slot.top_card()
             var target_slot = helpers.find_slot_for_card(new_card, hand_slots)
-            new_card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, target_slot.add_card.bind(new_card), CardScene.SOUND_DRAW)
+            new_card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, CardScene.SOUND_DRAW)
             await get_tree().create_timer(0.6).timeout
             helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
         if Game.cards_to_select <= 0:
@@ -584,7 +584,7 @@ func upgrade_2_input(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-            card.fly_and_flip(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+            card.fly_and_flip(card.slot(), trash_slot, 0.4, 0, CardScene.SOUND_DEAL)
             helpers.stop_glow_slot_group(hand_slots)
             Game.cards_to_select -= 1
             Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_card", 1, card.cost_money + 2))

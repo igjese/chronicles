@@ -81,7 +81,7 @@ func fly(start_node, end_node, duration, start_delay, sound, end_position=null):
     tween.tween_callback(end_node.add_card.bind(self))
 
 
-func fly_and_flip(start_node, end_node, duration, start_delay, callback, sound):
+func fly_and_flip(start_node, end_node, duration, start_delay, sound):
     var new_face = FACE_DOWN if face == FACE_UP else FACE_UP
     fly(start_node, end_node, duration, start_delay, sound)
     var tween = create_tween()
