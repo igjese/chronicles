@@ -71,17 +71,19 @@ func set_card_data(card):
 
     $Effects.text = helpers.get_effect_text(self)
     
-func fly(start_node, end_node, duration, start_delay, callback, sound):
+func fly(start_node, end_node, duration, start_delay, sound, end_position=null):
+    if not end_position: 
+        end_position = end_node
     var tween = create_tween()
     tween.tween_interval(start_delay)
-    tween.tween_property(self, "global_position", end_node.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_OUT)
+    tween.tween_property(self, "global_position", end_position.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_OUT)
     tween.tween_callback(sounds[sound].play)
-    tween.tween_callback(callback)
+    tween.tween_callback(end_node.add_card.bind(self))
 
 
 func fly_and_flip(start_node, end_node, duration, start_delay, callback, sound):
     var new_face = FACE_DOWN if face == FACE_UP else FACE_UP
-    fly(start_node, end_node, duration, start_delay, callback, sound)
+    fly(start_node, end_node, duration, start_delay, sound)
     var tween = create_tween()
     tween.tween_interval(start_delay)
     tween.tween_property(self, "scale", Vector2(0.05,1), duration/2)

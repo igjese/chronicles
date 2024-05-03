@@ -193,7 +193,7 @@ func move_cards(cards, start_slot, end_slot, duration, delay, end_position=null)
     var delay_next = 0
     if not end_position: end_position = end_slot
     for card in cards:
-        card.fly(start_slot, end_position, duration, delay_next, end_slot.add_card.bind(card), CardScene.SOUND_DEAL)
+        card.fly(start_slot, end_slot, duration, delay_next, CardScene.SOUND_DEAL, end_position)
         delay_next += delay
 
 
