@@ -218,9 +218,9 @@ func deal_challenges_enter():
     if challenge_slot.card_count() == 0:
         var challenges = helpers.prepare_challenges()
         var start_delay = 0
-        for card_data in challenges:
-        #for i in range(3):
-         #   var card_data = challenges[i+5]
+        #for card_data in challenges:
+        for i in range(3):
+            var card_data = challenges[i+5]
             var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
             card.fly(offscreen_left, challenge_slot, 0.35, start_delay, challenge_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             start_delay += 0.12
@@ -229,7 +229,7 @@ func deal_challenges_enter():
 
     
 func deal_challenges_process(_delta):
-    if challenge_slot.get_node("cards").get_child_count() == 22: #3: 
+    if challenge_slot.get_node("cards").get_child_count() == 3: #22: #3: 
         sm.change_state(FLIP_CHALLENGE)
         
         
@@ -618,9 +618,13 @@ func upgrade_money_enter():
     
 
 func victory_enter():
+    var victory = gui_play.get_node("Victory")
+    victory.visible = true
+    victory.get_node("Msg").pivot_offset = victory.get_node("Msg").size / 2
+    var tween = create_tween()
+    tween.tween_property(victory.get_node("Msg"), "scale", Vector2(1,1), 2).from(Vector2(0,0))
+    await get_tree().create_timer(0.5).timeout
     get_node("/root/Main/Sounds/Victory").play()
-    gui_play.get_node("Victory").visible = true
-    
     
 func victory_exit():
     gui_play.get_node("Victory").visible = false
