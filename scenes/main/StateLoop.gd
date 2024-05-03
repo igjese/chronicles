@@ -117,13 +117,13 @@ func deal_resources_exit():
     
 func deal_resources():
     var start_delay = 0
-    for card_type in ["Army1","Money1","Army2","Money2"]:
-        var card_data = helpers.get_cards_by_type(card_type)[0]
+    for resource_type in ["Army1","Money1","Army2","Money2"]:
+        var card_data = helpers.get_cards_by_type(resource_type)[0]
         for i in range(5):
             var card = helpers.spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
-            var target_node = resource_slots.get_node(card_type)
-            card.fly(offscreen_top, target_node, 0.35, start_delay, CardScene.SOUND_DEAL)
+            var target_slot = resource_slots.get_node(resource_type)
+            card.fly(offscreen_top, target_slot, 0.35, start_delay, CardScene.SOUND_DEAL)
         start_delay += 0.15
         
         

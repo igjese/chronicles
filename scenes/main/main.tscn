@@ -882,15 +882,26 @@ offset_bottom = 1293.0
 
 [node name="Offscreen" type="Node2D" parent="."]
 
-[node name="Top" type="Node2D" parent="Offscreen"]
-position = Vector2(588, -255)
-
 [node name="Left" parent="Offscreen" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
 offset_left = -195.0
 offset_top = 520.0
 offset_right = -45.0
 offset_bottom = 670.0
+
+[node name="Top" parent="Offscreen" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = 525.0
+offset_top = -251.0
+offset_right = 675.0
+offset_bottom = -101.0
+
+[node name="Dummy" parent="Offscreen" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = 2046.0
+offset_top = 427.0
+offset_right = 2196.0
+offset_bottom = 577.0
 
 [node name="Bottom" parent="Offscreen" instance=ExtResource("5_rr31l")]
 custom_minimum_size = Vector2(150, 150)
@@ -899,8 +910,12 @@ offset_top = 1138.0
 offset_right = 261.0
 offset_bottom = 1288.0
 
-[node name="BottomRight" type="Node2D" parent="Offscreen"]
-position = Vector2(1205, 1132)
+[node name="BottomRight" parent="Offscreen" instance=ExtResource("5_rr31l")]
+custom_minimum_size = Vector2(150, 150)
+offset_left = 1199.0
+offset_top = 1126.0
+offset_right = 1349.0
+offset_bottom = 1276.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_uxlgd")

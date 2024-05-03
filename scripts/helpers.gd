@@ -44,11 +44,11 @@ func hide(nodes):
         node.visible = false
 
 
-func spawn_card(card_data, parent_node, face):
+func spawn_card(card_data, slot, face):
     var card = card_scene.instantiate()
-    parent_node.add_child(card)
     card.set_card_data(card_data) 
     card.set_face(face)
+    slot.get_node("cards").add_child(card)
     return card
     
     

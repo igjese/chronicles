@@ -7,14 +7,16 @@ func _ready():
 
 
 func add_card(card_node):
-    var old_parent = card_node.get_parent().get_parent() if card_node.get_parent() else null
-    print("Card moved: %s from %s to %s" % [card_node.card_name, old_parent.name, self.name])
-    card_node.reparent($cards)
+    card_node.reparent($cards, true)
     card_node.position = Vector2(0,0)
     update_qty()
-    if old_parent and old_parent.has_method("update_qty"):
-            old_parent.update_qty() 
-            old_parent.stop_glow_if_count()
+            
+            
+func remove_card(card_node):
+    var orphanage = get_node("/root/Main/Offscreen/Dummy")
+    card_node.reparent(orphanage, true)
+    update_qty()
+    stop_glow_if_count()
             
             
 func stop_glow_if_count(count=0):

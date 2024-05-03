@@ -76,6 +76,7 @@ func fly(start_node, end_node, duration, start_delay, sound, end_position=null):
         end_position = end_node
     var tween = create_tween()
     tween.tween_interval(start_delay)
+    tween.tween_callback(start_node.remove_card.bind(self))
     tween.tween_property(self, "global_position", end_position.global_position, duration).from(start_node.global_position).set_ease(Tween.EASE_OUT)
     tween.tween_callback(sounds[sound].play)
     tween.tween_callback(end_node.add_card.bind(self))
