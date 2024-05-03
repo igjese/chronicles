@@ -163,10 +163,12 @@ func glow_valid_actions():
 
 
 func discard_slot_group(slot_group):
-    for slot in slot_group.get_children():
+    var slots = slot_group.get_children()
+    slots.reverse()
+    for slot in slots:
         var delay = 0
         for card in slot.get_node("cards").get_children():
-            var sounds = [CardScene.SOUND_DEAL, CardScene.SOUND_DEAL, CardScene.SOUND_SWOOP]
+            var sounds = [CardScene.SOUND_DEAL, CardScene.SOUND_DEAL, CardScene.SOUND_DEAL, CardScene.SOUND_SWOOP]
             card.fly_and_flip(card.slot(), discarded_slot, 0.75, delay, discarded_slot.add_card.bind(card), sounds[randi() % sounds.size()])
             delay += 0.1713
             
