@@ -26,8 +26,8 @@ extends Node
 var hlp = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, VICTORY,
-     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
-    PLAY_RESOURCES, BUY_CARDS, CLEANUP, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION, REPLACE_CARDS, UPGRADE_2, UPGRADE_MONEY}
+     DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, PLAY_ACTION, PLAY_RESOURCES,
+    BUY_CARDS, CLEANUP, DISCARD, TRASH, NEXT_TURN, DRAW_CARD, TAKE_MONEY2, FREE_CARD, DOUBLE_ACTION, REPLACE_CARDS, UPGRADE_2, UPGRADE_MONEY}
     
 var sm:= SM.new({
     SETUP: {SM.ENTER: setup_enter},
@@ -46,11 +46,11 @@ var sm:= SM.new({
     ACTIVATE_CHALLENGE: {SM.ENTER: activate_challenge_enter},
     ACTIVATE_CARD: {SM.ENTER: activate_card_enter},
     APPLY_EFFECT: {SM.ENTER: apply_effect_enter},
-    DISCARD: {SM.ENTER: discard_enter, SM.INPUT: discard_input, SM.EXIT: discard_exit},
     PLAY_ACTION: {SM.ENTER: play_action_enter, SM.INPUT: play_action_input, SM.EXIT: play_action_exit},
     PLAY_RESOURCES: {SM.ENTER: play_resources_enter, SM.INPUT: play_resources_input},
     BUY_CARDS: {SM.ENTER: buy_cards_enter, SM.INPUT: buy_cards_input, SM.EXIT: buy_cards_exit},
     CLEANUP: {SM.ENTER: cleanup_enter},
+    DISCARD: {SM.ENTER: discard_enter, SM.INPUT: discard_input, SM.EXIT: discard_exit},
     TRASH: {SM.ENTER: trash_enter, SM.INPUT: trash_input, SM.EXIT: trash_exit},
     NEXT_TURN: {SM.ENTER: next_turn_enter},
     DRAW_CARD: {SM.ENTER: draw_card_enter},
@@ -319,27 +319,6 @@ func apply_effect_enter():
                 sm.change_state(ACTIVATE_CARD)
     else:
         sm.change_state(ACTIVATE_CARD)
-    
-    
-func discard_enter():
-    hlp.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
-    gui_play.show_hint()
-
-
-func discard_input(data):
-    if hlp.is_card(data):
-        var card = data
-        Game.showcase_card = card
-        if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            Game.cards_to_select -= 1
-        if Game.cards_to_select <= 0:
-            gui_play.hide_hint()
-            sm.change_state(APPLY_EFFECT)
-        
-        
-func discard_exit():
-    hlp.stop_glow_slot_group(hand_slots)
 
     
 func play_action_enter():
@@ -435,6 +414,27 @@ func cleanup_enter():
     hlp.discard_slot_group(table_slots)
     sm.change_state(NEXT_TURN)
 
+
+func discard_enter():
+    hlp.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
+    gui_play.show_hint()
+
+
+func discard_input(data):
+    if hlp.is_card(data):
+        var card = data
+        Game.showcase_card = card
+        if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
+            card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, CardScene.SOUND_DEAL)
+            Game.cards_to_select -= 1
+        if Game.cards_to_select <= 0:
+            gui_play.hide_hint()
+            sm.change_state(APPLY_EFFECT)
+        
+        
+func discard_exit():
+    hlp.stop_glow_slot_group(hand_slots)
+    
 
 func trash_enter():
     hlp.glow_slot_group(hand_slots, Color.RED)
