@@ -288,3 +288,12 @@ func change_state_by_context(intro_state, play_state):
     else:
         Game.sm.change_state(play_state)
         
+
+func is_card(data):
+    return typeof(data) == typeof(CardScene)
+
+
+func is_hint_btn_pressed(data):
+    return typeof(data) == TYPE_INT and data == gui_main.get_node("GuiPlay").HINT_BTN_PRESSED
+    
+    

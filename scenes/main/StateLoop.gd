@@ -261,7 +261,7 @@ func intro_startgame_enter():
     
     
 func intro_startgame_input(data):
-    if data == gui_play.STARTGAME_BTN_PRESSED:
+    if typeof(data) == TYPE_INT and data == gui_play.STARTGAME_BTN_PRESSED: 
         sm.change_state(START_PLAY)
 
     
@@ -327,7 +327,7 @@ func discard_enter():
 
 
 func discard_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
@@ -351,7 +351,7 @@ func play_action_enter():
     
     
 func play_action_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.actions > 0 and card.card_type == "Action":
@@ -363,11 +363,7 @@ func play_action_input(data):
             await get_tree().create_timer(0.4).timeout
             sm.change_state(ACTIVATE_CARD)
             return
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(PLAY_RESOURCES)
-            return
-    if Game.actions <= 0:
+    if Game.actions <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(PLAY_RESOURCES)
         
         
@@ -382,7 +378,7 @@ func play_resources_enter():
     
     
 func play_resources_input(data):
-    if typeof(data) == TYPE_INT and data == gui_play.HINT_BTN_PRESSED:
+    if helpers.is_hint_btn_pressed(data):
         gui_play.hide_hint()
         for card :CardScene in helpers.get_hand_resource_cards():
             Game.money += card.effect_money
@@ -398,7 +394,7 @@ func buy_cards_enter():
 
 
 func buy_cards_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.buys > 0 and helpers.valid_buy(card):
@@ -406,10 +402,7 @@ func buy_cards_input(data):
             Game.buys -= 1
             card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             helpers.glow_valid_buys()
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(CLEANUP)
-    if Game.buys <= 0:
+    if Game.buys <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(CLEANUP)
 
 
@@ -450,17 +443,14 @@ func trash_enter():
 
 
 func trash_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.slot().stop_glow_if_count(1)
             card.fly(card.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(card), CardScene.SOUND_SWOOP)
             Game.cards_to_select -= 1
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(APPLY_EFFECT)
-    if Game.cards_to_select <= 0:
+    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
 
 
@@ -511,17 +501,14 @@ func free_card_exit():
 
 
 func free_card_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and helpers.valid_free_card(card):
             card.slot().stop_glow_if_count(1)
             card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, discarded_slot.add_card.bind(card), CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(APPLY_EFFECT)
-    if Game.cards_to_select <= 0:
+    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
 
 
@@ -538,7 +525,7 @@ func double_action_exit():
     
     
 func double_action_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.card_type == "Action":
@@ -552,10 +539,7 @@ func double_action_input(data):
             await get_tree().create_timer(0.4).timeout
             sm.change_state(ACTIVATE_CARD)
             return
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(APPLY_EFFECT)
-    if Game.cards_to_select <= 0:
+    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
 
 
@@ -565,7 +549,7 @@ func replace_cards_enter():
     
     
 func replace_cards_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
@@ -582,12 +566,7 @@ func replace_cards_input(data):
             helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
         if Game.cards_to_select <= 0:
             gui_play.hide_hint()
-            sm.change_state(APPLY_EFFECT)
-            return
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(APPLY_EFFECT)
-    if Game.cards_to_select <= 0:
+    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
         
     
@@ -601,7 +580,7 @@ func upgrade_2_enter():
     
     
 func upgrade_2_input(data):
-    if typeof(data) == typeof(CardScene):
+    if helpers.is_card(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
@@ -612,12 +591,7 @@ func upgrade_2_input(data):
             await get_tree().create_timer(0.5).timeout
         if Game.cards_to_select <= 0:
             gui_play.hide_hint()
-            sm.change_state(APPLY_EFFECT)
-            return
-    elif typeof(data) == TYPE_INT:
-        if data == gui_play.HINT_BTN_PRESSED:
-            sm.change_state(APPLY_EFFECT)
-    if Game.cards_to_select <= 0:
+    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
         
         
