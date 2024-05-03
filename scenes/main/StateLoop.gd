@@ -23,7 +23,7 @@ extends Node
 @onready var gui_hint = gui_play.get_node("Hint")
 @onready var laurel = gui_play.get_node("Money/Laurel")
 
-var helpers = Helpers.new()
+var hlp = Helpers.new()
 
 enum {SETUP, INTRO_RESOURCES, DEAL_RESOURCES, INTRO_ACTIONS, DEAL_ACTIONS, INTRO_DECK, PREPARE_DECK, DEAL_HAND, INTRO_CHALLENGE, VICTORY,
      DEAL_CHALLENGES, FLIP_CHALLENGE, INTRO_STARTGAME, START_PLAY, ACTIVATE_CHALLENGE, ACTIVATE_CARD, APPLY_EFFECT, DISCARD, PLAY_ACTION,
@@ -67,7 +67,7 @@ var sm:= SM.new({
 func _ready():
     Game.sm = sm
     Game.connect_gui(get_node("/root/Main"))
-    helpers.connect_gui(get_node("/root/Main"))
+    hlp.connect_gui(get_node("/root/Main"))
 
 
 enum {CONTEXT_INTRO, CONTEXT_PLAY}
@@ -75,11 +75,11 @@ enum {CONTEXT_INTRO, CONTEXT_PLAY}
 var context = CONTEXT_PLAY
 
 func start_game_loop(requested_context = CONTEXT_PLAY):
-    helpers.hide([gui_play.get_node("Money"), gui_play.get_node("Army")])
+    hlp.hide([gui_play.get_node("Money"), gui_play.get_node("Army")])
     gui_play.get_node("Money").text = "0"
     gui_play.get_node("Army").text = "0"
     gui_play.hide_hint()
-    helpers.empty_all_decks()
+    hlp.empty_all_decks()
     context = requested_context
     sm.change_state(SETUP)
 
@@ -94,7 +94,7 @@ func setup_enter():
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
-        helpers.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame, table_slots, laurel])
+        hlp.hide([intro_main, intro_resources, intro_actions, intro_challenge, intro_hand, intro_rightclick, intro_startgame, table_slots, laurel])
         sm.change_state(INTRO_RESOURCES)
     elif context == CONTEXT_PLAY:
         gui_intro.visible = false
@@ -102,7 +102,7 @@ func setup_enter():
 
 
 func intro_resources_enter(): 
-    helpers.intro("Buy resources.", 3, DEAL_RESOURCES)
+    hlp.intro("Buy resources.", 3, DEAL_RESOURCES)
     
 
 func deal_resources_enter(): 
@@ -112,15 +112,15 @@ func deal_resources_enter():
     
 func deal_resources_exit():
     if context == CONTEXT_INTRO:
-        helpers.fade(intro_resources, helpers.FADE_IN, 3)
+        hlp.fade(intro_resources, hlp.FADE_IN, 3)
     
     
 func deal_resources():
     var start_delay = 0
     for resource_type in ["Army1","Money1","Army2","Money2"]:
-        var card_data = helpers.get_cards_by_type(resource_type)[0]
+        var card_data = hlp.get_cards_by_type(resource_type)[0]
         for i in range(5):
-            var card = helpers.spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
+            var card = hlp.spawn_card(card_data, offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_slot = resource_slots.get_node(resource_type)
             card.fly(offscreen_top, target_slot, 0.35, start_delay, CardScene.SOUND_DEAL)
@@ -128,20 +128,20 @@ func deal_resources():
         
         
 func deal_resources_process(_delta):
-    if helpers.count_cards(resource_slots) == 20:
-        helpers.change_state_by_context(INTRO_ACTIONS, DEAL_ACTIONS)
+    if hlp.count_cards(resource_slots) == 20:
+        hlp.change_state_by_context(INTRO_ACTIONS, DEAL_ACTIONS)
                 
         
 func intro_actions_enter():
-    helpers.intro("Buy action cards.", 3, DEAL_ACTIONS)
+    hlp.intro("Buy action cards.", 3, DEAL_ACTIONS)
     
     
 func deal_actions_enter():
-    var selected_actions = helpers.choose_action_set()
+    var selected_actions = hlp.choose_action_set()
     var start_delay = 0
     for i in range(10):
         for j in range(5):
-            var card = helpers.spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
+            var card = hlp.spawn_card(selected_actions[i], offscreen_top, CardScene.FACE_UP)
             start_delay += 0.3
             var target_node = action_slots.get_node("Action" + str(i+1))
             card.fly(offscreen_top, target_node, 0.35, start_delay, CardScene.SOUND_DEAL)
@@ -149,29 +149,29 @@ func deal_actions_enter():
         
         
 func deal_actions_process(_delta):
-    if helpers.count_cards(action_slots) == 50:
-        helpers.change_state_by_context(INTRO_DECK, PREPARE_DECK)
+    if hlp.count_cards(action_slots) == 50:
+        hlp.change_state_by_context(INTRO_DECK, PREPARE_DECK)
     
     
 func deal_actions_exit():
     if context == CONTEXT_INTRO:
-        helpers.fade(intro_actions, helpers.FADE_IN, 3)
+        hlp.fade(intro_actions, hlp.FADE_IN, 3)
     
     
 func intro_deck_enter():
-    helpers.intro("Improve your deck.", 3, PREPARE_DECK)
+    hlp.intro("Improve your deck.", 3, PREPARE_DECK)
     
     
 func prepare_deck_enter():
-    var money1 = helpers.get_cards_by_type("Money1")[0]
-    var army1 = helpers.get_cards_by_type("Army1")[0]
+    var money1 = hlp.get_cards_by_type("Money1")[0]
+    var army1 = hlp.get_cards_by_type("Army1")[0]
     var players_deck = []
     for i in range(7): players_deck.append(money1)
     for i in range(3): players_deck.append(army1)
     players_deck.shuffle()
     var start_delay = 0
     for card_data in players_deck:
-        var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
+        var card = hlp.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
         card.fly(offscreen_left, deck_slot, 0.35, start_delay, CardScene.SOUND_DEAL)
         start_delay += 0.25 + randf_range(-0.05, 0.05)
     
@@ -187,41 +187,41 @@ func deal_hand_enter():
     while cards_dealt < 5:
         var deck_cards = deck_slot.get_node("cards").get_children()
         if deck_cards.is_empty():
-            await helpers.reshuffle_discarded_to_deck()
+            await hlp.reshuffle_discarded_to_deck()
             if deck_slot.card_count() == 0:
                 print("deal_hand_enter EXITED: No cards left to deal even after reshuffling.")
                 break  # Break the loop if still no cards after reshuffling
             continue
         else:
             var card = deck_cards[-1]
-            var target_slot = helpers.find_slot_for_card(card, hand_slots)
+            var target_slot = hlp.find_slot_for_card(card, hand_slots)
             card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, CardScene.SOUND_DRAW)
             cards_dealt += 1
             await get_tree().create_timer(0.6).timeout
     
     
 func deal_hand_process(_delta):
-    if helpers.count_cards(hand_slots) == 5:
-        helpers.change_state_by_context(INTRO_CHALLENGE, DEAL_CHALLENGES)
+    if hlp.count_cards(hand_slots) == 5:
+        hlp.change_state_by_context(INTRO_CHALLENGE, DEAL_CHALLENGES)
     
     
 func deal_hand_exit():
     if context == CONTEXT_INTRO:
-        helpers.fade(intro_hand, helpers.FADE_IN, 3)
+        hlp.fade(intro_hand, hlp.FADE_IN, 3)
     
     
 func intro_challenge_enter():
-    helpers.intro("Overcome historical challenges.", 3, DEAL_CHALLENGES)
+    hlp.intro("Overcome historical challenges.", 3, DEAL_CHALLENGES)
     
     
 func deal_challenges_enter():
     if challenge_slot.card_count() == 0:
-        var challenges = helpers.prepare_challenges()
+        var challenges = hlp.prepare_challenges()
         var start_delay = 0
         for card_data in challenges:
         ##for i in range(3):
           #  var card_data = challenges[i+5]
-            var card = helpers.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
+            var card = hlp.spawn_card(card_data, offscreen_left, CardScene.FACE_DOWN)
             card.fly(offscreen_left, challenge_slot, 0.35, start_delay, CardScene.SOUND_DEAL)
             start_delay += 0.12
     else:
@@ -243,14 +243,14 @@ func flip_challenge_enter():
     Game.showcase_card = challenge_slot.top_card()
     Game.challenge_overcome = false
     challenge_slot.start_glow(Color.RED)
-    helpers.change_state_by_context(INTRO_STARTGAME, START_PLAY)
+    hlp.change_state_by_context(INTRO_STARTGAME, START_PLAY)
     
     
 func flip_challenge_exit():
     if context == CONTEXT_INTRO:
         intro_main.visible = false
-        helpers.fade(intro_challenge, helpers.FADE_IN, 3)
-        helpers.fade(intro_rightclick, helpers.FADE_IN, 3)
+        hlp.fade(intro_challenge, hlp.FADE_IN, 3)
+        hlp.fade(intro_rightclick, hlp.FADE_IN, 3)
     
     
 func intro_startgame_enter():
@@ -266,11 +266,11 @@ func intro_startgame_input(data):
 
     
 func intro_startgame_exit():
-    helpers.fade(gui_intro, helpers.FADE_OUT, 1)
+    hlp.fade(gui_intro, hlp.FADE_OUT, 1)
 
 
 func start_play_enter(): 
-    helpers.hide([gui_hint])
+    hlp.hide([gui_hint])
     context = CONTEXT_PLAY
     table_slots.visible = true
     await get_tree().create_timer(1).timeout
@@ -291,7 +291,7 @@ func activate_card_enter():
         Game.army += card.effect_army
         Game.actions += card.extra_actions
         Game.buys += card.extra_buys
-        helpers.queue_effects(card)
+        hlp.queue_effects(card)
         sm.change_state(APPLY_EFFECT)
     else:
         sm.change_state(PLAY_ACTION)
@@ -322,12 +322,12 @@ func apply_effect_enter():
     
     
 func discard_enter():
-    helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
+    hlp.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
     gui_play.show_hint()
 
 
 func discard_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
@@ -339,48 +339,48 @@ func discard_input(data):
         
         
 func discard_exit():
-    helpers.stop_glow_slot_group(hand_slots)
+    hlp.stop_glow_slot_group(hand_slots)
 
     
 func play_action_enter():
-    if Game.actions > 0 and helpers.has_actions():
-        helpers.glow_valid_actions()
+    if Game.actions > 0 and hlp.has_actions():
+        hlp.glow_valid_actions()
         gui_play.show_hint() 
     else:
         sm.change_state(PLAY_RESOURCES)
     
     
 func play_action_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.actions > 0 and card.card_type == "Action":
             Game.actions -= 1
-            var target_slot = helpers.find_slot_for_card(card, table_slots)
+            var target_slot = hlp.find_slot_for_card(card, table_slots)
             card.fly(card.slot(), target_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            card.slot().stop_glow_if_count(1)
+            ##card.slot().stop_glow_if_count(1)
             Game.card_stack.push_front(card)
             await get_tree().create_timer(0.4).timeout
             sm.change_state(ACTIVATE_CARD)
             return
-    if Game.actions <= 0 or helpers.is_hint_btn_pressed(data):
+    if Game.actions <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(PLAY_RESOURCES)
         
         
 func play_action_exit():
-    helpers.stop_glow_slot_group(hand_slots)
+    hlp.stop_glow_slot_group(hand_slots)
     gui_play.hide_hint()
     
 func play_resources_enter():
-    if helpers.get_hand_resource_cards().size() == 0:
+    if hlp.get_hand_resource_cards().size() == 0:
         sm.change_state(BUY_CARDS)
     gui_play.show_hint()
     
     
 func play_resources_input(data):
-    if helpers.is_hint_btn_pressed(data):
+    if hlp.is_hint_btn_pressed(data):
         gui_play.hide_hint()
-        for card :CardScene in helpers.get_hand_resource_cards():
+        for card :CardScene in hlp.get_hand_resource_cards():
             Game.money += card.effect_money
             Game.army += card.effect_army
             card.pulse(0.4)
@@ -389,27 +389,27 @@ func play_resources_input(data):
     
     
 func buy_cards_enter():
-    helpers.glow_valid_buys()
+    hlp.glow_valid_buys()
     gui_play.show_hint()
 
 
 func buy_cards_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
-        if Game.buys > 0 and helpers.valid_buy(card):
+        if Game.buys > 0 and hlp.valid_buy(card):
             Game.money -= card.cost_money
             Game.buys -= 1
             card.fly_and_flip(card.slot(), discarded_slot, 0.5, 0, CardScene.SOUND_DEAL)
-            helpers.glow_valid_buys()
-    if Game.buys <= 0 or helpers.is_hint_btn_pressed(data):
+            hlp.glow_valid_buys()
+    if Game.buys <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(CLEANUP)
 
 
 func buy_cards_exit():
     gui_play.hide_hint()
-    helpers.stop_glow_slot_group(resource_slots)
-    helpers.stop_glow_slot_group(action_slots)
+    hlp.stop_glow_slot_group(resource_slots)
+    hlp.stop_glow_slot_group(action_slots)
 
 
 func cleanup_enter():
@@ -432,30 +432,30 @@ func cleanup_enter():
         await get_tree().create_timer(0.7).timeout
         card.fly(card.slot(), trash_slot, 0.5, 0, CardScene.SOUND_SWOOP)
         await get_tree().create_timer(0.7).timeout
-    helpers.discard_slot_group(hand_slots)
-    helpers.discard_slot_group(table_slots)
+    hlp.discard_slot_group(hand_slots)
+    hlp.discard_slot_group(table_slots)
     sm.change_state(NEXT_TURN)
 
 
 func trash_enter():
-    helpers.glow_slot_group(hand_slots, Color.RED)
+    hlp.glow_slot_group(hand_slots, Color.RED)
     gui_play.show_hint()
 
 
 func trash_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
-            card.slot().stop_glow_if_count(1)
+            #card.slot().stop_glow_if_count(1)
             card.fly(card.slot(), trash_slot, 0.4, 0, CardScene.SOUND_SWOOP)
             Game.cards_to_select -= 1
-    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
+    if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
 
 
 func trash_exit():
-    helpers.stop_glow_slot_group(hand_slots)
+    hlp.stop_glow_slot_group(hand_slots)
     gui_play.hide_hint()
 
 
@@ -472,9 +472,9 @@ func next_turn_enter():
 
 func draw_card_enter():
     if deck_slot.card_count() == 0:
-        await helpers.reshuffle_discarded_to_deck()
+        await hlp.reshuffle_discarded_to_deck()
     var card = deck_slot.top_card()
-    var target_slot = helpers.find_slot_for_card(card, hand_slots)
+    var target_slot = hlp.find_slot_for_card(card, hand_slots)
     card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, CardScene.SOUND_DRAW)
     await get_tree().create_timer(0.6).timeout
     sm.change_state(APPLY_EFFECT)
@@ -490,113 +490,113 @@ func take_money2_enter():
 
 
 func free_card_enter():
-    helpers.glow_valid_free_cards()
+    hlp.glow_valid_free_cards()
     gui_play.show_hint()
 
 
 func free_card_exit():
-    helpers.stop_glow_slot_group(resource_slots)
-    helpers.stop_glow_slot_group(action_slots)
+    hlp.stop_glow_slot_group(resource_slots)
+    hlp.stop_glow_slot_group(action_slots)
     gui_play.hide_hint()
 
 
 func free_card_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
-        if Game.cards_to_select > 0 and helpers.valid_free_card(card):
-            card.slot().stop_glow_if_count(1)
+        if Game.cards_to_select > 0 and hlp.valid_free_card(card):
+            #card.slot().stop_glow_if_count(1)
             card.fly_and_flip(card.slot(), discarded_slot, 0.55, 0, CardScene.SOUND_DEAL)
             Game.cards_to_select -= 1
-    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
+    if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
 
 
 func double_action_enter():
-    if Game.actions > 0 and helpers.has_actions():
-        helpers.glow_valid_actions()
+    if Game.actions > 0 and hlp.has_actions():
+        hlp.glow_valid_actions()
         gui_play.show_hint() 
     else:
         sm.change_state(APPLY_EFFECT)
     
     
 func double_action_exit():
-    helpers.stop_glow_slot_group(hand_slots)
+    hlp.stop_glow_slot_group(hand_slots)
     
     
 func double_action_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card : CardScene = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.card_type == "Action":
             Game.actions -= 1
             Game.cards_to_select -= 1
-            var target_slot = helpers.find_slot_for_card(card, table_slots)
+            var target_slot = hlp.find_slot_for_card(card, table_slots)
             card.fly(card.slot(), target_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            card.slot().stop_glow_if_count(1)
+            #card.slot().stop_glow_if_count(1)
             Game.card_stack.push_front(card)
             Game.card_stack.push_front(card)
             await get_tree().create_timer(0.4).timeout
             sm.change_state(ACTIVATE_CARD)
             return
-    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
+    if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
 
 
 func replace_cards_enter():
-    helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
+    hlp.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
     gui_play.show_hint()
     
     
 func replace_cards_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.fly_and_flip(card.slot(), discarded_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            card.slot().stop_glow_if_count(1)
+            #card.slot().stop_glow_if_count(1)
             Game.cards_to_select -= 1
             await get_tree().create_timer(0.5).timeout
             if deck_slot.card_count() == 0:
-                await helpers.reshuffle_discarded_to_deck()
+                await hlp.reshuffle_discarded_to_deck()
             var new_card = deck_slot.top_card()
-            var target_slot = helpers.find_slot_for_card(new_card, hand_slots)
+            var target_slot = hlp.find_slot_for_card(new_card, hand_slots)
             new_card.fly_and_flip(deck_slot, target_slot, 0.4, 0.1, CardScene.SOUND_DRAW)
             await get_tree().create_timer(0.6).timeout
-            helpers.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
+            hlp.glow_slot_group(hand_slots, Color.DEEP_SKY_BLUE)
         if Game.cards_to_select <= 0:
             gui_play.hide_hint()
-    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
+    if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
         
     
 func replace_cards_exit():
-    helpers.stop_glow_slot_group(hand_slots)
+    hlp.stop_glow_slot_group(hand_slots)
     
     
 func upgrade_2_enter():
-    helpers.glow_slot_group(hand_slots, Color.GREEN)
+    hlp.glow_slot_group(hand_slots, Color.GREEN)
     gui_play.show_hint()
     
     
 func upgrade_2_input(data):
-    if helpers.is_card(data):
+    if hlp.is_card(data):
         var card = data
         Game.showcase_card = card
         if Game.cards_to_select > 0 and card.slot() in hand_slots.get_children():
             card.fly_and_flip(card.slot(), trash_slot, 0.4, 0, CardScene.SOUND_DEAL)
-            helpers.stop_glow_slot_group(hand_slots)
+            hlp.stop_glow_slot_group(hand_slots)
             Game.cards_to_select -= 1
             Game.effect_stack.push_front(Effect.new(Effect.FREE_CARD, "take_card", 1, card.cost_money + 2))
             await get_tree().create_timer(0.5).timeout
         if Game.cards_to_select <= 0:
             gui_play.hide_hint()
-    if Game.cards_to_select <= 0 or helpers.is_hint_btn_pressed(data):
+    if Game.cards_to_select <= 0 or hlp.is_hint_btn_pressed(data):
         sm.change_state(APPLY_EFFECT)
         
         
 func upgrade_2_exit():
-    helpers.stop_glow_slot_group(hand_slots)
+    hlp.stop_glow_slot_group(hand_slots)
 
 
 func upgrade_money_enter():
@@ -609,7 +609,7 @@ func upgrade_money_enter():
     if resource_slots.get_node("Money2").card_count() > 0:
         money2 = resource_slots.get_node("Money2").top_card()
     if money1 and money2:
-        var target_slot = helpers.find_slot_for_card(money2, hand_slots)
+        var target_slot = hlp.find_slot_for_card(money2, hand_slots)
         money1.fly(money1.slot(), trash_slot, 0.4, 0, CardScene.SOUND_DRAW)
         await get_tree().create_timer(0.7).timeout
         money2.fly(money2.slot(), target_slot, 0.8, 0, CardScene.SOUND_DEAL)
