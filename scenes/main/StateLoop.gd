@@ -90,6 +90,7 @@ func _process(delta):
     
 func setup_enter():
     gui_play.z_index = 0
+    Game.turn = 1
     resource_slots.visible = false
     if context == CONTEXT_INTRO:
         gui_intro.visible = true
@@ -284,7 +285,6 @@ func start_play_enter():
     helpers.hide([gui_hint])
     context = CONTEXT_PLAY
     table_slots.visible = true
-    Game.turn = 1  
     await get_tree().create_timer(1).timeout
     gui_play.z_index = 2
     sm.change_state(ACTIVATE_CHALLENGE)
