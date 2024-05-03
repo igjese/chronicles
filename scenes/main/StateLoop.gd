@@ -129,10 +129,7 @@ func deal_resources():
         
 func deal_resources_process(_delta):
     if helpers.count_cards(resource_slots) == 20:
-        if context == CONTEXT_INTRO:
-            sm.change_state(INTRO_ACTIONS)
-        else:
-            sm.change_state(DEAL_ACTIONS)
+        helpers.change_state_by_context(INTRO_ACTIONS, DEAL_ACTIONS)
                 
         
 func intro_actions_enter():
@@ -153,10 +150,7 @@ func deal_actions_enter():
         
 func deal_actions_process(_delta):
     if helpers.count_cards(action_slots) == 50:
-        if context == CONTEXT_INTRO:
-            sm.change_state(INTRO_DECK)
-        else:
-            sm.change_state(PREPARE_DECK)
+        helpers.change_state_by_context(INTRO_DECK, PREPARE_DECK)
     
     
 func deal_actions_exit():
@@ -208,10 +202,7 @@ func deal_hand_enter():
     
 func deal_hand_process(_delta):
     if helpers.count_cards(hand_slots) == 5:
-        if context == CONTEXT_INTRO:
-            sm.change_state(INTRO_CHALLENGE)
-        else:
-            sm.change_state(DEAL_CHALLENGES)
+        helpers.change_state_by_context(INTRO_CHALLENGE, DEAL_CHALLENGES)
     
     
 func deal_hand_exit():
@@ -252,10 +243,7 @@ func flip_challenge_enter():
     Game.showcase_card = challenge_slot.top_card()
     Game.challenge_overcome = false
     challenge_slot.start_glow(Color.RED)
-    if context == CONTEXT_INTRO:
-        sm.change_state(INTRO_STARTGAME)
-    else:
-        sm.change_state(START_PLAY)
+    helpers.change_state_by_context(INTRO_STARTGAME, START_PLAY)
     
     
 func flip_challenge_exit():
@@ -640,22 +628,18 @@ func upgrade_2_exit():
 func upgrade_money_enter():
     var money1 = null
     var money2 = null
-
     for slot in hand_slots.get_children():
         if slot.top_card() and slot.top_card().card_type == "Money1":
             money1 = slot.top_card()
             break
-    
     if resource_slots.get_node("Money2").card_count() > 0:
         money2 = resource_slots.get_node("Money2").top_card()
-    
     if money1 and money2:
         var target_slot = helpers.find_slot_for_card(money2, hand_slots)
         money1.fly(money1.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(money1), CardScene.SOUND_DRAW)
         await get_tree().create_timer(0.7).timeout
         money2.fly(money2.slot(), target_slot, 0.8, 0, target_slot.add_card.bind(money2), CardScene.SOUND_DEAL)
         await get_tree().create_timer(0.95).timeout
-    
     sm.change_state(APPLY_EFFECT)
     
 

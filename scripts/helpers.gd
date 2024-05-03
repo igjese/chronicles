@@ -20,7 +20,6 @@ func connect_gui(main_scene):
     offscreen_bottom = gui_main.get_node("Offscreen/Bottom")
 
 
-
 func get_cards_by_type(card_type: String) -> Array:
     var cards_of_type = []
     for card in Game.cards_by_name.values():
@@ -280,3 +279,12 @@ func empty_all_decks():
     gui_main.get_node("Trash").empty_cards()
     gui_main.get_node("Offscreen/Left").empty_cards()
     gui_main.get_node("Offscreen/Bottom").empty_cards()
+
+
+func change_state_by_context(intro_state, play_state):
+    var state_loop = gui_main.get_node("StateLoop")
+    if state_loop.context == state_loop.CONTEXT_INTRO:
+        Game.sm.change_state(intro_state)
+    else:
+        Game.sm.change_state(play_state)
+        
