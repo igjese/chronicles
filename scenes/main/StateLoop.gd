@@ -650,9 +650,10 @@ func upgrade_money_enter():
         money2 = resource_slots.get_node("Money2").top_card()
     
     if money1 and money2:
+        var target_slot = helpers.find_slot_for_card(money2, hand_slots)
         money1.fly(money1.slot(), trash_slot, 0.4, 0, trash_slot.add_card.bind(money1), CardScene.SOUND_DRAW)
         await get_tree().create_timer(0.7).timeout
-        money2.fly_and_flip(money2.slot(), discarded_slot, 0.8, 0, discarded_slot.add_card.bind(money1), CardScene.SOUND_DEAL)
+        money2.fly(money2.slot(), target_slot, 0.8, 0, target_slot.add_card.bind(money2), CardScene.SOUND_DEAL)
         await get_tree().create_timer(0.95).timeout
     
     sm.change_state(APPLY_EFFECT)
